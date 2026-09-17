@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="A.O favicon">
+  <rect x="2" y="2" width="60" height="60" rx="11" fill="#0a0a0a" stroke="#b0b0b0" stroke-width="2"/>
+  <text x="22" y="45" text-anchor="middle" fill="#f0f0f0" font-family="'Bebas Neue', 'Arial Narrow', sans-serif" font-size="35" font-weight="700" letter-spacing="0">A</text>
+  <circle cx="32" cy="36" r="2.9" fill="#f05a00"/>
+  <text x="42" y="45" text-anchor="middle" fill="#f0f0f0" font-family="'Bebas Neue', 'Arial Narrow', sans-serif" font-size="35" font-weight="700" letter-spacing="0">O</text>
+</svg>

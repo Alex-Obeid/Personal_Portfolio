@@ -1,0 +1,7 @@
+# Claude Code local tooling (dev-preview server config, not part of the site)
+.claude/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini

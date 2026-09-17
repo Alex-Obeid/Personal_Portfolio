@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alex Obeid</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <link rel="apple-touch-icon" href="favicon.svg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --black:#0a0a0a;--dark:#141414;--mid:#1e1e1e;--grey:#2c2c2c;
+      --muted:#6b6b6b;--light:#b0b0b0;--white:#f0f0f0;
+      --orange:#f05a00;--orange2:#ff7a1a;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;}
+
+    /* PAGE SWEEP TRANSITION */
+    .page-sweep{position:fixed;top:68px;left:0;right:0;bottom:0;pointer-events:none;z-index:250;overflow:hidden;}
+    .page-sweep.is-active{pointer-events:auto;}
+    .page-sweep-layer{position:absolute;top:0;bottom:0;width:130%;left:-130%;will-change:transform;transform:translateX(0);}
+    .page-sweep-layer.orange{background:var(--orange);}
+    .page-sweep-layer.black{background:var(--black);}
+    .page-sweep-layer.white{background:var(--white);}
+
+    .startup-intro{
+      position:fixed;
+      inset:0;
+      background:var(--black);
+      z-index:13000;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      opacity:1;
+      transition:opacity .45s ease;
+      pointer-events:none;
+    }
+    .startup-intro.done{opacity:0;}
+    .startup-intro.hidden{display:none;}
+    .startup-logo-clip{
+      overflow:hidden;
+      padding-top:.22em;
+      height:1.4em;
+      line-height:1;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(2.1rem,6vw,3.8rem);
+    }
+    .startup-logo-type{
+      display:inline-block;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(2.1rem,6vw,3.8rem);
+      letter-spacing:4px;
+      line-height:1;
+      color:var(--white);
+      white-space:nowrap;
+      user-select:none;
+      pointer-events:none;
+      opacity:0;
+      width:0;
+      overflow:hidden;
+      border-right:2px solid rgba(240,240,240,.9);
+      text-transform:uppercase;
+      transform:translateY(0);
+    }
+    .startup-logo-type span{color:var(--orange);}
+    .startup-logo-rule{
+      display:block;
+      height:2px;
+      width:0;
+      background:var(--white);
+      margin-top:0;
+      opacity:0;
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(2.1rem,6vw,3.8rem);
+      letter-spacing:4px;
+    }
+    .startup-intro.play .startup-logo-type{
+      animation:
+        startupLogoShow 0ms linear 120ms forwards,
+        startupLogoType 760ms steps(11,end) 160ms forwards,
+        startupCaretFast 120ms steps(1,end) 980ms 2,
+        startupLogoPop 420ms cubic-bezier(.22,.85,.32,1) 1220ms forwards;
+    }
+    .startup-intro.play .startup-logo-rule{
+      animation:startupRuleShow 380ms cubic-bezier(.22,.8,.25,1) 1450ms forwards;
+    }
+    .startup-intro.closing .startup-logo-type{
+      animation:startupLogoDrop 560ms cubic-bezier(.45,0,.8,1) forwards;
+    }
+    @keyframes startupLogoShow{to{opacity:1;}}
+    @keyframes startupLogoType{from{width:0;}to{width:11ch;}}
+    @keyframes startupCaretFast{50%{border-right-color:transparent;}}
+    @keyframes startupLogoPop{
+      0%{transform:translateY(0);border-right-color:rgba(240,240,240,.9);}
+      35%{transform:translateY(-.16em);border-right-color:transparent;}
+      65%{transform:translateY(-.16em);}
+      100%{transform:translateY(-.06em);}
+    }
+    @keyframes startupRuleShow{from{width:0;opacity:0;}to{width:11ch;opacity:1;}}
+    @keyframes startupLogoDrop{
+      from{transform:translateY(-.06em);}
+      to{transform:translateY(1.55em);}
+    }
+    .page-sweep.is-active .page-sweep-layer.orange{animation:pageSweep 900ms linear 0ms both;}
+    .page-sweep.is-active .page-sweep-layer.white{animation:pageSweep 900ms linear 140ms both;}
+    .page-sweep.is-active .page-sweep-layer.black{animation:pageSweep 900ms linear 280ms both;}
+    @keyframes pageSweep{from{transform:translateX(0);}to{transform:translateX(230%);}}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:300;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:68px;background:rgba(10,10,10,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--grey);}
+    .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;color:var(--white);text-decoration:none;opacity:0;animation:navReveal .6s cubic-bezier(.2,.75,.2,1) .08s forwards;}
+    .nav-logo span{color:var(--orange);}
+    .nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;background:transparent;border:1px solid var(--grey);color:var(--white);cursor:pointer;}
+    .nav-toggle svg{pointer-events:none;}
+    .nav-links{display:flex;gap:36px;list-style:none;}
+    .nav-links li{opacity:0;animation:navReveal .5s cubic-bezier(.2,.75,.2,1) forwards;}
+    .nav-links li:nth-child(1){animation-delay:.16s;}
+    .nav-links li:nth-child(2){animation-delay:.22s;}
+    .nav-links li:nth-child(3){animation-delay:.28s;}
+    .nav-links li:nth-child(4){animation-delay:.34s;}
+    .nav-links a{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--light);text-decoration:none;position:relative;padding-bottom:4px;transition:color .25s;display:inline-flex;align-items:center;gap:8px;}
+    .nav-links a .nav-ico{width:13px;height:13px;display:inline-block;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.75;transform:translateY(-.5px);}
+    .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--orange);transition:width .3s ease;}
+    .nav-links a:hover,.nav-links a.active{color:var(--white);}
+    .nav-links a:hover .nav-ico,.nav-links a.active .nav-ico{opacity:1;}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+
+    /* SECTIONS */
+    section{min-height:100vh;display:none;padding:120px 48px 80px;}
+    section.active{display:block;}
+    #home{display:none;align-items:center;justify-content:center;gap:80px;}
+    #home.active{display:flex;}
+
+    /* HOME */
+    .home-photo-wrap{flex-shrink:0;position:relative;}
+
+    .photo-border{display:none;}
+    .photo-slot{z-index:1;overflow:hidden;}
+    .photo-slot{width:300px;height:360px;background:var(--mid);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;position:relative;transition:background .3s;}
+    .photo-slot:hover{background:var(--grey);}
+    .photo-slot img{width:100%;height:100%;object-fit:cover;object-position:50% 32%;position:absolute;inset:0;transition:transform .45s cubic-bezier(.2,.75,.2,1);transform:scale(1.16);}
+    .home-photo-wrap:hover .photo-slot img{transform:scale(1.195);}
+    .home-text{max-width:480px;}
+    .home-tag{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+    .home-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.2rem,6vw,5.5rem);line-height:.95;letter-spacing:2px;color:var(--white);margin-bottom:24px;}
+    .home-name .first-name{color:var(--orange);}
+    .name-row{display:inline-flex;align-items:center;gap:12px;color:var(--white);}
+    .name-orbit{
+      width:44px;
+      height:44px;
+      display:inline-block;
+      transform:translateY(-2px);
+      background-size:contain;
+      background-repeat:no-repeat;
+      background-position:center;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cg%3E%3Ccircle r='20' cx='140' cy='60' fill='%23f05a00' stroke='%23f05a00' stroke-width='12'%3E%3CanimateTransform attributeName='transform' type='translate' calcMode='spline' dur='2s' values='0 0;0 80;0 80;0 80;-80 80' keySplines='.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle r='20' cx='60' cy='60' fill='%23f0f0f0' stroke='%23f0f0f0' stroke-width='12'%3E%3CanimateTransform attributeName='transform' type='translate' calcMode='spline' dur='2s' values='0 0;0 0;80 0;80 0;80 0' keySplines='.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite'/%3E%3C/circle%3E%3Ccircle r='20' cx='60' cy='140' fill='%23b0b0b0' stroke='%23b0b0b0' stroke-width='12'%3E%3CanimateTransform attributeName='transform' type='translate' calcMode='spline' dur='2s' values='0 0;0 0;0 0;0 -80;0 -80' keySplines='.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1' repeatCount='indefinite'/%3E%3C/circle%3E%3C/g%3E%3C/svg%3E");
+    }
+    .home-divider{width:48px;height:2px;background:var(--orange);margin-bottom:24px;}
+    .home-bio{font-size:1rem;line-height:1.75;color:var(--light);margin-bottom:24px;}
+    .home-bio[contenteditable="true"]:focus{outline:none;border-left:2px solid var(--orange);padding-left:12px;}
+    .edit-hint{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:1.5px;color:var(--muted);margin-bottom:32px;}
+    .cta-row{display:flex;gap:16px;flex-wrap:wrap;}
+    .btn{display:inline-block;padding:12px 28px;font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:all .25s;}
+    .btn-primary{background:var(--orange);color:var(--black);}
+    .btn-primary:hover{background:var(--orange2);transform:translateY(-2px);}
+    .btn-ghost{background:transparent;color:var(--white);border:1px solid var(--grey);}
+    .btn-ghost:hover{border-color:var(--orange);color:var(--orange);}
+
+    /* PAGE HEADER */
+    .page-header{margin-bottom:52px;border-left:3px solid var(--orange);padding-left:24px;}
+    .page-tag{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:10px;}
+    .page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,5vw,4rem);letter-spacing:2px;color:var(--white);}
+
+    /* ══ MASONRY SCATTER ══ */
+    .masonry{
+      columns:3;
+      column-gap:14px;
+    }
+    @media(max-width:1000px){.masonry{columns:2;}}
+    @media(max-width:580px){.masonry{columns:1;}}
+    .projects-group{margin-bottom:42px;}
+    .projects-group:last-child{margin-bottom:0;}
+    .projects-group-title{
+      font-family:'DM Mono',monospace;
+      font-size:.68rem;
+      letter-spacing:2.2px;
+      text-transform:uppercase;
+      color:var(--orange);
+      margin:0 0 14px;
+      padding-left:2px;
+    }
+
+    .proj-brick{
+      break-inside:avoid;
+      margin-bottom:14px;
+      position:relative;
+      cursor:pointer;
+      overflow:hidden;
+      border:1px solid var(--grey);
+      background:var(--mid);
+      transition:border-color .28s,transform .28s,box-shadow .28s;
+    }
+    .proj-brick:hover{
+      border-color:var(--orange);
+      transform:translateY(-5px) scale(1.005);
+      box-shadow:0 14px 48px rgba(240,90,0,.2);
+      z-index:2;
+    }
+    .proj-brick::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .35s ease;z-index:1;}
+    .proj-brick:hover::before{transform:scaleX(1);}
+
+    /* Visual fill area with gradient */
+    .brick-visual{
+      width:100%;
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .proj-brick.tall  .brick-visual{aspect-ratio:3/4;}
+    .proj-brick.wide  .brick-visual{aspect-ratio:16/9;}
+    .proj-brick.sq    .brick-visual{aspect-ratio:1/1;}
+    .proj-brick.short .brick-visual{aspect-ratio:4/3;}
+    .proj-brick.mini  .brick-visual{aspect-ratio:3/2;}
+
+    /* Per-card accent gradients */
+    .ca .brick-visual{background:linear-gradient(135deg,#1a1400 0%,#2d1800 100%);}
+    .cb .brick-visual{background:linear-gradient(150deg,#120d00 0%,#221500 100%);}
+    .cc .brick-visual{background:linear-gradient(120deg,#0e1200 0%,#1c1800 60%,#2a1200 100%);}
+    .cd .brick-visual{background:linear-gradient(160deg,#0a0a0a 0%,#1e0e00 100%);}
+    .ce .brick-visual{background:linear-gradient(140deg,#130b00 0%,#241200 100%);}
+    .cf .brick-visual{background:linear-gradient(130deg,#0f0f0f 0%,#200d00 100%);}
+    .cg .brick-visual{background:linear-gradient(155deg,#0b0e00 0%,#1a1500 100%);}
+    .ch .brick-visual{background:linear-gradient(125deg,#140900 0%,#280f00 100%);}
+
+    /* Project number badge */
+    .brick-wm{
+      position:absolute;
+      top:12px;
+      left:12px;
+      font-family:'DM Mono',monospace;
+      font-size:.62rem;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--orange);
+      line-height:1;
+      user-select:none;
+      pointer-events:none;
+      border:1px solid var(--orange);
+      background:rgba(10,10,10,.78);
+      padding:7px 10px;
+      z-index:2;
+    }
+
+    /* Orange corner line detail */
+    .brick-corner{
+      position:absolute;
+      bottom:12px;right:12px;
+      width:20px;height:20px;
+      border-right:1px solid var(--orange);
+      border-bottom:1px solid var(--orange);
+      opacity:.35;
+      transition:opacity .3s,width .3s,height .3s;
+    }
+    .proj-brick:hover .brick-corner{opacity:.9;width:28px;height:28px;}
+
+    /* Card text body */
+    .brick-body{padding:20px 22px 22px;}
+    .brick-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;}
+    .brick-tag{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;background:var(--grey);color:var(--light);border-radius:1px;}
+    .brick-title{font-family:'DM Sans',sans-serif;font-weight:500;font-size:1rem;color:var(--white);margin-bottom:5px;line-height:1.3;}
+    .brick-desc{font-size:.8rem;line-height:1.65;color:var(--muted);}
+    .brick-state{
+      margin-top:10px;
+      font-family:'DM Mono',monospace;
+      font-size:.58rem;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      color:var(--orange);
+      opacity:.9;
+    }
+    .brick-cta{
+      display:inline-flex;align-items:center;gap:7px;
+      font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;
+      color:var(--orange);margin-top:14px;
+      opacity:0;transform:translateX(-5px);
+      transition:opacity .22s,transform .22s;
+    }
+    .proj-brick:hover .brick-cta{opacity:1;transform:translateX(0);}
+
+    /* ══ PROJECT DETAIL ══ */
+    #project-detail{display:none;}
+    #project-detail.active{display:block;}
+
+    .detail-back{
+      display:inline-flex;align-items:center;gap:10px;
+      font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;
+      color:var(--muted);cursor:pointer;margin-bottom:44px;
+      background:none;border:none;transition:color .2s;
+    }
+    .detail-back:hover{color:var(--orange);}
+    .detail-back svg{transition:transform .2s;}
+    .detail-back:hover svg{transform:translateX(-4px);}
+
+    .detail-hero{
+      width:100%;aspect-ratio:21/9;
+      border:1px solid var(--grey);
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:52px;
+      position:relative;overflow:hidden;
+    }
+    .detail-hero-wm{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:clamp(7rem,20vw,18rem);
+      color:rgba(240,90,0,.06);
+      user-select:none;line-height:1;
+    }
+    .detail-hero-badge{
+      position:absolute;top:22px;left:22px;
+      font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;
+      color:var(--orange);border:1px solid var(--orange);padding:6px 14px;
+    }
+
+    .detail-layout{display:grid;grid-template-columns:1fr 268px;gap:60px;align-items:start;}
+    @media(max-width:860px){.detail-layout{grid-template-columns:1fr;}}
+
+    .detail-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,5vw,4.4rem);letter-spacing:1px;line-height:1;color:var(--white);margin-bottom:20px;}
+    .detail-rule{width:38px;height:2px;background:var(--orange);margin-bottom:26px;}
+    .detail-body{font-size:.95rem;line-height:1.82;color:var(--light);}
+    .detail-body p{margin-bottom:16px;}
+
+    .detail-gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:36px;}
+    @media(max-width:580px){.detail-gallery{grid-template-columns:1fr;}}
+    .gal-cell{background:var(--mid);border:1px solid var(--grey);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+
+    .sidebar-card{background:var(--mid);border:1px solid var(--grey);padding:26px;margin-bottom:16px;}
+    .sidebar-label{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--orange);margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--grey);}
+    .s-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--grey);font-size:.82rem;}
+    .s-row:last-child{border-bottom:none;}
+    .s-key{color:var(--muted);font-family:'DM Mono',monospace;font-size:.63rem;letter-spacing:1px;}
+    .s-val{color:var(--white);text-align:right;max-width:58%;}
+    .sidebar-tags{display:flex;flex-wrap:wrap;gap:6px;}
+    .sidebar-tag{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border:1px solid var(--grey);color:var(--light);border-radius:1px;}
+
+    /* CONTACT */
+    .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;max-width:900px;}
+    .contact-info p{font-size:1rem;line-height:1.8;color:var(--light);margin-bottom:32px;}
+    .contact-item{display:flex;align-items:center;gap:14px;margin-bottom:20px;color:var(--light);font-size:.9rem;}
+    .contact-icon{width:38px;height:38px;border:1px solid var(--grey);display:flex;align-items:center;justify-content:center;color:var(--orange);flex-shrink:0;}
+    .contact-form{display:flex;flex-direction:column;gap:18px;}
+    .form-group{display:flex;flex-direction:column;gap:8px;}
+    .form-group label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+    .form-group input,.form-group textarea{background:var(--mid);border:1px solid var(--grey);color:var(--white);font-family:'DM Sans',sans-serif;font-size:.9rem;padding:12px 16px;outline:none;resize:none;transition:border-color .25s;}
+    .form-group input:focus,.form-group textarea:focus{border-color:var(--orange);}
+
+    /* CV */
+    .cv-wrap{max-width:700px;}
+    .cv-section{margin-bottom:52px;}
+    .cv-section-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;color:var(--orange);border-bottom:1px solid var(--grey);padding-bottom:10px;margin-bottom:24px;}
+    .cv-entry{display:flex;gap:24px;margin-bottom:28px;}
+    .cv-year{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);white-space:nowrap;padding-top:3px;min-width:170px;flex-shrink:0;}
+    .cv-entry-title{font-weight:500;color:var(--white);margin-bottom:4px;}
+    .cv-entry-sub{font-size:.85rem;color:var(--orange);margin-bottom:8px;}
+    .cv-entry-desc{font-size:.88rem;line-height:1.7;color:var(--light);}
+    .cv-entry-list{margin:2px 0 0 18px;padding:0;list-style:disc;}
+    .cv-entry-list li{font-size:.78rem;line-height:1.58;color:var(--light);margin-bottom:6px;}
+    .skills-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;}
+    .skill-pill{padding:6px 12px;border:1px solid var(--grey);font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:1px;color:var(--light);transition:border-color .2s,color .2s;display:inline-flex;align-items:center;gap:7px;}
+    .skill-pill svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.78;}
+    .skill-pill:hover{border-color:var(--orange);color:var(--orange);}
+
+    /* SNAKE */
+    #easter{display:none;}
+    #easter.active{display:block;}
+    .snake-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;}
+    #gameCanvas{border:1px solid var(--grey);background:var(--dark);display:block;image-rendering:pixelated;}
+    .snake-hud{display:flex;gap:48px;font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+    .snake-hud span{color:var(--orange);font-size:1.1rem;letter-spacing:0;}
+    .snake-controls{display:flex;gap:10px;}
+    .snake-hint{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1.5px;color:var(--muted);}
+    .leaderboard-wrap{display:none;}
+    .score-flash{animation:scoreFlash .25s ease;}
+    @keyframes scoreFlash{0%{color:var(--white);transform:scale(1.3);}100%{color:var(--orange);transform:scale(1);}}
+    .canvas-wrap{position:relative;}
+    #game-over-msg{display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:rgba(10,10,10,.82);font-family:'Bebas Neue',sans-serif;letter-spacing:3px;pointer-events:none;}
+    #game-over-msg.show{display:flex;}
+    #game-over-msg .go-title{font-size:2.4rem;color:var(--orange);}
+    #game-over-msg .go-sub{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:2px;color:var(--muted);}
+
+    /* FOOTER */
+    .site-footer{border-top:1px solid var(--grey);padding:22px 48px 28px;background:rgba(10,10,10,.9);}
+    .footer-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+    .footer-links{display:flex;flex-direction:column;align-items:flex-start;gap:10px;}
+    .footer-links a{font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:1.8px;text-transform:uppercase;color:var(--light);text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:8px;}
+    .footer-links .footer-ico{width:13px;height:13px;display:inline-block;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.75;transform:translateY(-.5px);}
+    .footer-links a:hover{color:var(--orange);}
+    .footer-easter{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;background:var(--orange);color:var(--white);cursor:pointer;transition:background .2s,transform .2s;margin-left:auto;}
+    .footer-easter svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+    .footer-easter:hover{background:var(--orange2);transform:translateY(-1px);}
+    .footer-copy{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+
+    /* NOISE */
+    body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.35;}
+    ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:var(--black);}::-webkit-scrollbar-thumb{background:var(--orange);}
+    .fade-in{animation:fadeUp .55s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes navReveal{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes navHide{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-8px);}}
+    @media(max-width:768px){
+      nav{padding:0 16px;height:64px;}
+      .page-sweep{top:64px;}
+      .nav-logo{font-size:1.35rem;letter-spacing:2px;}
+      .nav-toggle{display:inline-flex;}
+      .nav-toggle{margin-left:auto;}
+      .nav-links{display:none;position:absolute;top:64px;left:0;right:0;gap:0;flex-direction:column;background:rgba(10,10,10,.97);border-bottom:1px solid var(--grey);}
+      nav.open .nav-links,nav.closing .nav-links{display:flex;}
+      .nav-links li{border-top:1px solid var(--grey);}
+      .nav-links a{display:block;padding:14px 20px;font-size:.7rem;letter-spacing:1.5px;}
+      .nav-links a{display:flex;gap:10px;}
+      .nav-links a::after{display:none;}
+
+      nav.closing .nav-links li{opacity:1;animation:navHide .28s cubic-bezier(.4,0,.6,1) forwards;}
+      nav.closing .nav-links li:nth-child(4){animation-delay:0s;}
+      nav.closing .nav-links li:nth-child(3){animation-delay:.05s;}
+      nav.closing .nav-links li:nth-child(2){animation-delay:.1s;}
+      nav.closing .nav-links li:nth-child(1){animation-delay:.15s;}
+
+      section{padding:92px 20px 56px;}
+      #home.active{flex-direction:column;padding-top:90px;text-align:center;align-items:center;gap:40px;}
+      .home-photo-wrap{width:min(80vw,300px);}
+      .photo-slot{width:100%;height:auto;aspect-ratio:5/6;}
+      .home-name{font-size:clamp(2.5rem,14vw,4rem);}
+      .home-divider{margin:0 auto 24px;}
+      .home-text{max-width:100%;}
+      .home-bio{font-size:.95rem;line-height:1.7;}
+      .edit-hint{font-size:.6rem;line-height:1.6;word-break:break-word;}
+      .cta-row{justify-content:center;width:100%;}
+      .cta-row .btn{width:100%;text-align:center;}
+
+      .page-header{padding-left:16px;margin-bottom:36px;}
+      .contact-wrap{grid-template-columns:1fr;gap:34px;}
+      .cv-entry{flex-direction:column;gap:8px;}
+      .cv-year{min-width:0;padding-top:0;}
+      .detail-hero{aspect-ratio:4/3;margin-bottom:34px;}
+      .detail-body{font-size:.92rem;line-height:1.75;}
+
+      #gameCanvas{width:min(92vw,420px);height:auto;}
+      .snake-hud{gap:18px;justify-content:center;flex-wrap:wrap;}
+      .leaderboard-wrap{display:none;}
+      .site-footer{padding:20px 20px 24px;}
+      .footer-row{flex-direction:column;align-items:flex-start;gap:12px;}
+      .footer-easter{margin-left:0;}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .nav-logo,.nav-links li,.home-text .home-tag,.home-text .home-name,.home-text .home-divider,.home-text .home-bio,.home-text .edit-hint,.home-text .cta-row{animation:none !important;opacity:1 !important;transform:none !important;}
+      .page-sweep{display:none;}
+    }
+  </style>
+</head>
+
+<body>
+<div class="startup-intro" aria-hidden="true">
+  <div class="startup-logo-clip">
+    <span class="startup-logo-type">Alex<span>.</span>Obeid</span>
+  </div>
+  <span class="startup-logo-rule"></span>
+</div>
+<div class="page-sweep" aria-hidden="true">
+  <div class="page-sweep-layer orange"></div>
+  <div class="page-sweep-layer white"></div>
+  <div class="page-sweep-layer black"></div>
+</div>
+<nav>
+  <a href="#" class="nav-logo" data-target="home">Alex<span>.</span>Obeid</a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M3 6h18M3 12h18M3 18h18"/>
+    </svg>
+  </button>
+  <ul class="nav-links">
+    <li><a href="#" class="active" data-target="home"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home Page</span></a></li>
+    <li><a href="#" data-target="projects"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4.1 4.1 0 0 0-5.5 5.5l-5.3 5.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l5.3-5.3a4.1 4.1 0 0 0 5.5-5.5l-2.3 2.3-2.3-.9-.9-2.3z"/></svg><span>Personal Projects</span></a></li>
+    <li><a href="#" data-target="contact"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.9 3.6h3l1.2 4.3-1.9 1.9a14.9 14.9 0 0 0 5 5l1.9-1.9 4.3 1.2v3A1.9 1.9 0 0 1 18.5 19C10.5 19 4 12.5 4 4.5a1.9 1.9 0 0 1 2.9-1.9z"/></svg><span>Contact</span></a></li>
+    <li><a href="#" data-target="cv"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h6M10 15h6M10 18h4"/></svg><span>CV</span></a></li>
+  </ul>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="active">
+  <div class="home-photo-wrap fade-in">
+    <div class="photo-border"></div>
+    <div class="photo-slot" id="photo-slot">
+      <img id="preview-img" src="Images/Headshot/Headshot Image.jpg" alt="Alex Obeid profile photo"/>
+    </div>
+  </div>
+  <div class="home-text">
+    <div class="home-tag fade-in" style="animation-delay:.15s">// Welcome to my portfolio</div>
+    <h1 class="home-name fade-in" style="animation-delay:.24s"><span class="first-name">Alex</span><br/><span class="name-row">Obeid <span class="name-orbit" aria-hidden="true"></span></span></h1>
+    <div class="home-divider fade-in" style="animation-delay:.32s"></div>
+    <p class="home-bio fade-in" style="animation-delay:.4s" contenteditable="true">mechanical Engineer based in Lebanon. i love the automotive and motorsports industry and have extensive experience in Formula student, vehicle dynamics, CNC machining &amp; various other endeavours.</p>
+    <div class="cta-row fade-in" style="animation-delay:.48s">
+      <button class="btn btn-primary" onclick="navigate('projects')">View My Work</button>
+      <button class="btn btn-ghost" onclick="navigate('contact')">Get In Touch</button>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS — masonry scatter -->
+<section id="projects">
+  <div class="page-header fade-in">
+    <div class="page-tag">// 02 — Work</div>
+    <h2 class="page-title">Personal Projects</h2>
+  </div>
+
+  <div class="projects-group fade-in" style="animation-delay:.1s">
+    <h3 class="projects-group-title">Main Projects</h3>
+    <div class="masonry">
+      <div class="proj-brick wide cb" onclick="openProject(1)">
+        <div class="brick-visual">
+          <span class="brick-wm">01</span>
+          <div class="brick-corner"></div>
+        </div>
+        <div class="brick-body">
+          <div class="brick-tags"><span class="brick-tag">CNC</span><span class="brick-tag">CAM</span><span class="brick-tag">CAD</span></div>
+          <div class="brick-title">Wheel Hub CNC Maching</div>
+          <div class="brick-desc">Design and machining workflow for a precision aluminum mounting bracket, from CAD to toolpath strategy and finished part validation.</div>
+          <div class="brick-state">Project State: Completed</div>
+          <div class="brick-cta">Open Project <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+
+      <div class="proj-brick short cc" onclick="openProject(2)">
+        <div class="brick-visual">
+          <span class="brick-wm">02</span>
+          <div class="brick-corner"></div>
+        </div>
+        <div class="brick-body">
+          <div class="brick-tags"><span class="brick-tag">CFD</span><span class="brick-tag">CAD</span><span class="brick-tag">Surface Modeling</span></div>
+          <div class="brick-title">Sketch, Model and CFD of a Generic SUV</div>
+          <div class="brick-desc">Surface sketching, 3D modelling, and aerodynamic CFD evaluation of a generic SUV concept to assess drag behavior and external flow characteristics.</div>
+          <div class="brick-state">Project State: Completed</div>
+          <div class="brick-cta">Open Project <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="projects-group fade-in" style="animation-delay:.16s">
+    <h3 class="projects-group-title">Side Projects</h3>
+    <div class="masonry">
+      <!-- Card 1 — TALL -->
+      <div class="proj-brick tall ca" onclick="openProject(0)">
+        <div class="brick-visual" style="background:url('Images/Planetary Gearbox/Main-Render.png') center/cover no-repeat;">
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.5) 100%);"></div>
+          <span class="brick-wm">03</span>
+          <div class="brick-corner"></div>
+        </div>
+        <div class="brick-body">
+          <div class="brick-tags"><span class="brick-tag">Mechanical</span><span class="brick-tag">CAD</span></div>
+          <div class="brick-title">Planetary Gearbox</div>
+          <div class="brick-desc">A fully designed and 3D-printed planetary gearbox modelled in SolidWorks — sun gear, planet gears, ring gear, and carrier.</div>
+          <div class="brick-state">Project State: Completed</div>
+          <div class="brick-cta">Open Project <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECT DETAIL PAGE -->
+<section id="project-detail">
+  <button class="detail-back" onclick="navigate('projects')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to Projects
+  </button>
+
+  <div class="detail-hero" id="detail-hero">
+    <span class="detail-hero-wm" id="detail-hero-wm">01</span>
+    <div class="detail-hero-badge" id="detail-hero-badge">Project</div>
+  </div>
+
+  <div class="detail-layout">
+    <div class="detail-main">
+      <h1 class="detail-title" id="detail-title">Project Title</h1>
+      <div class="detail-rule"></div>
+      <div class="detail-body" id="detail-body"></div>
+      <div class="detail-gallery" id="detail-gallery"></div>
+    </div>
+    <div class="detail-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-label">Project Info</div>
+        <div id="detail-meta"></div>
+      </div>
+      <div class="sidebar-card">
+        <div class="sidebar-label">Technologies</div>
+        <div class="sidebar-tags" id="detail-tags"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;text-align:center;margin-top:4px" onclick="navigate('contact')">Discuss This Project</button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="page-header fade-in">
+    <div class="page-tag">// 03 — Say Hello</div>
+    <h2 class="page-title">Contact</h2>
+  </div>
+  <div class="contact-wrap fade-in" style="animation-delay:.1s">
+    <div class="contact-info">
+      <p>Have a project in mind, want to collaborate, or just want to say hi? Fill out the form or reach out directly.</p>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        alexobeid2006@gmail.com
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        Beirut, Lebanon
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="handleForm(event)">
+      <div class="form-group"><label>Name</label><input type="text" name="name" placeholder="Your full name" required/></div>
+      <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="your@email.com" required/></div>
+      <div class="form-group"><label>Message</label><textarea rows="5" name="message" placeholder="What's on your mind?" required></textarea></div>
+      <button type="submit" class="btn btn-primary" style="align-self:flex-start">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- CV -->
+<section id="cv">
+  <div class="page-header fade-in">
+    <div class="page-tag">// 04 — Background</div>
+    <h2 class="page-title">Curriculum Vitae</h2>
+  </div>
+  <div class="cv-wrap fade-in" style="animation-delay:.1s">
+    <div class="cv-section">
+      <div class="cv-section-title">Experience</div>
+      <div class="cv-entry">
+        <div class="cv-year">2026 June — August</div>
+        <div class="cv-entry-body">
+          <div class="cv-entry-title">Paid Internship</div>
+          <div class="cv-entry-sub">LAU Industrial Hub</div>
+          <ul class="cv-entry-list">
+            <li>Automated CATIA-to-STEP conversion for robotic assembly files used in a Volvo automotive assembly line through the SolidWorks API.</li>
+            <li>Built Python scripts to extract, classify, and identify parts in Excel, then batch-convert to STEP and generate operator-focused animations for troubleshooting.</li>
+            <li>Designed a plastic PET box for SOLER crackers using design for manufacturing (DFM), including mold design and production-ready output.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="cv-section">
+      <div class="cv-section-title">Education</div>
+      <div class="cv-entry">
+        <div class="cv-year">2024 — 2029</div>
+        <div class="cv-entry-body">
+          <div class="cv-entry-title">Mechanical Engineering</div>
+          <div class="cv-entry-sub">Lebanese American University · Lebanon</div>
+          <div class="cv-entry-desc">Field of study, notable projects, or distinctions.</div>
+        </div>
+      </div>
+    </div>
+    <div class="cv-section">
+      <div class="cv-section-title">Skills</div>
+      <div class="skills-row">
+        <div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M4 16h10M4 8h12"/></svg>SolidWorks</div><div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l4-6 4 3 6-9"/></svg>FEA</div>
+        <div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18h14M8 14l2-4 3 3 3-5"/></svg>MATLAB</div><div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="17" r="2"/><circle cx="17" cy="7" r="2"/><path d="M8.5 15.5l7-7"/></svg>Kinematics</div>
+        <div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v6M12 15v6M7 10l5 5 5-5"/></svg>Dynamics</div><div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add More</div>
+      </div>
+    </div>
+    <div style="margin-top:40px">
+      <button class="btn btn-primary" onclick="window.print()">Download / Print CV</button>
+    </div>
+  </div>
+</section>
+
+<!-- EASTER EGG — SNAKE -->
+<section id="easter">
+  <div class="page-header fade-in">
+    <div class="page-tag">// ???</div>
+    <h2 class="page-title">You pressed it.</h2>
+  </div>
+  <div class="snake-wrap">
+    <div class="snake-hud">
+      <div>Score&nbsp;&nbsp;<span id="score">0</span></div>
+      <div>Best&nbsp;&nbsp;<span id="best-score">—</span></div>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="gameCanvas" width="420" height="420"></canvas>
+      <div id="game-over-msg">
+        <div class="go-title">Game Over</div>
+        <div class="go-sub">Press Play to retry</div>
+      </div>
+    </div>
+    <div class="snake-controls">
+      <button class="btn btn-primary" id="play-btn" onclick="startGame()">Play</button>
+      <button class="btn btn-ghost" id="pause-btn" onclick="togglePause()">Pause</button>
+    </div>
+    <div class="snake-hint">WASD or Arrow Keys to move</div>
+    <div class="leaderboard-wrap" style="display:none;">
+      <div class="leaderboard-title">Top Scores</div>
+      <ol id="leaderboard"></ol>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-row">
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/alex-obeid/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg class="footer-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v6"/><circle cx="8" cy="7.5" r=".9"/><path d="M12 16v-3.2c0-1.4.8-2.3 2-2.3s2 .9 2 2.3V16"/></svg><span>LinkedIn</span></a>
+      <a href="mailto:alexobeid2006@gmail.com"><svg class="footer-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg><span>alexobeid2006@gmail.com</span></a>
+    </div>
+    <button class="footer-easter" type="button" onclick="navigate('easter')" aria-label="Warning">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8.5 15H3.5L12 4z"/><path d="M12 9v5"/><circle cx="12" cy="17" r="1"/></svg>
+    </button>
+    <div class="footer-copy">© 2026 Alex Obeid. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════
+   PROJECT DATA — edit this to fill in your real projects
+═══════════════════════════════════════ */
+const PROJECTS = [
+  {
+    num: '03',
+    badge: 'Mechanical · CAD',
+    gradient: 'linear-gradient(135deg,#1a1400 0%,#2d1800 100%)',
+    heroImage: 'Images/Planetary Gearbox/Main-Render.png',
+    title: 'Planetary Gearbox',
+    tags: ['SolidWorks','CAD','3D Printing','Mechanical Design','Assembly'],
+    meta: [
+      { k:'Year', v:'2024' },
+      { k:'Role', v:'Lead Designer' },
+      { k:'Software', v:'SolidWorks' },
+      { k:'Project State', v:'Completed' },
+    ],
+    body: `
+      <p>A fully designed and 3D-printed planetary gearbox, modelled from scratch in SolidWorks. The project involved designing all core components — the sun gear, planet gears, ring gear, and carrier — with precise involute tooth profiles and correct gear ratios.</p>
+      <p>Each part was designed with printability in mind, balancing wall thickness, clearances, and assembly tolerances to ensure the physical parts would fit and function correctly after printing.</p>
+      <p>The final assembly was 3D printed and successfully assembled, validating the design's dimensional accuracy and mechanical function. The project deepened hands-on experience in parametric CAD modelling, gear geometry, and the relationship between digital design and physical manufacturing.</p>
+    `,
+    gallery: [
+      'Images/Planetary Gearbox/Main-Render.png',
+      'Images/Planetary Gearbox/3d-Printed-Carrier.jpeg',
+      'Images/Planetary Gearbox/3d-printed-parts.jpeg',
+      'Images/Planetary Gearbox/3d-printed-full-assembly.jpeg',
+    ],
+  },
+  {
+    num: '01',
+    badge: 'Manufacturing · CNC',
+    gradient: 'linear-gradient(150deg,#120d00 0%,#221500 100%)',
+    title: 'Wheel Hub CNC Maching',
+    tags: ['CNC','CAM','CAD','GD&T','Manufacturing','Inspection'],
+    meta: [
+      { k:'Year', v:'2025' },
+      { k:'Role', v:'Design + Manufacturing' },
+      { k:'Material', v:'6061-T6 Aluminum' },
+      { k:'Project State', v:'Completed' },
+    ],
+    body: `
+      <p>This project focused on designing and machining a compact mounting bracket intended for high repeatability and clean load transfer. The part was modelled in CAD with machining-first design decisions, including corner reliefs, tool-accessible pockets, and realistic tolerancing.</p>
+      <p>The CAM process included roughing, finishing, and contour operations using a 3-axis CNC workflow. Tool selection, step-over, and feed/speed values were chosen to balance cycle time, surface finish, and dimensional stability.</p>
+      <p>After machining, critical dimensions were verified against the drawing to confirm tolerance compliance. The final part met functional requirements and provided practical experience in bridging digital design, CNC strategy, and post-process inspection.</p>
+    `,
+    gallery: ['Setup Sheet','Toolpath View','Machined Part','Inspection Check'],
+  },
+  {
+    num: '02',
+    badge: 'Aero · CFD',
+    gradient: 'linear-gradient(120deg,#0e1200 0%,#1c1800 60%,#2a1200 100%)',
+    title: 'Sketch, Model and CFD of a Generic SUV',
+    tags: ['Sketch','CAD','Surface Modeling','CFD','Aerodynamics','Simulation'],
+    meta: [
+      { k:'Year', v:'2026' },
+      { k:'Role', v:'Concept + Simulation' },
+      { k:'Tools', v:'SolidWorks, CFD' },
+      { k:'Project State', v:'Completed' },
+    ],
+    body: `
+      <p>This project explored the full workflow from concept sketch to aerodynamic evaluation for a generic SUV shape. The objective was to build a clean, realistic geometry and study how body contours influence external airflow behavior.</p>
+      <p>Starting from 2D sketches, the model was developed into a watertight 3D surface suitable for simulation. Particular attention was given to front fascia curvature, roofline transition, and rear-end taper because of their effect on flow separation and wake formation.</p>
+      <p>A CFD setup was then used to evaluate pressure distribution, streamline behavior, and drag tendencies. The results informed iterative geometry refinements and helped connect design decisions with measurable aerodynamic performance outcomes.</p>
+    `,
+    gallery: ['Concept Sketch','SUV CAD Model','CFD Streamlines','Pressure Contours'],
+  },
+];
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+const navLinks = document.querySelectorAll('.nav-links a');
+const navLogo = document.querySelector('.nav-logo');
+const navEl = document.querySelector('nav');
+const navToggle = document.querySelector('.nav-toggle');
+const sections = document.querySelectorAll('section');
+const sectionIds = new Set(Array.from(sections).map(section => section.id.toLowerCase()));
+const pageSweep = document.querySelector('.page-sweep');
+const startupIntro = document.querySelector('.startup-intro');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let ignoreNextHashChange = false;
+let isPageTransitioning = false;
+let queuedTarget = null;
+let queuedOptions = null;
+
+let navCloseTimeout = null;
+function setNavOpen(isOpen) {
+  if (!navEl) return;
+  if (navCloseTimeout) { clearTimeout(navCloseTimeout); navCloseTimeout = null; }
+  const wasOpen = navEl.classList.contains('open');
+  if (isOpen) {
+    navEl.classList.remove('closing');
+    navEl.classList.add('open');
+  } else if (wasOpen && !prefersReducedMotion) {
+    navEl.classList.remove('open');
+    navEl.classList.add('closing');
+    navCloseTimeout = setTimeout(() => {
+      navEl.classList.remove('closing');
+      navCloseTimeout = null;
+    }, 440);
+  } else {
+    navEl.classList.remove('open', 'closing');
+  }
+  if (navToggle) navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+}
+
+function applySection(target, options = {}) {
+  let resolvedTarget = target;
+  let sec = document.getElementById(resolvedTarget);
+  if (!sec) {
+    resolvedTarget = 'home';
+    sec = document.getElementById(resolvedTarget);
+  }
+
+  sections.forEach(s => { s.classList.remove('active'); });
+  navLinks.forEach(l => l.classList.remove('active'));
+  sec.classList.add('active');
+  const link = document.querySelector(`[data-target="${resolvedTarget}"]`);
+  if (link) link.classList.add('active');
+  const fadeEls = sec.querySelectorAll('.fade-in');
+  fadeEls.forEach(el => { el.style.animation = 'none'; });
+  void sec.offsetHeight;
+  fadeEls.forEach(el => { el.style.animation = ''; });
+  if (options.updateHash !== false) {
+    const nextHash = `#${resolvedTarget}`;
+    if (window.location.hash !== nextHash) {
+      ignoreNextHashChange = true;
+      window.location.hash = resolvedTarget;
+      if (window.location.hash !== nextHash) {
+        ignoreNextHashChange = false;
+      }
+    }
+  }
+  setNavOpen(false);
+  window.scrollTo(0, 0);
+  if (resolvedTarget === 'easter') { resetDraw(); }
+}
+
+function navigate(target, options = {}) {
+  const animate = options.animate !== false;
+  if (!animate || prefersReducedMotion || !pageSweep) {
+    applySection(target, options);
+    return;
+  }
+
+  if (isPageTransitioning) {
+    queuedTarget = target;
+    queuedOptions = options;
+    return;
+  }
+
+  isPageTransitioning = true;
+  pageSweep.classList.remove('is-active');
+  void pageSweep.offsetWidth;
+  pageSweep.classList.add('is-active');
+
+  setTimeout(() => {
+    applySection(target, options);
+  }, 730);
+
+  setTimeout(() => {
+    pageSweep.classList.remove('is-active');
+    isPageTransitioning = false;
+    if (queuedTarget) {
+      const nextTarget = queuedTarget;
+      const nextOptions = queuedOptions || {};
+      queuedTarget = null;
+      queuedOptions = null;
+      navigate(nextTarget, nextOptions);
+    }
+  }, 1180);
+}
+
+if (startupIntro) {
+  if (prefersReducedMotion) {
+    startupIntro.classList.add('hidden');
+  } else {
+    requestAnimationFrame(() => {
+      startupIntro.classList.add('play');
+    });
+    setTimeout(() => startupIntro.classList.add('closing'), 1900);
+    setTimeout(() => startupIntro.classList.add('done'), 2340);
+    setTimeout(() => startupIntro.classList.add('hidden'), 2800);
+  }
+}
+
+function routeFromHash() {
+  const rawHash = window.location.hash.replace(/^#/, '').trim().toLowerCase();
+  if (!rawHash) {
+    navigate('home', { updateHash: false, animate: false });
+    return;
+  }
+  if (sectionIds.has(rawHash)) {
+    navigate(rawHash, { updateHash: false, animate: false });
+    return;
+  }
+  ignoreNextHashChange = true;
+  window.location.hash = 'home';
+  if (window.location.hash !== '#home') {
+    ignoreNextHashChange = false;
+  }
+  navigate('home', { updateHash: false, animate: false });
+}
+
+navLinks.forEach(l => l.addEventListener('click', e => { e.preventDefault(); navigate(l.dataset.target); }));
+if (navLogo) {
+  navLogo.addEventListener('click', e => {
+    e.preventDefault();
+    navigate('home');
+  });
+}
+if (navToggle) {
+  navToggle.addEventListener('click', () => {
+    const isOpen = navEl ? navEl.classList.contains('open') : false;
+    setNavOpen(!isOpen);
+  });
+}
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 768) setNavOpen(false);
+});
+window.addEventListener('hashchange', () => {
+  if (ignoreNextHashChange) {
+    ignoreNextHashChange = false;
+    return;
+  }
+  routeFromHash();
+});
+
+/* ═══════════════════════════════════════
+   PROJECT DETAIL
+═══════════════════════════════════════ */
+function openProject(idx) {
+  const p = PROJECTS[idx];
+
+  // Hero
+  const hero = document.getElementById('detail-hero');
+  if (p.heroImage) {
+    hero.style.background = `url('${p.heroImage}') center/cover no-repeat`;
+  } else {
+    hero.style.background = p.gradient;
+  }
+  document.getElementById('detail-hero-wm').textContent = p.num;
+  document.getElementById('detail-hero-badge').textContent = p.badge;
+
+  // Title
+  document.getElementById('detail-title').textContent = p.title;
+
+  // Body
+  document.getElementById('detail-body').innerHTML = p.body;
+
+  // Gallery
+  document.getElementById('detail-gallery').innerHTML =
+    p.gallery.map(g => g.match(/\.(png|jpe?g|gif|webp|svg)/i)
+      ? `<div class="gal-cell" style="padding:0;overflow:hidden;"><img src="${g}" style="width:100%;height:100%;object-fit:cover;display:block;" /></div>`
+      : `<div class="gal-cell">${g}</div>`
+    ).join('');
+
+  // Meta
+  document.getElementById('detail-meta').innerHTML =
+    p.meta.map(m => `<div class="s-row"><span class="s-key">${m.k}</span><span class="s-val">${m.v}</span></div>`).join('');
+
+  // Tags
+  document.getElementById('detail-tags').innerHTML =
+    p.tags.map(t => `<span class="sidebar-tag">${t}</span>`).join('');
+
+  // Navigate
+  navigate('project-detail');
+}
+
+/* ═══════════════════════════════════════
+   CONTACT FORM
+═══════════════════════════════════════ */
+function handleForm(e) {
+  e.preventDefault();
+  const form = e.target;
+  const nameInput = form.querySelector('input[name="name"]');
+  const emailInput = form.querySelector('input[name="email"]');
+  const messageInput = form.querySelector('textarea[name="message"]');
+
+  if (!nameInput.value.trim()) {
+    nameInput.setCustomValidity('Please enter your name.');
+    nameInput.reportValidity();
+    return;
+  }
+  nameInput.setCustomValidity('');
+
+  if (!emailInput.value.trim()) {
+    emailInput.setCustomValidity('Please enter your email.');
+    emailInput.reportValidity();
+    return;
+  }
+  if (!emailInput.checkValidity()) {
+    emailInput.setCustomValidity('Please enter a valid email address.');
+    emailInput.reportValidity();
+    return;
+  }
+  emailInput.setCustomValidity('');
+
+  if (!messageInput.value.trim()) {
+    messageInput.setCustomValidity('Please enter a message.');
+    messageInput.reportValidity();
+    return;
+  }
+  messageInput.setCustomValidity('');
+
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.textContent = 'Message Sent ✓';
+  btn.style.background = '#2a2a2a'; btn.style.color = '#f0f0f0'; btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Send Message';
+    btn.style.background = ''; btn.style.color = ''; btn.disabled = false;
+    e.target.reset();
+  }, 3000);
+}
+
+/* ═══════════════════════════════════════
+   SNAKE GAME
+═══════════════════════════════════════ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const GRID = 20, COLS = canvas.width/GRID, ROWS = canvas.height/GRID, STEP_MS = 130;
+const audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+
+function playEatSound() {
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.type='sine'; osc.frequency.setValueAtTime(520,now); osc.frequency.exponentialRampToValueAtTime(820,now+.06);
+  gain.gain.setValueAtTime(.18,now); gain.gain.exponentialRampToValueAtTime(.001,now+.12);
+  osc.start(now); osc.stop(now+.12);
+  const osc2=audioCtx.createOscillator(); const gain2=audioCtx.createGain();
+  osc2.connect(gain2); gain2.connect(audioCtx.destination);
+  osc2.type='square'; osc2.frequency.setValueAtTime(200,now);
+  gain2.gain.setValueAtTime(.08,now); gain2.gain.exponentialRampToValueAtTime(.001,now+.04);
+  osc2.start(now); osc2.stop(now+.04);
+}
+function playDeathSound() {
+  const now=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator(); const gain=audioCtx.createGain();
+  osc.connect(gain); gain.connect(audioCtx.destination);
+  osc.type='sawtooth'; osc.frequency.setValueAtTime(260,now); osc.frequency.exponentialRampToValueAtTime(60,now+.35);
+  gain.gain.setValueAtTime(.22,now); gain.gain.exponentialRampToValueAtTime(.001,now+.35);
+  osc.start(now); osc.stop(now+.35);
+}
+
+let snake,prevSnake,nextDir,curDir,food,score,bestScore;
+let running=false,paused=false,gameOver=false,lastFrameTime=0,accumulator=0,interpT=0,rafId=null;
+bestScore=parseInt(localStorage.getItem('snakeBest')||'0');
+document.getElementById('best-score').textContent=bestScore||'—';
+
+function initGame(){
+  const sx=Math.floor(COLS/2),sy=Math.floor(ROWS/2);
+  snake=[{x:sx,y:sy},{x:sx-1,y:sy},{x:sx-2,y:sy}];
+  prevSnake=snake.map(s=>({x:s.x,y:s.y}));
+  curDir={x:1,y:0}; nextDir={x:1,y:0};
+  food=spawnFood(); score=0; gameOver=false; interpT=0;
+  document.getElementById('score').textContent=0;
+  document.getElementById('game-over-msg').classList.remove('show');
+  document.getElementById('play-btn').textContent='Restart';
+}
+function spawnFood(){
+  let pos;
+  do{ pos={x:Math.floor(Math.random()*COLS),y:Math.floor(Math.random()*ROWS)}; }
+  while(snake.some(s=>s.x===pos.x&&s.y===pos.y));
+  return pos;
+}
+function startGame(){
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  if(rafId) cancelAnimationFrame(rafId);
+  initGame(); running=true; paused=false;
+  lastFrameTime=performance.now();
+  accumulator=0;
+  rafId=requestAnimationFrame(gameLoop);
+}
+function togglePause(){
+  if(!running||gameOver) return;
+  paused=!paused;
+  document.getElementById('pause-btn').textContent=paused?'Resume':'Pause';
+  if(!paused){lastFrameTime=performance.now();rafId=requestAnimationFrame(gameLoop);}
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('easter').classList.contains('active')) return;
+  const k=e.key.toLowerCase();
+  if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' '].includes(k)) e.preventDefault();
+  if((k==='arrowup'||k==='w')&&curDir&&curDir.y===0) nextDir={x:0,y:-1};
+  if((k==='arrowdown'||k==='s')&&curDir&&curDir.y===0) nextDir={x:0,y:1};
+  if((k==='arrowleft'||k==='a')&&curDir&&curDir.x===0) nextDir={x:-1,y:0};
+  if((k==='arrowright'||k==='d')&&curDir&&curDir.x===0) nextDir={x:1,y:0};
+});
+function gameLoop(ts){
+  if(!running||paused||gameOver) return;
+  if(!lastFrameTime) lastFrameTime=ts;
+
+  // Fixed-step update with leftover-time interpolation for smoother motion.
+  const delta=Math.min(ts-lastFrameTime,100);
+  lastFrameTime=ts;
+  accumulator+=delta;
+
+  while(accumulator>=STEP_MS){
+    stepGame();
+    accumulator-=STEP_MS;
+    if(gameOver){drawFrame(1);return;}
+  }
+
+  interpT=Math.min(accumulator/STEP_MS,1);
+  drawFrame(interpT);
+  rafId=requestAnimationFrame(gameLoop);
+}
+function stepGame(){
+  prevSnake=snake.map(s=>({x:s.x,y:s.y}));
+  curDir={...nextDir};
+  const head={x:snake[0].x+curDir.x,y:snake[0].y+curDir.y};
+  if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||snake.some(s=>s.x===head.x&&s.y===head.y)){endGame();return;}
+  const ate=head.x===food.x&&head.y===food.y;
+  snake.unshift(head);
+  if(ate){
+    score++;
+    document.getElementById('score').textContent=score;
+    flashScore(); playEatSound();
+    food=spawnFood();
+    if(score>bestScore){bestScore=score;localStorage.setItem('snakeBest',bestScore);document.getElementById('best-score').textContent=bestScore;}
+    if(score===50){endGame(true);return;}
+  } else { snake.pop(); }
+}
+function endGame(won=false){
+  gameOver=true; running=false; playDeathSound(); saveScore();
+  const msg=document.getElementById('game-over-msg');
+  msg.querySelector('.go-title').textContent=won?'You Win!':'Game Over';
+  msg.querySelector('.go-sub').textContent=won?'50 points — legendary.':'Press Play to retry';
+  msg.classList.add('show'); drawFrame(1);
+}
+function drawFrame(t){
+  ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='rgba(240,240,240,.16)';
+  for(let x=0;x<COLS;x++) for(let y=0;y<ROWS;y++) ctx.fillRect(x*GRID+GRID/2-1,y*GRID+GRID/2-1,2,2);
+  
+  const foodFlicker=Math.sin(Date.now()*0.008)*0.5+0.5;
+  ctx.fillStyle=`rgba(176,176,176,${0.4+foodFlicker*0.4})`;
+  ctx.fillRect(food.x*GRID+3,food.y*GRID+3,GRID-6,GRID-6);
+  
+  if(!snake||snake.length<2) return;
+  const fromSnake=(prevSnake&&prevSnake.length)?prevSnake:snake;
+  const smoothT=t*t*(3-2*t);
+  const PAD=1,seg=GRID-PAD*2;
+  for(let i=snake.length-1;i>=0;i--){
+    const cur=snake[i];
+    const from=fromSnake[i]||fromSnake[fromSnake.length-1]||cur;
+    const px=(from.x+(cur.x-from.x)*smoothT)*GRID;
+    const py=(from.y+(cur.y-from.y)*smoothT)*GRID;
+    ctx.fillStyle='#f05a00';
+    ctx.fillRect(px+PAD,py+PAD,seg,seg);
+  }
+}
+function resetDraw(){
+  ctx.fillStyle='#0a0a0a';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='rgba(240,240,240,.16)';
+  for(let x=0;x<COLS;x++) for(let y=0;y<ROWS;y++) ctx.fillRect(x*GRID+GRID/2-1,y*GRID+GRID/2-1,2,2);
+  ctx.fillStyle='#555';ctx.font="500 13px 'DM Mono',monospace";ctx.textAlign='center';
+  ctx.fillText('Press Play to start',canvas.width/2,canvas.height/2);ctx.textAlign='left';
+}
+function flashScore(){
+  const el=document.getElementById('score');
+  el.classList.remove('score-flash');void el.offsetWidth;el.classList.add('score-flash');
+}
+function saveScore(){
+  let s=JSON.parse(localStorage.getItem('snakeScores')||'[]');
+  s.push(score);s.sort((a,b)=>b-a);s=s.slice(0,5);
+  localStorage.setItem('snakeScores',JSON.stringify(s));
+}
+
+resetDraw();
+routeFromHash();
+</script>
+</body>
+</html>
