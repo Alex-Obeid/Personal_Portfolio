@@ -1,11 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Alex Obeid">
   <!-- Letterform is drawn as paths, not <text>: favicons render outside the
        page context, so a webfont would silently fall back to a system face. -->
-  <rect width="64" height="64" fill="#f05a00"/>
+  <rect width="64" height="64" fill="#0a0a0a"/>
   <!-- Outer triangle with the counter knocked out -->
-  <path fill="#0a0a0a" fill-rule="evenodd"
+  <path fill="#f0ebe1" fill-rule="evenodd"
         d="M32 8 L59 57 L5 57 Z
            M32 27 L45 57 L19 57 Z"/>
   <!-- Crossbar painted over the counter so it bridges both legs -->
-  <path fill="#0a0a0a" d="M15 41 H49 V48 H15 Z"/>
+  <path fill="#f0ebe1" d="M15 41 H49 V48 H15 Z"/>
+  <!-- The orange dot from the ALEX.OBEID wordmark -->
+  <rect x="48" y="7" width="10" height="10" fill="#f05a00"/>
 </svg>
