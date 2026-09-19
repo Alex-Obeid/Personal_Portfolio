@@ -439,7 +439,7 @@
     .proj-brick::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease;z-index:3;}
     .proj-brick:hover::before{transform:scaleX(1);background:var(--on-accent);}
 
-    /* Visual fill area with gradient */
+    /* Visual fill area — flat colour panel */
     .brick-visual{
       width:100%;
       position:relative;
@@ -1088,7 +1088,6 @@ const PROJECTS = [
   {
     num: '03',
     badge: 'Mechanical · CAD',
-    gradient: 'linear-gradient(135deg,#1a1400 0%,#2d1800 100%)',
     heroImage: 'Images/Planetary Gearbox/Main-Render.png',
     title: 'Planetary Gearbox',
     tags: ['SolidWorks','CAD','3D Printing','Mechanical Design','Assembly'],
@@ -1113,7 +1112,6 @@ const PROJECTS = [
   {
     num: '01',
     badge: 'Manufacturing · CNC',
-    gradient: 'linear-gradient(150deg,#120d00 0%,#221500 100%)',
     title: 'Wheel Hub CNC Maching',
     tags: ['CNC','CAM','CAD','GD&T','Manufacturing','Inspection'],
     meta: [
@@ -1132,7 +1130,6 @@ const PROJECTS = [
   {
     num: '02',
     badge: 'Aero · CFD',
-    gradient: 'linear-gradient(120deg,#0e1200 0%,#1c1800 60%,#2a1200 100%)',
     title: 'Sketch, Model and CFD of a Generic SUV',
     tags: ['Sketch','CAD','Surface Modeling','CFD','Aerodynamics','Simulation'],
     meta: [
@@ -1321,11 +1318,10 @@ function openProject(idx) {
 
   // Hero
   const hero = document.getElementById('detail-hero');
-  if (p.heroImage) {
-    hero.style.background = `url('${p.heroImage}') center/cover no-repeat`;
-  } else {
-    hero.style.background = p.gradient;
-  }
+  // No image: clear the inline style so the panel's own ground shows through.
+  hero.style.background = p.heroImage
+    ? `url('${p.heroImage}') center/cover no-repeat`
+    : '';
   document.getElementById('detail-hero-wm').textContent = p.num;
   document.getElementById('detail-hero-badge').textContent = p.badge;
 
