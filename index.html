@@ -93,33 +93,9 @@
     }
     .terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:center;}
 
-    /* ══ GRAPHIC KIT — bold geometric forms, cassette-cover idiom ══ */
+    /* Drop-in slot for artwork: add .gfx to an <svg>/<img> inside a .terr
+       and position it with inline top/right/bottom/left + width. */
     .gfx{position:absolute;pointer-events:none;z-index:0;}
-
-    /* Concentric quarter-arcs */
-    .gfx-arcs{width:clamp(220px,34vw,460px);height:auto;}
-    .gfx-arcs path{fill:none;}
-    .gfx-arcs .a1{stroke:var(--accent);}
-    .gfx-arcs .a2{stroke:var(--fg);}
-
-    /* Solid forms */
-    .gfx-circle{border-radius:50%;}
-    .gfx-half{border-radius:999px 999px 0 0;}
-    .gfx-quarter{border-radius:999px 0 0 0;}
-
-    /* Checkerboard */
-    .gfx-checker{
-      --sq:clamp(16px,2.6vw,30px);
-      background:repeating-conic-gradient(var(--accent) 0 25%,transparent 0 50%);
-      background-size:calc(var(--sq)*2) calc(var(--sq)*2);
-    }
-
-    /* Fine parallel rules */
-    .gfx-lines{background:repeating-linear-gradient(to bottom,currentColor 0 2px,transparent 2px 9px);}
-    .gfx-lines-d{background:repeating-linear-gradient(-52deg,currentColor 0 3px,transparent 3px 12px);}
-
-    /* Halftone dot field */
-    .gfx-dots{background-image:radial-gradient(currentColor 1.4px,transparent 1.5px);background-size:10px 10px;}
 
     /* Spec mark — the small "F III" style tag from the cassette covers */
     .spec-mark{
@@ -477,16 +453,6 @@
     .brick-visual{--v-bg:var(--paper-shade);--v-fg:var(--ink);background:var(--v-bg);color:var(--v-fg);}
     .cb .brick-visual,.ce .brick-visual,.ch .brick-visual{--v-bg:var(--ink);--v-fg:var(--paper);}
     .cc .brick-visual,.cf .brick-visual{--v-bg:var(--orange);--v-fg:var(--ink);}
-    /* Graphic furniture on the plain panels */
-    .ca .brick-visual::after,.cg .brick-visual::after{
-      content:'';position:absolute;inset:auto 14px 14px auto;width:42%;height:38%;
-      background-image:radial-gradient(var(--v-fg) 1.2px,transparent 1.3px);
-      background-size:8px 8px;opacity:.28;
-    }
-    .cd .brick-visual::after{
-      content:'';position:absolute;left:0;right:0;bottom:0;height:34%;
-      background-image:repeating-linear-gradient(to bottom,var(--v-fg) 0 1px,transparent 1px 7px);opacity:.3;
-    }
 
     /* Project number badge */
     .brick-wm{
@@ -692,11 +658,7 @@
       section{padding:92px 20px 56px;}
       #home.active{padding:0;}
       .terr{padding:96px 20px 72px;}
-      /* Graphics stay as accents on narrow screens, not clutter */
       .spec-mark{left:20px!important;right:auto!important;top:80px!important;}
-      .gfx-checker{width:clamp(56px,16vw,90px)!important;height:clamp(56px,16vw,90px)!important;}
-      .gfx-lines,.gfx-dots{display:none;}
-      .gfx-arcs{opacity:.45;}
       .hero-grid{grid-template-columns:1fr;gap:34px;align-items:start;}
       .hero-figure{width:min(62vw,240px);}
       .stat-row{grid-template-columns:1fr;gap:6px;}
@@ -771,15 +733,6 @@
 
   <!-- ── Territory 1 · PAPER ── -->
   <div class="terr terr-min" data-territory="paper">
-    <!-- Graphic furniture -->
-    <svg class="gfx gfx-arcs" style="left:-118px;bottom:-84px;width:clamp(150px,17vw,210px);" viewBox="0 0 300 300" aria-hidden="true">
-      <path class="a1" d="M0 300 A300 300 0 0 1 300 0" stroke-width="44"/>
-      <path class="a2" d="M0 226 A226 226 0 0 1 226 0" stroke-width="44"/>
-      <path class="a1" d="M0 152 A152 152 0 0 1 152 0" stroke-width="44"/>
-      <path class="a2" d="M0 78 A78 78 0 0 1 78 0" stroke-width="44"/>
-    </svg>
-    <div class="gfx gfx-checker" style="top:128px;right:44px;width:clamp(76px,11vw,132px);height:clamp(76px,11vw,132px);" aria-hidden="true"></div>
-
     <span class="spec-mark" style="top:104px;left:48px;">
       <span class="sm-bars"><i></i><i></i><i></i></span>Portfolio · 01
     </span>
@@ -817,10 +770,6 @@
   <div class="terr" data-territory="vermillion" style="padding:0;">
     <div class="cyl-wrap" id="cyl-wrap">
       <div class="cyl-sticky">
-        <!-- Big ink circle + dot field, cropped by the panel edges -->
-        <div class="gfx gfx-circle" style="left:-13vw;top:50%;transform:translateY(-50%);width:34vw;height:34vw;background:var(--fg);opacity:.10;" aria-hidden="true"></div>
-        <div class="gfx gfx-half" style="right:-6vw;bottom:-4vw;width:26vw;height:13vw;background:var(--fg);opacity:.12;" aria-hidden="true"></div>
-        <div class="gfx gfx-dots" style="left:44px;bottom:60px;width:clamp(80px,10vw,130px);height:clamp(58px,7vw,92px);color:var(--fg);opacity:.35;" aria-hidden="true"></div>
         <span class="spec-mark" style="top:96px;right:48px;">
           Index · 02<span class="sm-bars"><i></i><i></i><i></i></span>
         </span>
@@ -839,13 +788,6 @@
 
   <!-- ── Territory 3 · INK ── -->
   <div class="terr" data-territory="ink">
-    <!-- Cropped cream circle + orange checker -->
-    <div class="gfx gfx-circle" style="right:-9vw;top:-9vw;width:32vw;height:32vw;background:var(--paper);opacity:.10;" aria-hidden="true"></div>
-    <div class="gfx gfx-checker" style="right:48px;bottom:72px;width:clamp(84px,12vw,150px);height:clamp(56px,8vw,100px);" aria-hidden="true"></div>
-    <svg class="gfx gfx-arcs" style="right:6vw;top:34%;width:clamp(150px,20vw,280px);opacity:.5;" viewBox="0 0 300 300" aria-hidden="true">
-      <path class="a1" d="M300 0 A300 300 0 0 1 0 300" stroke-width="44"/>
-      <path class="a2" d="M300 90 A210 210 0 0 1 90 300" stroke-width="44"/>
-    </svg>
     <span class="spec-mark" style="top:96px;left:48px;">
       <span class="sm-bars"><i></i><i></i><i></i></span>Data · 03
     </span>
