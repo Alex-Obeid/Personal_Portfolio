@@ -647,12 +647,36 @@
       .nav-logo{font-size:1.35rem;letter-spacing:2px;}
       .nav-toggle{display:inline-flex;}
       .nav-toggle{margin-left:auto;}
-      .nav-links{display:none;position:absolute;top:64px;left:0;right:0;gap:0;flex-direction:column;background:rgba(10,10,10,.97);border-bottom:1px solid var(--grey);}
+      /* Solid territory ground — a translucent panel failed to composite over
+         the fixed nav and let the page bleed through. */
+      .nav-links{
+        display:none;position:absolute;top:64px;left:0;right:0;
+        gap:0;flex-direction:column;
+        background:var(--bg);
+        border-bottom:2px solid var(--rule-strong);
+        counter-reset:navitem;
+      }
       nav.open .nav-links,nav.closing .nav-links{display:flex;}
-      .nav-links li{border-top:1px solid var(--grey);}
-      .nav-links a{display:block;padding:14px 20px;font-size:.7rem;letter-spacing:1.5px;}
-      .nav-links a{display:flex;gap:10px;}
-      .nav-links a::after{display:none;}
+      .nav-links li{border-top:1px solid var(--rule);counter-increment:navitem;}
+      .nav-links li:first-child{border-top:1px solid var(--rule-strong);}
+      .nav-links a{
+        display:flex;align-items:center;gap:13px;
+        padding:17px 20px;font-size:.66rem;letter-spacing:.2em;
+        color:var(--fg);
+        transition:background var(--snap),color var(--snap);
+      }
+      .nav-links a .nav-ico{opacity:.9;flex-shrink:0;}
+      .nav-links a span{flex:1;white-space:nowrap;}
+      .nav-links a:hover,.nav-links a.active{background:var(--accent);color:var(--on-accent);}
+      /* Repurpose the desktop underline as a right-aligned index number */
+      .nav-links a::after{
+        content:counter(navitem,decimal-leading-zero);
+        display:block;position:static;
+        width:auto;height:auto;background:none;
+        margin-left:auto;font-size:.58rem;letter-spacing:.14em;opacity:.5;
+      }
+      /* Desktop's underline rule stretches this to 100%; keep it a number here */
+      .nav-links a:hover::after,.nav-links a.active::after{width:auto;opacity:.75;}
 
       nav.closing .nav-links li{opacity:1;animation:navHide .28s cubic-bezier(.4,0,.6,1) forwards;}
       nav.closing .nav-links li:nth-child(4){animation-delay:0s;}
