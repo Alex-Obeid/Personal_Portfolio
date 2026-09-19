@@ -1650,8 +1650,8 @@ const CYL_N = SKILL_REEL.length;
 // An arc rather than a closed circle: tighter spacing keeps ~5 copies inside
 // the visible ±90°, which is what gives the stacked cascade its depth.
 const CYL_ANGLE = 32;
-// Radius as a multiple of the largest fitted line — controls the overlap.
-const CYL_TIGHTNESS = 0.92;
+// Radius as a multiple of the (uniform) line size — controls the overlap.
+const CYL_TIGHTNESS = 1.45;
 let cylItems = [], cylDots = [], cylTicking = false;
 
 function buildCylinder() {
@@ -1671,24 +1671,19 @@ function layoutCylinder() {
   const base = parseFloat(getComputedStyle(cylItems[0]).fontSize) || 46;
 
   const viewport = cylEl.parentElement;
-  const targetW = viewport.clientWidth * 0.86;
-  // Bounds keep the size spread narrow enough that the stack still reads as
-  // one cascade rather than mismatched lines colliding.
-  const ceiling = Math.min(base * 2.6, viewport.clientHeight * 0.44);
-  const floor = base * 0.75;
+  const targetW = viewport.clientWidth * 0.92;
 
-  const sizes = cylItems.map(el => {
-    const natural = el.firstElementChild.offsetWidth;
-    if (!natural) return base;
-    return Math.max(floor, Math.min(base * (targetW / natural), ceiling));
-  });
+  // One size for every skill so none is emphasised over another. The longest
+  // line sets it: scale up until that one just fits the measure.
+  const widest = Math.max(...cylItems.map(el => el.firstElementChild.offsetWidth));
+  const size = widest > 0
+    ? Math.min(base * (targetW / widest), viewport.clientHeight * 0.42)
+    : base;
 
-  // Radius tracks the largest fitted line so spacing stays proportional to the
-  // type rather than to the unfitted base.
-  const radius = Math.max(...sizes) * CYL_TIGHTNESS;
+  const radius = size * CYL_TIGHTNESS;
 
   cylItems.forEach((el, i) => {
-    el.style.fontSize = sizes[i] + 'px';
+    el.style.fontSize = size + 'px';
     el.style.transform = `rotateX(${i * CYL_ANGLE}deg) translateZ(${radius}px)`;
   });
 }
