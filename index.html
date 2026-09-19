@@ -93,37 +93,42 @@
     }
     .terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:center;}
 
-    /* Drawing-sheet grid: hairline columns + numbered ticks */
-    .grid-overlay{position:absolute;inset:0;pointer-events:none;z-index:0;}
-    .grid-overlay .g-cols{
-      position:absolute;inset:0;
-      background-image:repeating-linear-gradient(to right,var(--rule) 0 1px,transparent 1px calc(100% / 12));
-      background-size:100% 100%;
-      opacity:.55;
-    }
-    .grid-overlay .g-ticks{
-      position:absolute;top:70px;left:48px;right:48px;
-      display:flex;justify-content:space-between;
-      font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.14em;
-      color:var(--fg-2);opacity:.75;
-    }
-    .grid-overlay .g-rule{position:absolute;left:48px;right:48px;top:88px;height:1px;background:var(--rule);}
-    .reg{position:absolute;width:13px;height:13px;opacity:.6;}
-    .reg::before,.reg::after{content:'';position:absolute;background:var(--fg-2);}
-    .reg::before{left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%);}
-    .reg::after{top:50%;left:0;right:0;height:1px;transform:translateY(-50%);}
-    .reg-tl{top:26px;left:26px;} .reg-tr{top:26px;right:26px;}
-    .reg-bl{bottom:26px;left:26px;} .reg-br{bottom:26px;right:26px;}
+    /* ══ GRAPHIC KIT — bold geometric forms, cassette-cover idiom ══ */
+    .gfx{position:absolute;pointer-events:none;z-index:0;}
 
-    /* Swiss graphic furniture */
-    .halftone{
-      background-image:radial-gradient(var(--fg) 1.3px,transparent 1.4px);
-      background-size:9px 9px;opacity:.5;
+    /* Concentric quarter-arcs */
+    .gfx-arcs{width:clamp(220px,34vw,460px);height:auto;}
+    .gfx-arcs path{fill:none;}
+    .gfx-arcs .a1{stroke:var(--accent);}
+    .gfx-arcs .a2{stroke:var(--fg);}
+
+    /* Solid forms */
+    .gfx-circle{border-radius:50%;}
+    .gfx-half{border-radius:999px 999px 0 0;}
+    .gfx-quarter{border-radius:999px 0 0 0;}
+
+    /* Checkerboard */
+    .gfx-checker{
+      --sq:clamp(16px,2.6vw,30px);
+      background:repeating-conic-gradient(var(--accent) 0 25%,transparent 0 50%);
+      background-size:calc(var(--sq)*2) calc(var(--sq)*2);
     }
-    .stripes{background-image:repeating-linear-gradient(to bottom,var(--fg) 0 1px,transparent 1px 6px);opacity:.55;}
-    .form-circle{border-radius:50%;background:var(--accent);}
-    .bar-heavy{height:8px;background:var(--fg);}
-    .bar-rule{height:1px;background:var(--rule);}
+
+    /* Fine parallel rules */
+    .gfx-lines{background:repeating-linear-gradient(to bottom,currentColor 0 2px,transparent 2px 9px);}
+    .gfx-lines-d{background:repeating-linear-gradient(-52deg,currentColor 0 3px,transparent 3px 12px);}
+
+    /* Halftone dot field */
+    .gfx-dots{background-image:radial-gradient(currentColor 1.4px,transparent 1.5px);background-size:10px 10px;}
+
+    /* Spec mark — the small "F III" style tag from the cassette covers */
+    .spec-mark{
+      position:absolute;z-index:1;display:inline-flex;align-items:center;gap:7px;
+      font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;
+      text-transform:uppercase;color:var(--fg-2);
+    }
+    .spec-mark .sm-bars{display:inline-flex;gap:2px;}
+    .spec-mark .sm-bars i{width:2px;height:9px;background:currentColor;display:block;}
 
     /* ══ HERO (paper) ══ */
     .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:end;}
@@ -351,6 +356,7 @@
     .cyl-wrap{--cyl-step:64vh;position:relative;height:calc(100vh + 6 * var(--cyl-step));}
     .cyl-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;}
     .cyl-stage{
+      position:relative;z-index:1;
       display:grid;grid-template-columns:1fr;
       justify-items:center;align-items:center;
       width:100%;max-width:1140px;padding-top:52px;
@@ -686,9 +692,11 @@
       section{padding:92px 20px 56px;}
       #home.active{padding:0;}
       .terr{padding:96px 20px 72px;}
-      .grid-overlay .g-ticks,.grid-overlay .g-rule{left:20px;right:20px;}
-      .grid-overlay .g-cols{background-image:repeating-linear-gradient(to right,var(--rule) 0 1px,transparent 1px calc(100% / 6));}
-      .reg-tl,.reg-bl{left:10px;} .reg-tr,.reg-br{right:10px;}
+      /* Graphics stay as accents on narrow screens, not clutter */
+      .spec-mark{left:20px!important;right:auto!important;top:80px!important;}
+      .gfx-checker{width:clamp(56px,16vw,90px)!important;height:clamp(56px,16vw,90px)!important;}
+      .gfx-lines,.gfx-dots{display:none;}
+      .gfx-arcs{opacity:.45;}
       .hero-grid{grid-template-columns:1fr;gap:34px;align-items:start;}
       .hero-figure{width:min(62vw,240px);}
       .stat-row{grid-template-columns:1fr;gap:6px;}
@@ -763,12 +771,18 @@
 
   <!-- ── Territory 1 · PAPER ── -->
   <div class="terr terr-min" data-territory="paper">
-    <div class="grid-overlay" aria-hidden="true">
-      <div class="g-cols"></div>
-      <div class="g-rule"></div>
-      <div class="g-ticks"><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>09</span><span>10</span><span>11</span><span>12</span></div>
-      <span class="reg reg-tr"></span><span class="reg reg-bl"></span>
-    </div>
+    <!-- Graphic furniture -->
+    <svg class="gfx gfx-arcs" style="left:-118px;bottom:-84px;width:clamp(150px,17vw,210px);" viewBox="0 0 300 300" aria-hidden="true">
+      <path class="a1" d="M0 300 A300 300 0 0 1 300 0" stroke-width="44"/>
+      <path class="a2" d="M0 226 A226 226 0 0 1 226 0" stroke-width="44"/>
+      <path class="a1" d="M0 152 A152 152 0 0 1 152 0" stroke-width="44"/>
+      <path class="a2" d="M0 78 A78 78 0 0 1 78 0" stroke-width="44"/>
+    </svg>
+    <div class="gfx gfx-checker" style="top:128px;right:44px;width:clamp(76px,11vw,132px);height:clamp(76px,11vw,132px);" aria-hidden="true"></div>
+
+    <span class="spec-mark" style="top:104px;left:48px;">
+      <span class="sm-bars"><i></i><i></i><i></i></span>Portfolio · 01
+    </span>
 
     <div class="hero-grid">
       <div>
@@ -803,9 +817,14 @@
   <div class="terr" data-territory="vermillion" style="padding:0;">
     <div class="cyl-wrap" id="cyl-wrap">
       <div class="cyl-sticky">
-        <div class="grid-overlay" aria-hidden="true">
-          <span class="reg reg-tl"></span><span class="reg reg-br"></span>
-        </div>
+        <!-- Big ink circle + dot field, cropped by the panel edges -->
+        <div class="gfx gfx-circle" style="left:-13vw;top:50%;transform:translateY(-50%);width:34vw;height:34vw;background:var(--fg);opacity:.10;" aria-hidden="true"></div>
+        <div class="gfx gfx-half" style="right:-6vw;bottom:-4vw;width:26vw;height:13vw;background:var(--fg);opacity:.12;" aria-hidden="true"></div>
+        <div class="gfx gfx-dots" style="left:44px;bottom:60px;width:clamp(80px,10vw,130px);height:clamp(58px,7vw,92px);color:var(--fg);opacity:.35;" aria-hidden="true"></div>
+        <span class="spec-mark" style="top:96px;right:48px;">
+          Index · 02<span class="sm-bars"><i></i><i></i><i></i></span>
+        </span>
+
         <div class="cyl-stage">
           <div class="cyl-label">What I Work On</div>
           <div class="cyl-viewport">
@@ -820,10 +839,17 @@
 
   <!-- ── Territory 3 · INK ── -->
   <div class="terr" data-territory="ink">
-    <div class="grid-overlay" aria-hidden="true">
-      <div class="g-cols"></div>
-      <span class="reg reg-tl"></span><span class="reg reg-br"></span>
-    </div>
+    <!-- Cropped cream circle + orange checker -->
+    <div class="gfx gfx-circle" style="right:-9vw;top:-9vw;width:32vw;height:32vw;background:var(--paper);opacity:.10;" aria-hidden="true"></div>
+    <div class="gfx gfx-checker" style="right:48px;bottom:72px;width:clamp(84px,12vw,150px);height:clamp(56px,8vw,100px);" aria-hidden="true"></div>
+    <svg class="gfx gfx-arcs" style="right:6vw;top:34%;width:clamp(150px,20vw,280px);opacity:.5;" viewBox="0 0 300 300" aria-hidden="true">
+      <path class="a1" d="M300 0 A300 300 0 0 1 0 300" stroke-width="44"/>
+      <path class="a2" d="M300 90 A210 210 0 0 1 90 300" stroke-width="44"/>
+    </svg>
+    <span class="spec-mark" style="top:96px;left:48px;">
+      <span class="sm-bars"><i></i><i></i><i></i></span>Data · 03
+    </span>
+
     <div class="stats-head t-label">
       <span>// By the numbers</span><span>03 — Index</span>
     </div>
