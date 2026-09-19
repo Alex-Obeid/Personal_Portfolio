@@ -345,8 +345,9 @@
 
     /* The rotating cylinder — tight cascade/echo stack */
     .cyl-viewport{
-      perspective:1400px;
-      width:100%;height:clamp(230px,34vh,320px);
+      --cyl-base:clamp(2.2rem,8vw,6rem);
+      perspective:1600px;
+      width:100%;height:clamp(300px,52vh,540px);
       display:flex;align-items:center;justify-content:center;
     }
     .cyl{position:relative;width:100%;height:100%;transform-style:preserve-3d;}
@@ -354,8 +355,8 @@
       position:absolute;inset:0;
       display:flex;align-items:center;justify-content:center;
       font-family:'Archivo Black',sans-serif;
-      font-size:clamp(1.8rem,6.4vw,4.4rem);
-      letter-spacing:-.03em;line-height:1;
+      font-size:var(--cyl-base);
+      letter-spacing:-.035em;line-height:1;
       color:var(--fg);
       text-transform:uppercase;white-space:nowrap;
       backface-visibility:hidden;
@@ -665,10 +666,9 @@
       .stat-meta{justify-self:start;text-align:left;}
 
       .cyl-wrap{--cyl-step:56vh;}
-      .cyl-stage{padding-top:34px;}
+      .cyl-stage{padding-top:28px;}
       .cyl-label{margin-bottom:14px;}
-      .cyl-viewport{height:clamp(180px,30vh,230px);perspective:900px;}
-      .cyl-item{font-size:clamp(1.35rem,6vw,2.3rem);letter-spacing:.5px;}
+      .cyl-viewport{--cyl-base:clamp(1.6rem,8vw,3rem);height:clamp(220px,38vh,300px);perspective:1000px;}
       .home-photo-wrap{width:min(80vw,300px);}
       .photo-slot{width:100%;height:auto;aspect-ratio:5/6;}
       .home-name{font-size:clamp(2.5rem,14vw,4rem);}
@@ -1632,14 +1632,13 @@ const CYL_N = SKILL_REEL.length;
 // An arc rather than a closed circle: tighter spacing keeps ~5 copies inside
 // the visible ±90°, which is what gives the stacked cascade its depth.
 const CYL_ANGLE = 32;
-// Radius as a multiple of cap height — controls how much the copies overlap.
-// Kept just above 1 so the stack reads tight without the names colliding.
-const CYL_TIGHTNESS = 1.55;
+// Radius as a multiple of the largest fitted line — controls the overlap.
+const CYL_TIGHTNESS = 0.92;
 let cylItems = [], cylDots = [], cylTicking = false;
 
 function buildCylinder() {
   cylEl.innerHTML = SKILL_REEL
-    .map((s, i) => `<div class="cyl-item" data-i="${i}">${s}</div>`).join('');
+    .map((s, i) => `<div class="cyl-item" data-i="${i}"><span>${s}</span></div>`).join('');
   cylProgress.innerHTML = SKILL_REEL.map(() => `<span class="cyl-dot"></span>`).join('');
   cylFallback.innerHTML = SKILL_REEL.map(s => `<li class="skill-pill">${s}</li>`).join('');
 
@@ -1649,9 +1648,29 @@ function buildCylinder() {
 
 function layoutCylinder() {
   if (!cylItems.length) return;
-  const fs = parseFloat(getComputedStyle(cylItems[0]).fontSize) || 46;
-  const radius = fs * CYL_TIGHTNESS;
+
+  cylItems.forEach(el => { el.style.fontSize = ''; });
+  const base = parseFloat(getComputedStyle(cylItems[0]).fontSize) || 46;
+
+  const viewport = cylEl.parentElement;
+  const targetW = viewport.clientWidth * 0.86;
+  // Bounds keep the size spread narrow enough that the stack still reads as
+  // one cascade rather than mismatched lines colliding.
+  const ceiling = Math.min(base * 2.6, viewport.clientHeight * 0.44);
+  const floor = base * 0.75;
+
+  const sizes = cylItems.map(el => {
+    const natural = el.firstElementChild.offsetWidth;
+    if (!natural) return base;
+    return Math.max(floor, Math.min(base * (targetW / natural), ceiling));
+  });
+
+  // Radius tracks the largest fitted line so spacing stays proportional to the
+  // type rather than to the unfitted base.
+  const radius = Math.max(...sizes) * CYL_TIGHTNESS;
+
   cylItems.forEach((el, i) => {
+    el.style.fontSize = sizes[i] + 'px';
     el.style.transform = `rotateX(${i * CYL_ANGLE}deg) translateZ(${radius}px)`;
   });
 }
@@ -1690,6 +1709,11 @@ if (cylWrap) {
   } else {
     layoutCylinder();
     updateCylinder();
+    // Fitting depends on text measurement, so it has to be redone once the
+    // real face is active — fallback metrics are narrower and over-size it.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => { layoutCylinder(); updateCylinder(); });
+    }
     window.addEventListener('scroll', onCylScroll, { passive:true });
     window.addEventListener('resize', () => { layoutCylinder(); updateCylinder(); });
   }
