@@ -107,7 +107,25 @@
     .spec-mark .sm-bars i{width:2px;height:9px;background:currentColor;display:block;}
 
     /* ══ HERO (paper) ══ */
-    .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:56px;align-items:end;}
+    /* Portrait occupies its own column at every width — it never drops below
+       the name, which left the panel looking empty on narrow screens. */
+    .hero-grid{
+      position:relative;z-index:1;
+      display:grid;grid-template-columns:minmax(0,1fr) auto;
+      column-gap:56px;align-items:end;
+      grid-template-areas:
+        "kicker figure"
+        "name   figure"
+        "bio    figure"
+        "meta   figure"
+        "cta    figure";
+    }
+    .hero-kicker{grid-area:kicker;}
+    .hero-name{grid-area:name;}
+    .hero-bio{grid-area:bio;}
+    .hero-meta{grid-area:meta;}
+    .cta-row{grid-area:cta;}
+    .hero-figure{grid-area:figure;align-self:end;}
     .hero-kicker{display:flex;align-items:center;gap:12px;color:var(--fg-2);margin-bottom:20px;}
     .hero-kicker .bar{width:46px;height:2px;background:var(--accent);}
     .hero-name{margin:0 0 26px;}
@@ -646,8 +664,19 @@
       #home.active{padding:0;}
       .terr{padding:96px 20px 72px;}
       .spec-mark{left:20px!important;right:auto!important;top:80px!important;}
-      .hero-grid{grid-template-columns:1fr;gap:34px;align-items:start;}
-      .hero-figure{width:min(62vw,240px);}
+      /* Name and portrait stay paired; the rest runs full width below them */
+      .hero-grid{
+        column-gap:18px;align-items:center;
+        grid-template-areas:
+          "kicker kicker"
+          "name   figure"
+          "bio    bio"
+          "meta   meta"
+          "cta    cta";
+      }
+      .hero-figure{align-self:center;width:clamp(104px,36vw,168px);}
+      .hero-bio{margin-top:26px;}
+      .hero-figure .fig-cap{font-size:.5rem;letter-spacing:.12em;}
       .stat-row{grid-template-columns:1fr;gap:6px;}
       .stat-meta{justify-self:start;text-align:left;}
 
@@ -727,26 +756,26 @@
     </span>
 
     <div class="hero-grid">
-      <div>
-        <div class="hero-kicker t-label fade-in"><span class="bar"></span>Mechanical Engineer · Lebanon</div>
-        <h1 class="hero-name t-display fade-in" style="animation-delay:.08s">
-          <span class="ln">Alex</span>
-          <span class="ln accent">Obeid</span>
-        </h1>
-        <p class="hero-bio fade-in" style="animation-delay:.16s" contenteditable="true">Automotive and motorsports focused — Formula Student, vehicle dynamics, CNC machining and simulation-driven design.</p>
-        <div class="hero-meta t-label fade-in" style="animation-delay:.22s">
-          <span>Est. 2006</span><span>Beirut, LB</span><span>Available 2026</span>
-        </div>
-        <div class="cta-row fade-in" style="animation-delay:.3s">
-          <button class="btn btn-primary" onclick="navigate('projects')">View My Work</button>
-          <button class="btn btn-ghost" onclick="navigate('contact')">Get In Touch</button>
-        </div>
-      </div>
+      <div class="hero-kicker t-label fade-in"><span class="bar"></span>Mechanical Engineer · Lebanon</div>
+
+      <h1 class="hero-name t-display fade-in" style="animation-delay:.08s">
+        <span class="ln">Alex</span>
+        <span class="ln accent">Obeid</span>
+      </h1>
 
       <figure class="hero-figure fade-in" style="animation-delay:.12s">
         <img src="Images/Headshot/Headshot Image.jpg" alt="Alex Obeid"/>
         <figcaption class="fig-cap t-label"><span>Fig. 01</span><span>Portrait</span></figcaption>
       </figure>
+
+      <p class="hero-bio fade-in" style="animation-delay:.16s" contenteditable="true">Automotive and motorsports focused — Formula Student, vehicle dynamics, CNC machining and simulation-driven design.</p>
+      <div class="hero-meta t-label fade-in" style="animation-delay:.22s">
+        <span>Est. 2006</span><span>Beirut, LB</span><span>Available 2026</span>
+      </div>
+      <div class="cta-row fade-in" style="animation-delay:.3s">
+        <button class="btn btn-primary" onclick="navigate('projects')">View My Work</button>
+        <button class="btn btn-ghost" onclick="navigate('contact')">Get In Touch</button>
+      </div>
     </div>
 
     <div class="scroll-cue t-label" aria-hidden="true">
