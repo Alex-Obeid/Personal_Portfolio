@@ -1657,7 +1657,7 @@ const SKILL_REEL = [
   'CAD',
   'CAM',
   'CNC',
-  'FEA / Topology Studies',
+  'FEA',
 ];
 
 const cylWrap = document.getElementById('cyl-wrap');
@@ -1696,9 +1696,19 @@ function layoutCylinder() {
   // One size for every skill so none is emphasised over another. The longest
   // line sets it: scale up until that one just fits the measure.
   const widest = Math.max(...cylItems.map(el => el.firstElementChild.offsetWidth));
-  const size = widest > 0
-    ? Math.min(base * (targetW / widest), viewport.clientHeight * 0.42)
-    : base;
+  const maxByHeight = viewport.clientHeight * 0.42;
+  const perspective = parseFloat(getComputedStyle(viewport).perspective) || 1600;
+
+  // The front copy sits at translateZ(radius), so perspective renders it larger
+  // than its layout width. Shrink to compensate, or it overruns the stage —
+  // radius depends on size, so settle it in a couple of passes.
+  let size = widest > 0 ? Math.min(base * (targetW / widest), maxByHeight) : base;
+  if (widest > 0) {
+    for (let pass = 0; pass < 2; pass++) {
+      const magnify = perspective / Math.max(1, perspective - size * CYL_TIGHTNESS);
+      size = Math.min(base * (targetW / widest) / magnify, maxByHeight);
+    }
+  }
 
   const radius = size * CYL_TIGHTNESS;
 
