@@ -158,76 +158,62 @@
       align-items:center;
       justify-content:center;
       opacity:1;
-      transition:opacity .45s ease;
+      transition:transform .66s cubic-bezier(.76,0,.24,1);
       pointer-events:none;
     }
-    .startup-intro.done{opacity:0;}
+    /* Panel leaves upward, wiping the hero into view */
+    .startup-intro.done{transform:translateY(-100%);}
     .startup-intro.hidden{display:none;}
+    /* Stack sizes itself to the wordmark so the rule matches its measure */
+    .startup-stack{display:inline-flex;flex-direction:column;align-items:stretch;}
     .startup-logo-clip{
       overflow:hidden;
-      padding-top:.22em;
-      height:1.4em;
+      padding-top:.2em;
+      height:1.36em;
       line-height:1;
       font-family:'Archivo Black',sans-serif;
-      font-size:clamp(1.7rem,5vw,3rem);
-      letter-spacing:-.02em;
+      font-size:clamp(1.9rem,5.5vw,3.4rem);
+      letter-spacing:-.03em;
     }
     .startup-logo-type{
       display:inline-block;
       font-family:'Archivo Black',sans-serif;
-      font-size:clamp(1.7rem,5vw,3rem);
-      letter-spacing:-.02em;
+      font-size:clamp(1.9rem,5.5vw,3.4rem);
+      letter-spacing:-.03em;
       line-height:1;
       color:var(--paper);
       white-space:nowrap;
       user-select:none;
       pointer-events:none;
-      opacity:0;
-      width:0;
-      overflow:hidden;
-      border-right:2px solid rgba(240,235,225,.9);
       text-transform:uppercase;
-      transform:translateY(0);
+      transform:translateY(1.5em);   /* parked below the rule */
     }
     .startup-logo-type span{color:var(--orange);}
     .startup-logo-rule{
       display:block;
-      height:2px;
-      width:0;
+      height:2px;width:100%;
       background:var(--paper);
-      margin-top:0;
-      opacity:0;
-      font-family:'Archivo Black',sans-serif;
-      font-size:clamp(1.7rem,5vw,3rem);
-      letter-spacing:-.02em;
+      transform:scaleX(0);transform-origin:left center;
     }
-    .startup-intro.play .startup-logo-type{
-      animation:
-        startupLogoShow 0ms linear 120ms forwards,
-        startupLogoType 760ms steps(11,end) 160ms forwards,
-        startupCaretFast 120ms steps(1,end) 980ms 2,
-        startupLogoPop 420ms cubic-bezier(.22,.85,.32,1) 1220ms forwards;
+    .startup-meta{
+      display:flex;justify-content:space-between;
+      margin-top:11px;opacity:0;
+      font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.22em;
+      text-transform:uppercase;color:var(--paper);
     }
-    .startup-intro.play .startup-logo-rule{
-      animation:startupRuleShow 380ms cubic-bezier(.22,.8,.25,1) 1450ms forwards;
-    }
-    .startup-intro.closing .startup-logo-type{
-      animation:startupLogoDrop 560ms cubic-bezier(.45,0,.8,1) forwards;
-    }
-    @keyframes startupLogoShow{to{opacity:1;}}
-    @keyframes startupLogoType{from{width:0;}to{width:11ch;}}
-    @keyframes startupCaretFast{50%{border-right-color:transparent;}}
-    @keyframes startupLogoPop{
-      0%{transform:translateY(0);border-right-color:rgba(240,235,225,.9);}
-      35%{transform:translateY(-.16em);border-right-color:transparent;}
-      65%{transform:translateY(-.16em);}
-      100%{transform:translateY(-.06em);}
-    }
-    @keyframes startupRuleShow{from{width:0;opacity:0;}to{width:11ch;opacity:1;}}
-    @keyframes startupLogoDrop{
-      from{transform:translateY(-.06em);}
-      to{transform:translateY(1.55em);}
-    }
+
+    .startup-intro.play .startup-logo-rule{animation:ruleDraw 360ms cubic-bezier(.3,.7,.2,1) 130ms forwards;}
+    .startup-intro.play .startup-logo-type{animation:markRise 580ms cubic-bezier(.16,.84,.26,1) 290ms forwards;}
+    .startup-intro.play .startup-meta{animation:metaIn 420ms ease 640ms forwards;}
+
+    .startup-intro.closing .startup-logo-type{animation:markDrop 480ms cubic-bezier(.5,0,.78,1) forwards;}
+    .startup-intro.closing .startup-meta{animation:metaOut 240ms ease forwards;}
+
+    @keyframes ruleDraw{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+    @keyframes markRise{from{transform:translateY(1.5em);}to{transform:translateY(0);}}
+    @keyframes markDrop{from{transform:translateY(0);}to{transform:translateY(1.5em);}}
+    @keyframes metaIn{from{opacity:0;}to{opacity:.62;}}
+    @keyframes metaOut{from{opacity:.62;}to{opacity:0;}}
     .page-sweep.is-active .page-sweep-layer.orange{animation:pageSweep 900ms linear 0ms both;}
     .page-sweep.is-active .page-sweep-layer.white{animation:pageSweep 900ms linear 140ms both;}
     .page-sweep.is-active .page-sweep-layer.black{animation:pageSweep 900ms linear 280ms both;}
@@ -703,10 +689,13 @@
 
 <body>
 <div class="startup-intro" aria-hidden="true">
-  <div class="startup-logo-clip">
-    <span class="startup-logo-type">Alex<span>.</span>Obeid</span>
+  <div class="startup-stack">
+    <div class="startup-logo-clip">
+      <span class="startup-logo-type">Alex<span>.</span>Obeid</span>
+    </div>
+    <span class="startup-logo-rule"></span>
+    <span class="startup-meta"><span>Portfolio</span><span>2026</span></span>
   </div>
-  <span class="startup-logo-rule"></span>
 </div>
 <div class="page-sweep" aria-hidden="true">
   <div class="page-sweep-layer orange"></div>
@@ -1223,9 +1212,9 @@ if (startupIntro) {
     requestAnimationFrame(() => {
       startupIntro.classList.add('play');
     });
-    setTimeout(() => startupIntro.classList.add('closing'), 1900);
-    setTimeout(() => startupIntro.classList.add('done'), 2340);
-    setTimeout(() => startupIntro.classList.add('hidden'), 2800);
+    setTimeout(() => startupIntro.classList.add('closing'), 1620);
+    setTimeout(() => startupIntro.classList.add('done'), 2080);
+    setTimeout(() => startupIntro.classList.add('hidden'), 2780);
   }
 }
 
