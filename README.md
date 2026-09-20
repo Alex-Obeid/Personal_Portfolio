@@ -285,10 +285,30 @@ anything** — no backend, no form service. See [Gotchas](#gotchas).
 
 ### Easter egg
 
-The orange triangle in the footer opens `#easter`, a Snake game on a 420×420 canvas. Fixed
-130 ms timestep with interpolated rendering, WebAudio blips, and `localStorage` for best
-score (`snakeBest`) and history (`snakeScores`). 50 points wins. Keyboard input is only
-captured while `#easter` is active.
+The keylined triangle at the right of the footer opens `#easter`, a Snake game on a
+420×420 board. Fixed 130 ms timestep with interpolated rendering, WebAudio blips, and
+`localStorage` for best score (`snakeBest`) and the top five (`snakeScores`). 50 points
+wins. Keyboard input is only captured while `#easter` is active.
+
+The board is drawn as a drafting sheet: hairline cell dots, a heavier rule every seven
+cells (21 divides by 7), and a registration crosshair on the target. The snake is paper,
+tapering from a 1 px inset at the head to 4 px at the tail so **direction reads by shape,
+not by a fourth colour** — the only vermillion on the board is the food.
+
+Things worth knowing before editing it:
+
+- **The canvas is DPR-scaled.** `sizeCanvas()` sets the backing store to `420 × dpr` and
+  transforms the context, so all drawing is still in 420-unit CSS space. Draw in CSS
+  units; never assume `canvas.width` is 420.
+- **Turns are queued, not overwritten.** `dirQueue` buffers up to two, each validated
+  against the previous queued turn rather than the current heading. Overwriting meant two
+  presses inside one 130 ms tick collapsed into the last one and silently dropped a dodge.
+- **The tail is not a collision.** It vacates on the same tick unless the snake grows, so
+  `stepGame()` tests against `snake.slice(0, -1)` when it hasn't eaten.
+- **`AudioContext` is lazy.** Constructing it at page load leaves it suspended and logs a
+  warning; `audio()` builds it on the first gesture.
+- **Touch is swipe-to-steer, tap to start/pause**, which needs `touch-action:none` on the
+  canvas. `TOUCH` also swaps the overlay and hint copy from "Press Space" to "Tap".
 
 ---
 
