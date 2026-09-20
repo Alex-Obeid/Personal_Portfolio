@@ -1,68 +1,115 @@
-<!-- @dsCard group="Patterns" name="Page sweep" subtitle="Three staggered bars — the only page transition" viewport="1280x620" -->
+<!-- @dsCard group="Patterns" name="Page sweep" subtitle="Three staggered bars — the only page transition" viewport="1280x600" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Page sweep — Alex Obeid Design System</title>
+<title>Page sweep &mdash; Alex Obeid Design System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ── tokens.css ── */
 :root{
-  --paper:#f0ebe1; --paper-shade:#e5dfd3; --ink:#0a0a0a;
-  --orange:#f05a00; --orange2:#ff7a1a; --warm-muted:#6b6459;
+  /* ── Brand constants — raw values. Never reference these in a component. ── */
+  --paper:#f0ebe1;
+  --paper-shade:#e5dfd3;
+  --ink:#0a0a0a;
+  --orange:#f05a00;          /* fills, large display, artwork */
+  --orange-deep:#ab4000;     /* small accent TEXT on cream — AA, see Accessibility */
+  --orange2:#ff7a1a;
+  --warm-muted:#6b6459;
 
-  --bg:var(--paper); --fg:var(--ink); --fg-2:var(--warm-muted);
-  --accent:var(--orange); --on-accent:var(--paper);
+  /* ── Semantic layer — redefined per territory. Build against these. ── */
+  --bg:var(--paper);
+  --fg:var(--ink);
+  --fg-2:var(--warm-muted);
+  --accent:var(--orange);
+  --accent-text:var(--orange-deep);
+  --on-accent:var(--ink);
   --surface:var(--paper-shade);
-  --rule:rgba(10,10,10,.20); --rule-strong:rgba(10,10,10,.85);
+  --rule:rgba(10,10,10,.20);
+  --rule-strong:rgba(10,10,10,.85);
 
+  /* ── Motion ── */
   --snap:.16s cubic-bezier(.4,0,.2,1);
   --territory-fade:.65s cubic-bezier(.4,0,.2,1);
 }
+
+/* Vermillion — orange ground. Accent flips to ink; orange on orange never happens. */
 [data-territory="vermillion"]{
-  --bg:var(--orange); --fg:var(--ink); --fg-2:rgba(10,10,10,.62);
-  --accent:var(--ink); --on-accent:var(--orange);
+  --bg:var(--orange);
+  --fg:var(--ink);
+  --fg-2:rgba(10,10,10,.62);
+  --accent:var(--ink);
+  --accent-text:var(--ink);
+  --on-accent:var(--orange);
   --surface:rgba(10,10,10,.07);
-  --rule:rgba(10,10,10,.30); --rule-strong:rgba(10,10,10,.88);
+  --rule:rgba(10,10,10,.30);
+  --rule-strong:rgba(10,10,10,.88);
 }
+
+/* Ink — near-black ground. Full-strength vermillion is safe on ink at any size. */
 [data-territory="ink"]{
-  --bg:var(--ink); --fg:var(--paper); --fg-2:rgba(240,235,225,.55);
-  --accent:var(--orange); --on-accent:var(--ink);
+  --bg:var(--ink);
+  --fg:var(--paper);
+  --fg-2:rgba(240,235,225,.55);
+  --accent:var(--orange);
+  --accent-text:var(--orange);
+  --on-accent:var(--ink);
   --surface:#161513;
-  --rule:rgba(240,235,225,.20); --rule-strong:rgba(240,235,225,.85);
+  --rule:rgba(240,235,225,.20);
+  --rule-strong:rgba(240,235,225,.85);
 }
+/* ── system.css ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{background:var(--paper);}
+html{scroll-behavior:auto;}
 body{
-  color:var(--fg);
+  background:var(--bg);color:var(--fg);
   font-family:'Archivo',system-ui,sans-serif;font-weight:400;
   -webkit-font-smoothing:antialiased;
+  transition:background var(--territory-fade),color var(--territory-fade);
 }
-/* Paper grain: tooth on cream, not haze on black */
-body::after{
+
+/* Paper grain — multiply so it reads as tooth on cream, not haze on black */
+.grain::after{
   content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   mix-blend-mode:multiply;pointer-events:none;z-index:9999;opacity:.14;
 }
 
-/* ── Type scale ── */
+/* ── Type scale: extreme contrast, nothing in between ── */
 .t-display{font-family:'Archivo Black',sans-serif;font-size:clamp(3.4rem,13vw,12rem);line-height:.86;letter-spacing:-.035em;text-transform:uppercase;}
 .t-title{font-family:'Archivo Black',sans-serif;font-size:clamp(2.2rem,7.5vw,5.5rem);line-height:.9;letter-spacing:-.03em;text-transform:uppercase;}
 .t-numeral{font-family:'Archivo Black',sans-serif;font-size:clamp(4.5rem,19vw,15rem);line-height:.8;letter-spacing:-.045em;}
 .t-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;}
 
-/* ── Territory panel ── */
-.terr{position:relative;background:var(--bg);color:var(--fg);padding:44px 40px 40px;overflow:clip;}
+/* ── Territories — full-bleed colour panels ── */
+.terr{
+  position:relative;background:var(--bg);color:var(--fg);
+  padding:118px 48px 96px;
+  /* clip, not hidden: overflow:hidden creates a scroll container and kills
+     position:sticky on anything pinned inside. */
+  overflow:clip;
+}
+.terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:center;}
+
+/* Drop-in slot for artwork — position with inline offsets so it crops on an edge */
 .gfx{position:absolute;pointer-events:none;z-index:0;}
 
-/* ── Spec mark ── */
-.spec-mark{display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2);}
+/* Spec mark — the small tagged micro-label */
+.spec-mark{
+  position:absolute;z-index:1;display:inline-flex;align-items:center;gap:7px;
+  font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--fg-2);
+}
 .spec-mark .sm-bars{display:inline-flex;gap:2px;}
 .spec-mark .sm-bars i{width:2px;height:9px;background:currentColor;display:block;}
 
-/* ── Inversion: the hover language ── */
-.inv{border:1px solid var(--rule-strong);background:transparent;color:var(--fg);transition:background var(--snap),color var(--snap),border-color var(--snap);}
+/* ── Inversion: the entire hover vocabulary. No shadows, no transforms. ── */
+.inv{
+  border:1px solid var(--rule-strong);background:transparent;color:var(--fg);
+  transition:background var(--snap),color var(--snap),border-color var(--snap);
+}
 .inv:hover,.inv:focus-visible{background:var(--accent);color:var(--on-accent);border-color:var(--accent);outline:none;}
 .inv:active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
 .inv-solid{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
@@ -80,53 +127,117 @@ body::after{
 .btn:active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
 .btn-primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
 .btn-primary:hover,.btn-primary:focus-visible{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.btn-ghost{background:transparent;color:var(--fg);}
 
 /* ── Tag / pill ── */
-.tag{display:inline-flex;align-items:center;gap:8px;padding:5px 10px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--rule-strong);color:var(--fg);background:transparent;transition:background var(--snap),color var(--snap),border-color var(--snap);}
+.tag{
+  display:inline-flex;align-items:center;gap:8px;padding:5px 10px;
+  font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;
+  text-transform:uppercase;border:1px solid var(--rule-strong);
+  color:var(--fg);background:transparent;
+  transition:background var(--snap),color var(--snap),border-color var(--snap);
+}
 .tag:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 13px;
+  font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;border:1px solid var(--rule-strong);color:var(--fg);
+  transition:background var(--snap),color var(--snap),border-color var(--snap);
+}
+.pill:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
+.pill svg,.tag svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
 
-/* ── Card scaffolding (documentation chrome only — not part of the language) ── */
+/* ── Field: no box, one keyline ── */
+.field{display:flex;flex-direction:column;gap:7px;}
+.field label{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2);}
+.field input,.field textarea{
+  background:transparent;border:0;border-bottom:1px solid var(--rule-strong);
+  color:var(--fg);font-family:'Archivo',sans-serif;font-size:.95rem;
+  padding:10px 2px;outline:none;resize:none;transition:border-color var(--snap);
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--fg-2);}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--accent);}
+
+/* ── Accent bar — the system's only ornament ── */
+.bar{display:block;width:46px;height:2px;background:var(--accent);flex:none;}
+
+/* ── Photography ── */
+.plate{border:1px solid var(--rule-strong);display:block;width:100%;object-fit:cover;}
+.plate-mono{filter:grayscale(1) contrast(1.06);}
+.fig-cap{display:flex;justify-content:space-between;margin-top:8px;color:var(--fg-2);}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;}
+}
+/* ── preview chrome (not shipped) ── */
+.ds-page{min-height:100vh;display:flex;flex-direction:column;background:var(--paper);}
+.ds-main{flex:1;display:flex;flex-direction:column;min-height:0;}
+.ds-main > *{flex:1;}
+
+/* Title block — the drawing-sheet footer every card carries */
+.ds-block{
+  flex:none;background:var(--ink);color:var(--paper);
+  border-top:1px solid var(--ink);
+}
+.ds-block-row{display:grid;grid-template-columns:58px 1fr 2fr 74px;align-items:stretch;}
+.ds-cell{
+  padding:9px 14px;border-right:1px solid rgba(240,235,225,.22);
+  display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;
+}
+.ds-cell:last-child{border-right:0;}
+.ds-k{font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,235,225,.5);}
+.ds-v{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--paper);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ds-v.name{font-family:'Archivo Black',sans-serif;font-size:.78rem;letter-spacing:-.01em;}
+.ds-v.ix{font-size:.9rem;color:var(--orange);letter-spacing:.04em;}
+.ds-code{
+  border-top:1px solid rgba(240,235,225,.22);padding:10px 14px;
+  font-family:'DM Mono',monospace;font-size:.58rem;line-height:1.75;
+  color:rgba(240,235,225,.82);white-space:pre-wrap;word-break:break-word;
+  max-height:88px;overflow:auto;
+}
+.ds-code b{color:var(--orange);font-weight:400;}
+
+/* Section kicker used inside specimens */
+.ds-kicker{display:flex;align-items:center;gap:12px;color:var(--fg-2);margin-bottom:18px;}
 .ds-note{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-2);}
 .ds-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;}
 .ds-stack{display:flex;flex-direction:column;gap:10px;}
 .ds-rule{height:1px;background:var(--rule);margin:20px 0;}
-.ds-kicker{display:flex;align-items:center;gap:12px;color:var(--fg-2);margin-bottom:18px;}
-.ds-kicker .bar{width:46px;height:2px;background:var(--accent);flex:none;}
-.terr{min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:40px;}
-.track{position:relative;height:120px;border:1px solid var(--rule);overflow:hidden;background:var(--surface);}
+
+/* Specimens sit in panels that fill the card, not the viewport */
+.terr{padding:40px 38px 34px;}
+.fill{min-height:100%;}
+/* ── this card ── */
+.terr{display:flex;flex-direction:column;justify-content:center;gap:30px;}
+.track{position:relative;height:104px;border:1px solid var(--rule);overflow:hidden;background:var(--surface);}
 .lyr{position:absolute;top:0;bottom:0;width:130%;left:-130%;animation:sweep 2.6s linear infinite;}
 .l1{background:var(--orange);}
 .l2{background:var(--ink);animation-delay:.14s;}
 .l3{background:var(--paper);animation-delay:.28s;}
 @keyframes sweep{0%{transform:translateX(0)}35%{transform:translateX(100%)}100%{transform:translateX(100%)}}
-.timeline{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);}
-.timeline div{border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);padding:16px 14px;}
-.timeline div:last-child{border-right:0;}
-.timeline .ms{font-family:'Archivo Black',sans-serif;font-size:1.6rem;letter-spacing:-.03em;display:block;margin-bottom:4px;}
-@media (prefers-reduced-motion: reduce){.lyr{animation:none;transform:translateX(100%);}}
+.tl{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);}
+.tl div{border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);
+        padding:14px 14px 14px 0;display:flex;flex-direction:column;gap:5px;}
+.tl div:last-child{border-right:0;}
+.ms{font-family:'Archivo Black',sans-serif;font-size:1.5rem;letter-spacing:-.03em;}
+.foot{line-height:1.9;max-width:76ch;}
 </style>
 </head>
-<body>
-<section class="terr">
-    <div class="ds-kicker"><span class="bar"></span><span class="t-label">Transition &middot; linear, hard-edged, no easing curve</span></div>
-
-    <div class="track">
-      <div class="lyr l1"></div>
-      <div class="lyr l2"></div>
-      <div class="lyr l3"></div>
+<body class="grain">
+<div class="ds-page">
+  <main class="ds-main">
+<section class="terr fill"><div class="ds-kicker"><span class="bar"></span><span class="t-label">Linear, hard-edged, no easing curve</span></div><div class="track"><div class="lyr l1"></div><div class="lyr l2"></div><div class="lyr l3"></div></div><div class="tl"><div><span class="ms">900</span><span class="ds-note">ms per layer, linear</span></div><div><span class="ms">140</span><span class="ds-note">ms stagger between layers</span></div><div><span class="ms">730</span><span class="ds-note">ms &mdash; swap content here</span></div><div><span class="ms">1180</span><span class="ds-note">ms &mdash; release the lock</span></div></div><p class="ds-note foot">Order is vermillion, ink, paper. Nothing scales, fades slowly, springs or bounces. Skipped entirely under prefers-reduced-motion.</p></section>
+  </main>
+  <footer class="ds-block">
+    <div class="ds-block-row">
+      <div class="ds-cell"><span class="ds-k">Sheet</span><span class="ds-v ix">18</span></div>
+      <div class="ds-cell"><span class="ds-k">Group</span><span class="ds-v">Patterns</span></div>
+      <div class="ds-cell"><span class="ds-k">Component</span><span class="ds-v name">Page sweep</span></div>
+      <div class="ds-cell"><span class="ds-k">Rev</span><span class="ds-v">1.0</span></div>
     </div>
-
-    <div class="timeline">
-      <div><span class="ms">900</span><span class="ds-note">ms per layer, linear</span></div>
-      <div><span class="ms">140</span><span class="ds-note">ms stagger between layers</span></div>
-      <div><span class="ms">730</span><span class="ds-note">ms — swap content here</span></div>
-      <div><span class="ms">1180</span><span class="ds-note">ms — release the lock</span></div>
-    </div>
-
-    <p class="ds-note" style="line-height:2;max-width:64ch;">
-      Order is vermillion, ink, paper. Nothing scales, fades slowly, springs or bounces.
-      Skipped entirely under prefers-reduced-motion.
-    </p>
-  </section>
+    <div class="ds-code">navigate(target);            // plays the sweep
+applySection(target);        // called at <b>730ms</b>, when cover is total</div>
+  </footer>
+</div>
 </body>
 </html>

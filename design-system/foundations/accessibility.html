@@ -1,10 +1,10 @@
-<!-- @dsCard group="Components" name="Navigation" subtitle="Fixed bar that adopts the territory beneath it" viewport="1280x660" -->
+<!-- @dsCard group="Foundations" name="Accessibility & contrast" subtitle="Measured WCAG 2.1 ratios, including where the brand fails" viewport="1280x820" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Navigation &mdash; Alex Obeid Design System</title>
+<title>Accessibility & contrast &mdash; Alex Obeid Design System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -208,36 +208,36 @@ body{
 .terr{padding:40px 38px 34px;}
 .fill{min-height:100%;}
 /* ── this card ── */
-.wrap{display:flex;flex-direction:column;min-height:100%;}
-.wrap > div{flex:1;display:flex;flex-direction:column;}
-.navbar{display:flex;align-items:center;justify-content:space-between;
-  padding:16px 38px;border-bottom:1px solid var(--rule);background:var(--bg);color:var(--fg);}
-.nav-logo{font-family:'Archivo Black',sans-serif;font-size:1.22rem;letter-spacing:-.02em;
-  text-transform:uppercase;color:var(--fg);text-decoration:none;}
-.nav-logo span{color:var(--accent);}
-.nav-links{display:flex;gap:28px;list-style:none;}
-.nav-links a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;
-  font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--fg-2);transition:color var(--snap);}
-.nav-links a.active,.nav-links a:hover{color:var(--accent-text);}
-.nav-links svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
-.bed{flex:1;display:flex;align-items:center;padding:0 38px;background:var(--bg);}
+.ct{width:100%;border-collapse:collapse;margin-bottom:26px;}
+.ct th{text-align:left;padding:0 0 10px;border-bottom:1px solid var(--rule-strong);}
+.ct td{padding:9px 0;border-bottom:1px solid var(--rule);vertical-align:baseline;}
+.ct .pair{color:var(--fg);}
+.ct .ratio{font-family:'Archivo Black',sans-serif;font-size:.95rem;letter-spacing:-.01em;width:80px;}
+.ct .grade{width:90px;}
+.ct tr.bad .ratio,.ct tr.bad .grade{color:var(--accent-text);}
+.ct tr.bad{background:var(--surface);}
+.ct tr.warn .grade{opacity:.8;}
+.warn-box{border:1px solid var(--rule-strong);padding:18px 20px;margin-bottom:20px;
+          display:flex;flex-direction:column;gap:8px;}
+.warn-box p{font-size:.84rem;line-height:1.65;color:var(--fg-2);max-width:78ch;}
+.warn-box b{color:var(--fg);font-weight:700;}
+.foot{line-height:1.9;max-width:80ch;}
 </style>
 </head>
 <body class="grain">
 <div class="ds-page">
   <main class="ds-main">
-<div class="wrap"><div><nav class="navbar"><a href="#" class="nav-logo">Alex<span>.</span>Obeid</a><ul class="nav-links"><li><a href="#" class="active"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></a></li><li><a href="#"><svg viewBox="0 0 24 24"><path d="M4 12h16M4 16h10M4 8h12"/></svg><span>Projects</span></a></li><li><a href="#"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg><span>CV</span></a></li></ul></nav><div class="bed"><span class="ds-note">Paper ground</span></div></div><div data-territory="vermillion"><nav class="navbar"><a href="#" class="nav-logo">Alex<span>.</span>Obeid</a><ul class="nav-links"><li><a href="#"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></a></li><li><a href="#" class="active"><svg viewBox="0 0 24 24"><path d="M4 12h16M4 16h10M4 8h12"/></svg><span>Projects</span></a></li><li><a href="#"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg><span>CV</span></a></li></ul></nav><div class="bed"><span class="ds-note">Vermillion &middot; accent flips to ink</span></div></div><div data-territory="ink"><nav class="navbar"><a href="#" class="nav-logo">Alex<span>.</span>Obeid</a><ul class="nav-links"><li><a href="#"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg><span>Home</span></a></li><li><a href="#"><svg viewBox="0 0 24 24"><path d="M4 12h16M4 16h10M4 8h12"/></svg><span>Projects</span></a></li><li><a href="#" class="active"><svg viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/></svg><span>CV</span></a></li></ul></nav><div class="bed"><span class="ds-note">Ink &middot; accent returns to vermillion</span></div></div></div>
+<section class="terr fill"><div class="ds-kicker"><span class="bar"></span><span class="t-label">Measured contrast &middot; WCAG 2.1</span></div><table class="ct"><thead><tr><th class="ds-note">Territory</th><th class="ds-note">Pair</th><th class="ds-note">Ratio</th><th class="ds-note">Grade</th></tr></thead><tbody><tr class="ok"><td class="ds-note">Paper</td><td class="ds-note pair">--fg on --bg</td><td class="ratio">16.66</td><td class="ds-note grade">AAA</td></tr><tr class="ok"><td class="ds-note">Paper</td><td class="ds-note pair">--fg-2 on --bg</td><td class="ratio">4.92</td><td class="ds-note grade">AA</td></tr><tr class="ok"><td class="ds-note">Paper</td><td class="ds-note pair">--fg on --surface</td><td class="ratio">14.92</td><td class="ds-note grade">AAA</td></tr><tr class="ok"><td class="ds-note">Paper</td><td class="ds-note pair">--accent-text on --bg</td><td class="ratio">5.10</td><td class="ds-note grade">AA</td></tr><tr class="ok"><td class="ds-note">Paper</td><td class="ds-note pair">--on-accent on --accent</td><td class="ratio">5.81</td><td class="ds-note grade">AA</td></tr><tr class="bad"><td class="ds-note">Paper</td><td class="ds-note pair">raw --orange on --bg</td><td class="ratio">2.87</td><td class="ds-note grade">FAIL</td></tr><tr class="ok"><td class="ds-note">Vermillion</td><td class="ds-note pair">--fg on --bg</td><td class="ratio">5.81</td><td class="ds-note grade">AA</td></tr><tr class="warn"><td class="ds-note">Vermillion</td><td class="ds-note pair">--fg-2 on --bg</td><td class="ratio">3.40</td><td class="ds-note grade">AA Large</td></tr><tr class="ok"><td class="ds-note">Vermillion</td><td class="ds-note pair">--on-accent on --accent</td><td class="ratio">5.81</td><td class="ds-note grade">AA</td></tr><tr class="ok"><td class="ds-note">Ink</td><td class="ds-note pair">--fg on --bg</td><td class="ratio">16.66</td><td class="ds-note grade">AAA</td></tr><tr class="ok"><td class="ds-note">Ink</td><td class="ds-note pair">--fg-2 on --bg</td><td class="ratio">5.44</td><td class="ds-note grade">AA</td></tr><tr class="ok"><td class="ds-note">Ink</td><td class="ds-note pair">--accent on --bg</td><td class="ratio">5.81</td><td class="ds-note grade">AA</td></tr><tr class="ok"><td class="ds-note">Ink</td><td class="ds-note pair">--fg on --surface</td><td class="ratio">15.36</td><td class="ds-note grade">AAA</td></tr></tbody></table><div class="warn-box"><span class="t-label" style="color:var(--accent-text)">The one real trap</span><p>Full-strength <b>--orange</b> on cream measures <b>2.87:1</b> — it fails AA for normal text and misses even the 3:1 large-text floor. Use <b>--accent-text</b> (#ab4000, same hue and saturation, 5.10:1) for any accent TEXT on a cream ground. Reserve raw --orange for fills, rules, artwork and display type set as decoration. On ink, full-strength orange is safe at any size.</p></div><p class="ds-note foot">Ratios computed from the token values; rgba secondaries composited over their ground first. Non-text marks (rules, bars) are exempt from text minima but still target 3:1 where they carry meaning.</p></section>
   </main>
   <footer class="ds-block">
     <div class="ds-block-row">
-      <div class="ds-cell"><span class="ds-k">Sheet</span><span class="ds-v ix">12</span></div>
-      <div class="ds-cell"><span class="ds-k">Group</span><span class="ds-v">Components</span></div>
-      <div class="ds-cell"><span class="ds-k">Component</span><span class="ds-v name">Navigation</span></div>
+      <div class="ds-cell"><span class="ds-k">Sheet</span><span class="ds-v ix">03</span></div>
+      <div class="ds-cell"><span class="ds-k">Group</span><span class="ds-v">Foundations</span></div>
+      <div class="ds-cell"><span class="ds-k">Component</span><span class="ds-v name">Accessibility & contrast</span></div>
       <div class="ds-cell"><span class="ds-k">Rev</span><span class="ds-v">1.0</span></div>
     </div>
-    <div class="ds-code">updateNavTerritory();  /* reads the panel under the bar */
-transition:background var(<b>--territory-fade</b>);</div>
+    <div class="ds-code">color:var(<b>--accent-text</b>);  /* accent text on cream — AA */
+background:var(<b>--accent</b>);  /* fills, bars, artwork — any ground */</div>
   </footer>
 </div>
 </body>

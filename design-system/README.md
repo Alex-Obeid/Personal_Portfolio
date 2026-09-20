@@ -5,8 +5,8 @@ It is written to be handed to a person or to Claude as standalone context: every
 needed to draw a new component, poster, diagram or icon that looks native to the site is
 here, without reading `index.html`.
 
-**Read the [Ten Rules](#ten-rules) first. They are the whole system compressed; the rest
-is detail.**
+**Rev 1.0.** Read the [Ten Rules](#ten-rules) first. They are the whole system
+compressed; the rest is detail.
 
 ---
 
@@ -34,7 +34,8 @@ is detail.**
 | `--paper` | `#f0ebe1` | Warm cream. The default ground. Never pure white. |
 | `--paper-shade` | `#e5dfd3` | One step down from paper. Tinted blocks on cream. |
 | `--ink` | `#0a0a0a` | Near-black. Never pure `#000`. |
-| `--orange` | `#f05a00` | Vermillion. The only chromatic colour in the system. |
+| `--orange` | `#f05a00` | Vermillion. Fills, rules, artwork, display. |
+| `--orange-deep` | `#ab4000` | Same hue, darkened for accent **text** on cream. See Accessibility. |
 | `--orange2` | `#ff7a1a` | Lighter vermillion. Rare — a highlight inside orange artwork. |
 | `--warm-muted` | `#6b6459` | Warm grey. Secondary type on cream only. |
 
@@ -49,7 +50,7 @@ semantic tokens. A component written against semantic tokens works on all three 
 
 | Territory | Ground | Type | Secondary type | Accent | On-accent |
 | --- | --- | --- | --- | --- | --- |
-| **Paper** (default) | `#f0ebe1` | `#0a0a0a` | `#6b6459` | `#f05a00` | `#f0ebe1` |
+| **Paper** (default) | `#f0ebe1` | `#0a0a0a` | `#6b6459` | `#f05a00` | `#0a0a0a` |
 | **Vermillion** | `#f05a00` | `#0a0a0a` | `rgba(10,10,10,.62)` | `#0a0a0a` | `#f05a00` |
 | **Ink** | `#0a0a0a` | `#f0ebe1` | `rgba(240,235,225,.55)` | `#f05a00` | `#0a0a0a` |
 
@@ -63,6 +64,7 @@ does not exist. The accent is always whatever contrasts hardest with the ground.
 | `--bg` / `--fg` | Ground and primary type |
 | `--fg-2` | Secondary type, captions, meta |
 | `--accent` / `--on-accent` | Accent fill and the colour that reads on it |
+| `--accent-text` | Accent **text**. Differs from `--accent` on cream only |
 | `--surface` | Tinted block one step off the ground |
 | `--rule` | Hairline, ~20–30% opacity — quiet division |
 | `--rule-strong` | Keyline, ~85% opacity — an edge you are meant to see |
@@ -70,22 +72,22 @@ does not exist. The accent is always whatever contrasts hardest with the ground.
 ```css
 :root{
   --paper:#f0ebe1; --paper-shade:#e5dfd3; --ink:#0a0a0a;
-  --orange:#f05a00; --orange2:#ff7a1a; --warm-muted:#6b6459;
+  --orange:#f05a00; --orange-deep:#ab4000; --orange2:#ff7a1a; --warm-muted:#6b6459;
 
   --bg:var(--paper); --fg:var(--ink); --fg-2:var(--warm-muted);
-  --accent:var(--orange); --on-accent:var(--paper);
+  --accent:var(--orange); --accent-text:var(--orange-deep); --on-accent:var(--ink);
   --surface:var(--paper-shade);
   --rule:rgba(10,10,10,.20); --rule-strong:rgba(10,10,10,.85);
 }
 [data-territory="vermillion"]{
   --bg:var(--orange); --fg:var(--ink); --fg-2:rgba(10,10,10,.62);
-  --accent:var(--ink); --on-accent:var(--orange);
+  --accent:var(--ink); --accent-text:var(--ink); --on-accent:var(--orange);
   --surface:rgba(10,10,10,.07);
   --rule:rgba(10,10,10,.30); --rule-strong:rgba(10,10,10,.88);
 }
 [data-territory="ink"]{
   --bg:var(--ink); --fg:var(--paper); --fg-2:rgba(240,235,225,.55);
-  --accent:var(--orange); --on-accent:var(--ink);
+  --accent:var(--orange); --accent-text:var(--orange); --on-accent:var(--ink);
   --surface:#161513;
   --rule:rgba(240,235,225,.20); --rule-strong:rgba(240,235,225,.85);
 }
@@ -93,6 +95,40 @@ does not exist. The accent is always whatever contrasts hardest with the ground.
 
 **Build against the semantic layer, never the brand constants.** A component using
 `var(--fg)` survives every ground; one using `var(--ink)` disappears on the Ink panel.
+
+### Accessibility
+
+Measured WCAG 2.1 ratios for every text pair the system produces:
+
+| Territory | Pair | Ratio | Grade |
+| --- | --- | --- | --- |
+| Paper | `--fg` on `--bg` | 16.66 | AAA |
+| Paper | `--fg-2` on `--bg` | 4.92 | AA |
+| Paper | `--fg` on `--surface` | 14.92 | AAA |
+| Paper | `--accent-text` on `--bg` | 5.10 | AA |
+| Paper | `--on-accent` on `--accent` | 5.81 | AA |
+| Paper | **raw `--orange` on `--bg`** | **2.87** | **fails** |
+| Vermillion | `--fg` on `--bg` | 5.81 | AA |
+| Vermillion | `--fg-2` on `--bg` | 3.40 | AA Large only |
+| Vermillion | `--on-accent` on `--accent` | 5.81 | AA |
+| Ink | `--fg` on `--bg` | 16.66 | AAA |
+| Ink | `--fg-2` on `--bg` | 5.44 | AA |
+| Ink | `--accent` on `--bg` | 5.81 | AA |
+| Ink | `--fg` on `--surface` | 15.36 | AAA |
+
+**The one real trap.** Full-strength vermillion on cream measures **2.87:1** — it fails AA
+for normal text and misses even the 3:1 large-text floor. So:
+
+- **Accent text on a cream ground uses `--accent-text`** (`#ab4000` — same hue, same
+  saturation, 5.10:1).
+- **Raw `--accent` is for fills, bars, rules and artwork**, where text minima don't apply.
+- On ink, full-strength vermillion is safe at any size; `--accent-text` resolves to it there.
+
+`--fg-2` on vermillion (3.40) clears AA for large text only. Keep it to labels and meta set
+at display or heading size, not paragraphs.
+
+Non-text marks — hairlines, the accent bar — are exempt from text minima, but target 3:1
+wherever they carry meaning rather than decoration.
 
 ### Proportion
 
@@ -134,7 +170,7 @@ a label — pick.
   optional; Archivo Black at default tracking reads as a different typeface.
 - Labels are **always uppercase mono with wide tracking**. The contrast between tight
   display and loose mono is the signature.
-- One accent word per headline at most — set it in `var(--accent)`, never bold or italic.
+- One accent word per headline at most — set it in `var(--accent-text)`, never bold or italic.
 - Never centre body copy. Left-aligned, ragged right.
 
 ### Wordmark
@@ -356,3 +392,16 @@ and **whether it crops**. Those answers determine most of the drawing.
 Reference points for the sensibility: Josef Müller-Brockmann's concert posters, Wim
 Crouwel's grids, Massimo Vignelli's subway system, 1980s cassette-cover spec marks — and
 the engineering drawing conventions this portfolio's subject matter is actually about.
+
+---
+
+## Changelog
+
+### Rev 1.0
+
+- Split the CSS into `tokens.css` (custom properties) and `system.css` (component classes).
+- Added `--orange-deep` / `--accent-text` after measuring full-strength vermillion on cream
+  at 2.87:1, which fails AA and the large-text floor.
+- Changed Paper's `--on-accent` from cream to ink, bringing it in line with the Ink
+  territory and taking the primary button's own label from 2.87:1 to 5.81:1.
+- Documented all measured contrast ratios rather than asserting compliance.

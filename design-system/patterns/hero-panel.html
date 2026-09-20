@@ -1,68 +1,115 @@
-<!-- @dsCard group="Patterns" name="Hero panel" subtitle="The canonical composition — asymmetric, bottom-aligned, cropped" viewport="1280x820" -->
+<!-- @dsCard group="Patterns" name="Hero panel" subtitle="The canonical composition — asymmetric, bottom-aligned, cropped" viewport="1280x780" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hero panel — Alex Obeid Design System</title>
+<title>Hero panel &mdash; Alex Obeid Design System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* ── tokens.css ── */
 :root{
-  --paper:#f0ebe1; --paper-shade:#e5dfd3; --ink:#0a0a0a;
-  --orange:#f05a00; --orange2:#ff7a1a; --warm-muted:#6b6459;
+  /* ── Brand constants — raw values. Never reference these in a component. ── */
+  --paper:#f0ebe1;
+  --paper-shade:#e5dfd3;
+  --ink:#0a0a0a;
+  --orange:#f05a00;          /* fills, large display, artwork */
+  --orange-deep:#ab4000;     /* small accent TEXT on cream — AA, see Accessibility */
+  --orange2:#ff7a1a;
+  --warm-muted:#6b6459;
 
-  --bg:var(--paper); --fg:var(--ink); --fg-2:var(--warm-muted);
-  --accent:var(--orange); --on-accent:var(--paper);
+  /* ── Semantic layer — redefined per territory. Build against these. ── */
+  --bg:var(--paper);
+  --fg:var(--ink);
+  --fg-2:var(--warm-muted);
+  --accent:var(--orange);
+  --accent-text:var(--orange-deep);
+  --on-accent:var(--ink);
   --surface:var(--paper-shade);
-  --rule:rgba(10,10,10,.20); --rule-strong:rgba(10,10,10,.85);
+  --rule:rgba(10,10,10,.20);
+  --rule-strong:rgba(10,10,10,.85);
 
+  /* ── Motion ── */
   --snap:.16s cubic-bezier(.4,0,.2,1);
   --territory-fade:.65s cubic-bezier(.4,0,.2,1);
 }
+
+/* Vermillion — orange ground. Accent flips to ink; orange on orange never happens. */
 [data-territory="vermillion"]{
-  --bg:var(--orange); --fg:var(--ink); --fg-2:rgba(10,10,10,.62);
-  --accent:var(--ink); --on-accent:var(--orange);
+  --bg:var(--orange);
+  --fg:var(--ink);
+  --fg-2:rgba(10,10,10,.62);
+  --accent:var(--ink);
+  --accent-text:var(--ink);
+  --on-accent:var(--orange);
   --surface:rgba(10,10,10,.07);
-  --rule:rgba(10,10,10,.30); --rule-strong:rgba(10,10,10,.88);
+  --rule:rgba(10,10,10,.30);
+  --rule-strong:rgba(10,10,10,.88);
 }
+
+/* Ink — near-black ground. Full-strength vermillion is safe on ink at any size. */
 [data-territory="ink"]{
-  --bg:var(--ink); --fg:var(--paper); --fg-2:rgba(240,235,225,.55);
-  --accent:var(--orange); --on-accent:var(--ink);
+  --bg:var(--ink);
+  --fg:var(--paper);
+  --fg-2:rgba(240,235,225,.55);
+  --accent:var(--orange);
+  --accent-text:var(--orange);
+  --on-accent:var(--ink);
   --surface:#161513;
-  --rule:rgba(240,235,225,.20); --rule-strong:rgba(240,235,225,.85);
+  --rule:rgba(240,235,225,.20);
+  --rule-strong:rgba(240,235,225,.85);
 }
+/* ── system.css ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{background:var(--paper);}
+html{scroll-behavior:auto;}
 body{
-  color:var(--fg);
+  background:var(--bg);color:var(--fg);
   font-family:'Archivo',system-ui,sans-serif;font-weight:400;
   -webkit-font-smoothing:antialiased;
+  transition:background var(--territory-fade),color var(--territory-fade);
 }
-/* Paper grain: tooth on cream, not haze on black */
-body::after{
+
+/* Paper grain — multiply so it reads as tooth on cream, not haze on black */
+.grain::after{
   content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   mix-blend-mode:multiply;pointer-events:none;z-index:9999;opacity:.14;
 }
 
-/* ── Type scale ── */
+/* ── Type scale: extreme contrast, nothing in between ── */
 .t-display{font-family:'Archivo Black',sans-serif;font-size:clamp(3.4rem,13vw,12rem);line-height:.86;letter-spacing:-.035em;text-transform:uppercase;}
 .t-title{font-family:'Archivo Black',sans-serif;font-size:clamp(2.2rem,7.5vw,5.5rem);line-height:.9;letter-spacing:-.03em;text-transform:uppercase;}
 .t-numeral{font-family:'Archivo Black',sans-serif;font-size:clamp(4.5rem,19vw,15rem);line-height:.8;letter-spacing:-.045em;}
 .t-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;}
 
-/* ── Territory panel ── */
-.terr{position:relative;background:var(--bg);color:var(--fg);padding:44px 40px 40px;overflow:clip;}
+/* ── Territories — full-bleed colour panels ── */
+.terr{
+  position:relative;background:var(--bg);color:var(--fg);
+  padding:118px 48px 96px;
+  /* clip, not hidden: overflow:hidden creates a scroll container and kills
+     position:sticky on anything pinned inside. */
+  overflow:clip;
+}
+.terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:center;}
+
+/* Drop-in slot for artwork — position with inline offsets so it crops on an edge */
 .gfx{position:absolute;pointer-events:none;z-index:0;}
 
-/* ── Spec mark ── */
-.spec-mark{display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2);}
+/* Spec mark — the small tagged micro-label */
+.spec-mark{
+  position:absolute;z-index:1;display:inline-flex;align-items:center;gap:7px;
+  font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--fg-2);
+}
 .spec-mark .sm-bars{display:inline-flex;gap:2px;}
 .spec-mark .sm-bars i{width:2px;height:9px;background:currentColor;display:block;}
 
-/* ── Inversion: the hover language ── */
-.inv{border:1px solid var(--rule-strong);background:transparent;color:var(--fg);transition:background var(--snap),color var(--snap),border-color var(--snap);}
+/* ── Inversion: the entire hover vocabulary. No shadows, no transforms. ── */
+.inv{
+  border:1px solid var(--rule-strong);background:transparent;color:var(--fg);
+  transition:background var(--snap),color var(--snap),border-color var(--snap);
+}
 .inv:hover,.inv:focus-visible{background:var(--accent);color:var(--on-accent);border-color:var(--accent);outline:none;}
 .inv:active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
 .inv-solid{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
@@ -80,62 +127,141 @@ body::after{
 .btn:active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
 .btn-primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
 .btn-primary:hover,.btn-primary:focus-visible{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+.btn-ghost{background:transparent;color:var(--fg);}
 
 /* ── Tag / pill ── */
-.tag{display:inline-flex;align-items:center;gap:8px;padding:5px 10px;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;border:1px solid var(--rule-strong);color:var(--fg);background:transparent;transition:background var(--snap),color var(--snap),border-color var(--snap);}
+.tag{
+  display:inline-flex;align-items:center;gap:8px;padding:5px 10px;
+  font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.15em;
+  text-transform:uppercase;border:1px solid var(--rule-strong);
+  color:var(--fg);background:transparent;
+  transition:background var(--snap),color var(--snap),border-color var(--snap);
+}
 .tag:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 13px;
+  font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;border:1px solid var(--rule-strong);color:var(--fg);
+  transition:background var(--snap),color var(--snap),border-color var(--snap);
+}
+.pill:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
+.pill svg,.tag svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
 
-/* ── Card scaffolding (documentation chrome only — not part of the language) ── */
+/* ── Field: no box, one keyline ── */
+.field{display:flex;flex-direction:column;gap:7px;}
+.field label{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2);}
+.field input,.field textarea{
+  background:transparent;border:0;border-bottom:1px solid var(--rule-strong);
+  color:var(--fg);font-family:'Archivo',sans-serif;font-size:.95rem;
+  padding:10px 2px;outline:none;resize:none;transition:border-color var(--snap);
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--fg-2);}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--accent);}
+
+/* ── Accent bar — the system's only ornament ── */
+.bar{display:block;width:46px;height:2px;background:var(--accent);flex:none;}
+
+/* ── Photography ── */
+.plate{border:1px solid var(--rule-strong);display:block;width:100%;object-fit:cover;}
+.plate-mono{filter:grayscale(1) contrast(1.06);}
+.fig-cap{display:flex;justify-content:space-between;margin-top:8px;color:var(--fg-2);}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important;}
+}
+/* ── preview chrome (not shipped) ── */
+.ds-page{min-height:100vh;display:flex;flex-direction:column;background:var(--paper);}
+.ds-main{flex:1;display:flex;flex-direction:column;min-height:0;}
+.ds-main > *{flex:1;}
+
+/* Title block — the drawing-sheet footer every card carries */
+.ds-block{
+  flex:none;background:var(--ink);color:var(--paper);
+  border-top:1px solid var(--ink);
+}
+.ds-block-row{display:grid;grid-template-columns:58px 1fr 2fr 74px;align-items:stretch;}
+.ds-cell{
+  padding:9px 14px;border-right:1px solid rgba(240,235,225,.22);
+  display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;
+}
+.ds-cell:last-child{border-right:0;}
+.ds-k{font-family:'DM Mono',monospace;font-size:.44rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,235,225,.5);}
+.ds-v{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--paper);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ds-v.name{font-family:'Archivo Black',sans-serif;font-size:.78rem;letter-spacing:-.01em;}
+.ds-v.ix{font-size:.9rem;color:var(--orange);letter-spacing:.04em;}
+.ds-code{
+  border-top:1px solid rgba(240,235,225,.22);padding:10px 14px;
+  font-family:'DM Mono',monospace;font-size:.58rem;line-height:1.75;
+  color:rgba(240,235,225,.82);white-space:pre-wrap;word-break:break-word;
+  max-height:88px;overflow:auto;
+}
+.ds-code b{color:var(--orange);font-weight:400;}
+
+/* Section kicker used inside specimens */
+.ds-kicker{display:flex;align-items:center;gap:12px;color:var(--fg-2);margin-bottom:18px;}
 .ds-note{font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-2);}
 .ds-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;}
 .ds-stack{display:flex;flex-direction:column;gap:10px;}
 .ds-rule{height:1px;background:var(--rule);margin:20px 0;}
-.ds-kicker{display:flex;align-items:center;gap:12px;color:var(--fg-2);margin-bottom:18px;}
-.ds-kicker .bar{width:46px;height:2px;background:var(--accent);flex:none;}
-.terr{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:96px 48px;}
-.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:56px;align-items:end;
+
+/* Specimens sit in panels that fill the card, not the viewport */
+.terr{padding:40px 38px 34px;}
+.fill{min-height:100%;}
+/* ── this card ── */
+.terr{display:flex;flex-direction:column;justify-content:center;padding:52px 46px;}
+.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;
+  column-gap:48px;align-items:end;
   grid-template-areas:"kicker figure" "name figure" "bio figure" "meta figure" "cta figure";}
-.hero-kicker{grid-area:kicker;display:flex;align-items:center;gap:12px;color:var(--fg-2);margin-bottom:20px;}
-.hero-kicker .bar{width:46px;height:2px;background:var(--accent);}
-.hero-name{grid-area:name;margin:0 0 26px;}
+.hero-kicker{grid-area:kicker;display:flex;align-items:center;gap:12px;color:var(--fg-2);margin-bottom:18px;}
+.hero-name{grid-area:name;margin:0 0 22px;font-size:clamp(3rem,10vw,7rem);}
 .hero-name .ln{display:block;}
-.hero-name .accent{color:var(--accent);}
-.hero-bio{grid-area:bio;max-width:46ch;font-size:1.02rem;line-height:1.55;color:var(--fg-2);margin-bottom:30px;}
-.hero-meta{grid-area:meta;display:flex;flex-wrap:wrap;gap:0 26px;color:var(--fg-2);margin-bottom:30px;}
-.cta-row{grid-area:cta;display:flex;gap:16px;flex-wrap:wrap;}
-.hero-figure{grid-area:figure;align-self:end;position:relative;width:clamp(210px,24vw,290px);}
-.hero-figure .plate{width:100%;aspect-ratio:5/6;background:var(--surface);border:1px solid var(--rule-strong);display:flex;align-items:center;justify-content:center;}
-.hero-figure .fig-cap{display:flex;justify-content:space-between;margin-top:8px;color:var(--fg-2);}
-.corner{position:absolute;right:40px;top:40px;}
+.hero-name .accent{color:var(--accent-text);}
+.hero-bio{grid-area:bio;max-width:46ch;font-size:.98rem;line-height:1.55;color:var(--fg-2);margin-bottom:24px;}
+.hero-meta{grid-area:meta;display:flex;flex-wrap:wrap;gap:0 26px;color:var(--fg-2);margin-bottom:24px;}
+.cta-row{grid-area:cta;display:flex;gap:14px;flex-wrap:wrap;}
+.hero-figure{grid-area:figure;align-self:end;position:relative;width:clamp(180px,20vw,250px);}
+.hero-figure .ph{aspect-ratio:5/6;background:var(--surface);display:flex;
+  align-items:center;justify-content:center;text-align:center;padding:10px;}
+.corner{right:38px;top:34px;}
 </style>
 </head>
-<body>
-<section class="terr">
+<body class="grain">
+<div class="ds-page">
+  <main class="ds-main">
+<section class="terr fill">
     <span class="spec-mark corner"><i class="sm-bars"><i></i><i></i><i></i></i>FIG. 01</span>
-    <svg class="gfx" viewBox="0 0 200 200" style="left:-70px;bottom:-60px;width:280px;opacity:.5;" aria-hidden="true">
+    <svg class="gfx" viewBox="0 0 200 200" style="left:-86px;bottom:-72px;width:270px;opacity:.45;" aria-hidden="true">
       <circle cx="100" cy="100" r="86" fill="none" stroke="currentColor" stroke-width="2"/>
       <circle cx="100" cy="100" r="44" fill="none" stroke="currentColor" stroke-width="2"/>
       <path d="M100 0 V200 M0 100 H200" stroke="currentColor" stroke-width="1" opacity=".3"/>
     </svg>
-
     <div class="hero-grid">
       <div class="hero-kicker"><span class="bar"></span><span class="t-label">Mechanical Engineering &middot; Beirut</span></div>
       <h1 class="hero-name t-display"><span class="ln">Alex</span><span class="ln accent">Obeid</span></h1>
       <p class="hero-bio">Body copy sits at 46ch in secondary type. One accent word in the
         headline, never more. The portrait keeps its own column at every width.</p>
-      <div class="hero-meta">
-        <span class="t-label">LAU &middot; 2026</span>
-        <span class="t-label">CAD / FEA / CFD</span>
-      </div>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#">View Projects</a>
-        <a class="btn" href="#">Download CV</a>
-      </div>
+      <div class="hero-meta"><span class="t-label">LAU &middot; 2026</span>
+        <span class="t-label">CAD / FEA / CFD</span></div>
+      <div class="cta-row"><a class="btn btn-primary" href="#">View Projects</a>
+        <a class="btn" href="#">Download CV</a></div>
       <figure class="hero-figure">
-        <div class="plate"><span class="ds-note">Portrait &middot; grayscale(1)</span></div>
+        <div class="plate ph"><span class="ds-note">Portrait &middot; grayscale(1)</span></div>
         <figcaption class="fig-cap"><span class="t-label">Fig. A</span><span class="t-label">2026</span></figcaption>
       </figure>
     </div>
   </section>
+  </main>
+  <footer class="ds-block">
+    <div class="ds-block-row">
+      <div class="ds-cell"><span class="ds-k">Sheet</span><span class="ds-v ix">16</span></div>
+      <div class="ds-cell"><span class="ds-k">Group</span><span class="ds-v">Patterns</span></div>
+      <div class="ds-cell"><span class="ds-k">Component</span><span class="ds-v name">Hero panel</span></div>
+      <div class="ds-cell"><span class="ds-k">Rev</span><span class="ds-v">1.0</span></div>
+    </div>
+    <div class="ds-code">grid-template-areas:
+  "kicker figure" "name figure" "bio figure" "meta figure" "<b>cta figure</b>";
+/* the portrait never drops below the name */</div>
+  </footer>
+</div>
 </body>
 </html>
