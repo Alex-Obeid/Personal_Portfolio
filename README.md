@@ -207,6 +207,31 @@ Three stacked territories:
 The fixed nav reads which territory is beneath it (`updateNavTerritory()`) and adopts its
 palette.
 
+### Project showcase
+
+A scroll-pinned **horizontal parallax** gallery, sitting on an Ink panel between the hero
+and the skills carousel. Adapted from [Codrops' horizontal parallax
+gallery](https://tympanus.net/codrops/2026/02/19/creating-a-smooth-horizontal-parallax-gallery-from-dom-to-webgl/)
+— the same wrapper → clipped frame → oversized image idea, rebuilt with no dependencies
+(the original is Vite + TypeScript, with an optional Three.js version).
+
+- **It is generated from `PROJECTS`.** There is no second image list to keep in sync. Each
+  entry becomes one `.px-group`: its own title block, then its own plates. `gallery`
+  entries ending in an image extension render as photos, anything else as a labelled tile
+  — the same convention the detail galleries use. Add a project, it appears here.
+- `.px-wrap`'s height is `100vh + track travel`, so the pin releases exactly as the last
+  plate clears the right edge. `.px-sticky` uses `overflow:clip` for the usual reason.
+- Parallax is per plate: the image is `100% + 2 × PX_SHIFT` wide, inset by `PX_SHIFT`, and
+  translated by where its frame sits relative to the viewport centre, normalised to ±1.
+- **Driven from `ssApply()`**, like the carousel. The `scroll` event alone is not enough.
+- Plate ratios cycle through `PX_RATIOS` (4:5, 16:10, 1:1) so the row has rhythm without
+  the widths being arbitrary.
+- Below 900px, on touch, or under `prefers-reduced-motion`, `.is-strip` drops the pinning
+  entirely: the track becomes a native horizontally-scrolling strip with scroll-snap and
+  the parallax is switched off. No hijacked scroll on a phone.
+- The group title is a real `<button>`, so the showcase is keyboard-reachable — unlike the
+  `<div onclick>` project cards (see [Gotchas](#gotchas)).
+
 ### Skills carousel
 
 A scroll-pinned 3D cylinder, built with CSS transforms and `position:sticky` — no library.

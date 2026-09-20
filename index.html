@@ -350,6 +350,104 @@
     .btn-primary:hover,.btn-primary:focus-visible{background:var(--fg);color:var(--bg);border-color:var(--fg);}
     .btn-ghost{background:transparent;color:var(--fg);}
 
+    /* ══ PROJECT SHOWCASE (scroll-pinned horizontal parallax) ══
+       A tall wrapper supplies the scroll distance; a sticky viewport holds a
+       track that translates X across it. Each project is one group: its own
+       title block, then its own plates. Inside every plate the image is
+       oversized and counter-translated, so it drifts against its frame.
+       Driven from ssApply(), never the scroll event — see Momentum note. */
+    .px-wrap{position:relative;}
+    .px-sticky{
+      position:sticky;top:0;height:100vh;
+      display:flex;flex-direction:column;justify-content:center;
+      /* clip, not hidden: hidden would create a scroll container and kill the
+         sticky positioning this depends on. */
+      overflow:clip;
+    }
+    .px-head{
+      position:absolute;top:104px;left:48px;right:48px;z-index:2;
+      display:flex;justify-content:space-between;align-items:baseline;
+      color:var(--fg-2);pointer-events:none;
+    }
+    .px-track{display:flex;align-items:center;gap:0;will-change:transform;}
+
+    /* One project */
+    .px-group{
+      display:flex;flex-direction:column;gap:18px;flex:none;
+      padding:0 clamp(32px,4vw,64px);
+      border-left:1px solid var(--rule);
+    }
+    .px-group:first-child{border-left:0;}
+    .px-group-head{display:flex;flex-direction:column;gap:9px;max-width:60ch;}
+    .px-group-meta{display:flex;align-items:center;gap:12px;color:var(--fg-2);}
+    .px-group-meta .bar{width:26px;height:2px;background:var(--accent);flex:none;}
+    .px-group-title{
+      font-family:'Archivo Black',sans-serif;
+      font-size:clamp(1.6rem,3.2vw,3.1rem);line-height:.92;letter-spacing:-.03em;
+      text-transform:uppercase;color:var(--fg);white-space:nowrap;
+      background:transparent;border:0;padding:0;margin:0;text-align:left;
+      cursor:pointer;transition:color var(--snap);
+    }
+    .px-group:hover .px-group-title,
+    .px-group-title:focus-visible{color:var(--accent);outline:none;}
+    .px-group-title:focus-visible{text-decoration:underline;text-underline-offset:6px;}
+    .px-group-rule{height:1px;background:var(--rule-strong);}
+
+    /* The plates */
+    .px-plates{display:flex;gap:clamp(14px,1.6vw,26px);align-items:flex-end;}
+    .px-plate{
+      position:relative;flex:none;overflow:clip;
+      height:clamp(230px,44vh,430px);
+      border:1px solid var(--rule-strong);background:var(--surface);
+    }
+    .px-plate.r-45{aspect-ratio:4/5;}
+    .px-plate.r-11{aspect-ratio:1/1;}
+    .px-plate.r-1610{aspect-ratio:16/10;}
+    .px-plate img{
+      position:absolute;top:0;left:calc(-1 * var(--px-shift));
+      width:calc(100% + var(--px-shift) * 2);height:100%;
+      object-fit:cover;display:block;
+    }
+    /* Placeholder tile — same convention as the detail galleries */
+    .px-plate.is-tile{
+      display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;
+      font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;
+      text-transform:uppercase;color:var(--fg-2);
+    }
+    .px-cap{
+      position:absolute;left:0;right:0;bottom:0;z-index:1;
+      display:flex;justify-content:space-between;gap:10px;
+      padding:7px 9px;background:rgba(10,10,10,.72);
+      font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;
+      text-transform:uppercase;color:var(--paper);
+    }
+    .px-progress{
+      position:absolute;left:48px;right:48px;bottom:56px;z-index:2;
+      height:1px;background:var(--rule);
+    }
+    .px-progress i{display:block;height:1px;width:0;background:var(--accent);}
+
+    /* Fallback: native horizontal strip on touch, narrow screens and
+       reduced motion. No pinning, no hijacked scroll. */
+    .px-wrap.is-strip{height:auto !important;}
+    .px-wrap.is-strip .px-sticky{position:static;height:auto;overflow:visible;padding:96px 0 72px;}
+    .px-wrap.is-strip .px-head{position:static;margin:0 20px 26px;}
+    .px-wrap.is-strip .px-progress{display:none;}
+    .px-wrap.is-strip .px-track{
+      transform:none !important;
+      overflow-x:auto;overflow-y:hidden;
+      scroll-snap-type:x proximity;
+      padding:0 20px;gap:0;
+      -webkit-overflow-scrolling:touch;
+    }
+    .px-wrap.is-strip .px-group{scroll-snap-align:start;}
+    .px-wrap.is-strip .px-plate img{transform:none !important;left:0;width:100%;}
+    /* Keep the scroll affordance, but as a hairline rather than chrome */
+    .px-wrap.is-strip .px-track{scrollbar-width:thin;scrollbar-color:var(--accent) transparent;}
+    .px-wrap.is-strip .px-track::-webkit-scrollbar{height:2px;}
+    .px-wrap.is-strip .px-track::-webkit-scrollbar-track{background:var(--rule);}
+    .px-wrap.is-strip .px-track::-webkit-scrollbar-thumb{background:var(--accent);}
+
     /* ══ HOME SKILL CYLINDER (scroll-pinned 3D carousel) ══ */
     .scroll-cue{
       display:flex;align-items:center;justify-content:center;gap:10px;
@@ -895,7 +993,21 @@
     </div>
   </div>
 
-  <!-- ── Territory 2 · VERMILLION ── -->
+  <!-- ── Territory 2 · INK · project showcase ── -->
+  <div class="terr" data-territory="ink" style="padding:0;">
+    <div class="px-wrap" id="px-wrap">
+      <div class="px-sticky">
+        <div class="px-head">
+          <span class="t-label">Selected work</span>
+          <span class="spec-mark" style="position:static"><span class="sm-bars"><i></i><i></i><i></i></span>Index &middot; 02</span>
+        </div>
+        <div class="px-track" id="px-track"></div>
+        <div class="px-progress"><i id="px-progress-bar"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Territory 3 · VERMILLION ── -->
   <div class="terr" data-territory="vermillion" style="padding:0;">
     <div class="cyl-wrap" id="cyl-wrap">
       <div class="cyl-sticky">
@@ -1316,6 +1428,7 @@ function applySection(target, options = {}) {
   if (typeof updateCanvasTerritory === 'function') { updateCanvasTerritory(); }
   if (resolvedTarget === 'easter') { resetDraw(); }
   if (resolvedTarget === 'home' && typeof updateCylinder === 'function') { updateCylinder(); }
+  if (resolvedTarget === 'home' && typeof layoutParallax === 'function') { layoutParallax(); }
 }
 
 function navigate(target, options = {}) {
@@ -1887,6 +2000,7 @@ const ssMax = () => Math.max(0, document.documentElement.scrollHeight - window.i
 function ssApply() {
   window.scrollTo(0, ssCurrent);
   if (typeof updateCylinder === 'function') updateCylinder();
+  if (typeof updateParallax === 'function') updateParallax();
   if (typeof updateNavTerritory === 'function') updateNavTerritory();
   if (typeof updateCanvasTerritory === 'function') updateCanvasTerritory();
 }
@@ -1985,6 +2099,117 @@ function updateTerritories() {
 window.addEventListener('scroll', updateTerritories, { passive:true });
 window.addEventListener('resize', updateTerritories, { passive:true });
 updateCanvasTerritory();
+
+/* ═══════════════════════════════════════
+   PROJECT SHOWCASE — horizontal parallax
+   Built from the PROJECTS array so the image lists are never duplicated:
+   gallery entries that look like image paths become photos, anything else
+   becomes a labelled tile, the same convention the detail galleries use.
+═══════════════════════════════════════ */
+const pxHome  = document.getElementById('home');   // homeSection is declared later; const, so no TDZ peeking
+const pxWrap  = document.getElementById('px-wrap');
+const pxTrack = document.getElementById('px-track');
+const pxBar   = document.getElementById('px-progress-bar');
+const PX_SHIFT = 54;                     // px of drift available each way
+const PX_RATIOS = ['r-45','r-1610','r-11','r-45','r-1610'];
+const IMG_RE = /\.(png|jpe?g|gif|webp|svg)$/i;
+
+let pxPlates = [], pxDistance = 0, pxStrip = false;
+
+function buildParallax(){
+  if (!pxTrack) return;
+  pxTrack.innerHTML = PROJECTS.map((proj, gi) => {
+    const plates = (proj.gallery || []).map((entry, i) => {
+      const ratio = PX_RATIOS[i % PX_RATIOS.length];
+      const idx = String(i + 1).padStart(2, '0');
+      if (IMG_RE.test(entry)) {
+        return '<figure class="px-plate ' + ratio + '">' +
+                 '<img src="' + entry + '" alt="' + proj.title + ' — figure ' + idx + '" loading="lazy" decoding="async">' +
+                 '<figcaption class="px-cap"><span>Fig. ' + idx + '</span><span>' + proj.num + '</span></figcaption>' +
+               '</figure>';
+      }
+      return '<figure class="px-plate is-tile ' + ratio + '">' + entry +
+               '<figcaption class="px-cap"><span>Fig. ' + idx + '</span><span>' + proj.num + '</span></figcaption>' +
+             '</figure>';
+    }).join('');
+
+    return '<article class="px-group" data-idx="' + gi + '">' +
+             '<header class="px-group-head">' +
+               '<span class="px-group-meta"><span class="bar"></span>' +
+                 '<span class="t-label">' + proj.num + ' &middot; ' + (proj.badge || '') + '</span></span>' +
+               '<h3 style="margin:0"><button type="button" class="px-group-title" ' +
+                 'data-open="' + gi + '">' + proj.title + '</button></h3>' +
+             '</header>' +
+             '<div class="px-group-rule"></div>' +
+             '<div class="px-plates">' + plates + '</div>' +
+           '</article>';
+  }).join('');
+
+  pxPlates = [...pxTrack.querySelectorAll('.px-plate')];
+  pxTrack.querySelectorAll('.px-plate img').forEach(img => {
+    img.style.setProperty('--px-shift', PX_SHIFT + 'px');
+  });
+  pxTrack.querySelectorAll('.px-plate').forEach(pl => {
+    pl.style.setProperty('--px-shift', PX_SHIFT + 'px');
+  });
+  // Whole group is clickable for convenience, but the title is the real
+  // control so the showcase is reachable by keyboard.
+  pxTrack.addEventListener('click', e => {
+    const b = e.target.closest('.px-group-title');
+    if (b) { openProject(parseInt(b.dataset.open, 10)); return; }
+    const g = e.target.closest('.px-group');
+    if (g) openProject(parseInt(g.dataset.idx, 10));
+  });
+}
+
+/* The wrapper's height is 100vh plus however far the track has to travel, so
+   the pin releases exactly as the last plate clears the right edge. */
+function layoutParallax(){
+  if (!pxWrap || !pxTrack) return;
+  const strip = window.matchMedia('(max-width:900px)').matches ||
+                window.matchMedia('(hover:none)').matches ||
+                prefersReducedMotion;
+  pxStrip = strip;
+  pxWrap.classList.toggle('is-strip', strip);
+  if (strip) { pxWrap.style.height = ''; pxTrack.style.transform = ''; return; }
+
+  const travel = Math.max(0, pxTrack.scrollWidth - window.innerWidth);
+  pxDistance = travel;
+  pxWrap.style.height = (window.innerHeight + travel) + 'px';
+  updateParallax();
+}
+
+function updateParallax(){
+  if (!pxWrap || !pxTrack || pxStrip) return;
+  if (!pxHome || !pxHome.classList.contains('active')) return;
+
+  const rect = pxWrap.getBoundingClientRect();
+  const p = pxDistance > 0
+    ? Math.min(1, Math.max(0, -rect.top / pxDistance))
+    : 0;
+
+  pxTrack.style.transform = 'translate3d(' + (-p * pxDistance) + 'px,0,0)';
+  if (pxBar) pxBar.style.width = (p * 100) + '%';
+
+  // Each image drifts against its frame by where that frame sits on screen.
+  const mid = window.innerWidth / 2;
+  for (const plate of pxPlates) {
+    const img = plate.firstElementChild;
+    if (!img || img.tagName !== 'IMG') continue;
+    const r = plate.getBoundingClientRect();
+    if (r.right < -200 || r.left > window.innerWidth + 200) continue;   // offscreen
+    const n = Math.max(-1, Math.min(1, ((r.left + r.width / 2) - mid) / mid));
+    img.style.transform = 'translate3d(' + (-n * PX_SHIFT) + 'px,0,0)';
+  }
+}
+
+if (pxWrap) {
+  buildParallax();
+  layoutParallax();
+  window.addEventListener('resize', layoutParallax);
+  window.addEventListener('scroll', updateParallax, { passive:true });
+  window.addEventListener('load', layoutParallax);
+}
 
 /* ═══════════════════════════════════════
    HOME SKILL CYLINDER
