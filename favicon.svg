@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Alex Obeid">
-  <!-- Letterform is drawn as paths, not <text>: favicons render outside the
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Alex Obeid">
+  <title>Alex Obeid</title>
+  <!-- A over O. Drawn as paths, never <text>: favicons render outside the
        page context, so a webfont would silently fall back to a system face. -->
   <rect width="64" height="64" fill="#0a0a0a"/>
-  <!-- Outer triangle with the counter knocked out -->
-  <path fill="#f0ebe1" fill-rule="evenodd"
-        d="M32 8 L59 57 L5 57 Z
-           M32 27 L45 57 L19 57 Z"/>
-  <!-- Crossbar painted over the counter so it bridges both legs -->
-  <path fill="#f0ebe1" d="M15 41 H49 V48 H15 Z"/>
-  <!-- The orange dot from the ALEX.OBEID wordmark -->
-  <rect x="48" y="7" width="10" height="10" fill="#f05a00"/>
+  <!-- A, counter knocked out in the ground rather than tinted -->
+  <path fill="#f0ebe1" fill-rule="evenodd" d="M5 46.5 16.5 17.5H22.5L34 46.5Z M19.5 28 23.8 38.5H15.2Z"/>
+  <!-- O: ground-coloured stroke knocks the A back, then the ring is drawn over it -->
+  <circle cx="44.5" cy="32" r="10.7" fill="none" stroke="#0a0a0a" stroke-width="13.6"/>
+  <circle cx="44.5" cy="32" r="10.7" fill="none" stroke="#f0ebe1" stroke-width="7.6"/>
+  <!-- the wordmark's vermillion dot, in the O's counter -->
+  <circle cx="44.5" cy="32" r="5" fill="#f05a00"/>
 </svg>

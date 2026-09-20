@@ -14,7 +14,9 @@ at poster scale, flat colour blocking, hairline rules, and no depth effects.
 | `DESIGN-SYSTEM.md` | The design language as a portable spec — tokens, type, graphics rules |
 | `design-system/` | Generated Claude Design bundle — 17 preview cards + `tokens.css` |
 | `tools/build-design-system.py` | Generator for `design-system/` — edit this, not the output |
-| `favicon.svg` | "A•O" monogram favicon (also the Apple touch icon) |
+| `favicon.svg` | AO monogram mark — A over O, vermillion dot in the counter |
+| `favicon.ico` `apple-touch-icon.png` `icon-512.png` `favicon-{16,32,48}.png` | Raster icons, generated from the mark |
+| `tools/build-icons.py` | Redraws the raster icons from the mark's geometry |
 | `Images/Headshot/` | Home-page portrait |
 | `Images/Planetary Gearbox/` | Renders and build photos for the Planetary Gearbox project |
 | `.claude/launch.json` | Local dev-server config (git-ignored) |

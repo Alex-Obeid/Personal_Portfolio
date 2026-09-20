@@ -4,8 +4,10 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Alex Obeid</title>
+  <link rel="icon" href="favicon.ico" sizes="any"/>
   <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
-  <link rel="apple-touch-icon" href="favicon.svg"/>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+  <meta name="theme-color" content="#0a0a0a"/>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root{
@@ -26,6 +28,11 @@
       --surface:var(--paper-shade);
       --rule:rgba(10,10,10,.20);
       --rule-strong:rgba(10,10,10,.85);
+
+      /* Mark — ground/letter/dot flip per territory (design system: Brand / Mark) */
+      --mark-ground:var(--ink);
+      --mark-letter:var(--paper);
+      --mark-dot:var(--orange);
 
       --snap:.16s cubic-bezier(.4,0,.2,1);
       --territory-fade:.65s cubic-bezier(.4,0,.2,1);
@@ -48,6 +55,9 @@
       --accent:var(--ink);
       --on-accent:var(--orange);
       --surface:rgba(10,10,10,.07);
+      --mark-ground:var(--orange);
+      --mark-letter:var(--ink);
+      --mark-dot:var(--paper);
       --rule:rgba(10,10,10,.30);
       --rule-strong:rgba(10,10,10,.88);
     }
@@ -59,6 +69,9 @@
       --accent:var(--orange);
       --on-accent:var(--ink);
       --surface:#161513;
+      --mark-ground:var(--paper);
+      --mark-letter:var(--ink);
+      --mark-dot:var(--orange);
       --rule:rgba(240,235,225,.20);
       --rule-strong:rgba(240,235,225,.85);
     }
@@ -246,8 +259,9 @@
       border-bottom:1px solid var(--rule-strong);
       transition:background var(--territory-fade),color var(--territory-fade),border-color var(--territory-fade);
     }
-    .nav-logo{font-family:'Archivo Black',sans-serif;font-size:1.22rem;letter-spacing:-.02em;text-transform:uppercase;color:var(--fg);text-decoration:none;opacity:0;animation:navReveal .6s cubic-bezier(.2,.75,.2,1) .08s forwards;}
-    .nav-logo span{color:var(--accent);}
+    .nav-logo{display:inline-flex;align-items:center;text-decoration:none;opacity:0;animation:navReveal .6s cubic-bezier(.2,.75,.2,1) .08s forwards;transition:opacity var(--snap);}
+    .nav-logo:hover,.nav-logo:focus-visible{opacity:.72;outline:none;}
+    .nav-mark{width:34px;height:34px;flex:none;display:block;}
     .nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;background:transparent;border:2px solid var(--grey);color:var(--white);cursor:pointer;box-shadow:var(--sh-sm);transition:transform var(--snap),box-shadow var(--snap),border-color var(--snap);}
     .nav-toggle:hover{border-color:var(--orange);color:var(--orange);transform:translate(-2px,-2px);box-shadow:4px 4px 0 0 var(--orange);}
     .nav-toggle:active{transform:translate(1px,1px);box-shadow:0 0 0 0 var(--orange);}
@@ -644,7 +658,7 @@
     @media(max-width:768px){
       nav{padding:0 16px;height:64px;}
       .page-sweep{top:64px;}
-      .nav-logo{font-size:1.35rem;letter-spacing:2px;}
+      .nav-mark{width:30px;height:30px;}
       .nav-toggle{display:inline-flex;}
       .nav-toggle{margin-left:auto;}
       /* Solid territory ground — a translucent panel failed to composite over
@@ -756,7 +770,15 @@
   <div class="page-sweep-layer black"></div>
 </div>
 <nav>
-  <a href="#" class="nav-logo" data-target="home">Alex<span>.</span>Obeid</a>
+  <a href="#" class="nav-logo" data-target="home" aria-label="Alex Obeid — home">
+    <svg class="nav-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <rect width="64" height="64" fill="var(--mark-ground)"/>
+      <path fill="var(--mark-letter)" fill-rule="evenodd" d="M5 46.5 16.5 17.5H22.5L34 46.5Z M19.5 28 23.8 38.5H15.2Z"/>
+      <circle cx="44.5" cy="32" r="10.7" fill="none" stroke="var(--mark-ground)" stroke-width="13.6"/>
+      <circle cx="44.5" cy="32" r="10.7" fill="none" stroke="var(--mark-letter)" stroke-width="7.6"/>
+      <circle cx="44.5" cy="32" r="5" fill="var(--mark-dot)"/>
+    </svg>
+  </a>
   <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <path d="M3 6h18M3 12h18M3 18h18"/>
