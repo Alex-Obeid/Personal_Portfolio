@@ -11,6 +11,9 @@ at poster scale, flat colour blocking, hairline rules, and no depth effects.
 | Path | What it is |
 | --- | --- |
 | `index.html` | The entire site: markup, CSS and JS in one file |
+| `DESIGN-SYSTEM.md` | The design language as a portable spec — tokens, type, graphics rules |
+| `design-system/` | Generated Claude Design bundle — 17 preview cards + `tokens.css` |
+| `tools/build-design-system.py` | Generator for `design-system/` — edit this, not the output |
 | `favicon.svg` | "A•O" monogram favicon (also the Apple touch icon) |
 | `Images/Headshot/` | Home-page portrait |
 | `Images/Planetary Gearbox/` | Renders and build photos for the Planetary Gearbox project |
@@ -41,7 +44,52 @@ folder structure **and file-name casing** (see [Gotchas](#gotchas)).
 
 ---
 
+## Shipping to Claude Design
+
+`design-system/` is a ready-to-push Claude Design project: 17 self-contained preview
+pages, each opening with a `<!-- @dsCard group="…" name="…" subtitle="…" viewport="…" -->`
+marker that the app compiles into its card index. Cards are grouped **Foundations ·
+Brand · Components · Patterns · Graphics**.
+
+It is generated. **Edit `tools/build-design-system.py` and rebuild — never edit the
+output**, or the next build silently discards your changes:
+
+```bash
+python tools/build-design-system.py
+```
+
+Tokens are inlined into every preview rather than linked, so a card renders correctly
+regardless of how the host resolves relative paths. `tokens.css` ships alongside as the
+canonical copy for anything consuming the system in code, and `README.md` inside the
+bundle is a copy of [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
+
+### Pushing
+
+Pushing needs design-system authorization, which only an **interactive** Claude Code
+session can grant. Once, on this machine:
+
+```bash
+/design-login
+```
+
+Then, from an interactive session in this directory:
+
+```bash
+/design-sync
+```
+
+That skill drives the upload: it lists your writable design-system projects (or creates
+one), diffs `design-system/` against the remote, shows you the exact write/delete plan
+for approval, and uploads. Headless and SDK runs reuse the authorization afterwards.
+
+---
+
 ## Design system
+
+> This section covers how the system is implemented here. For the design language
+> itself — the rules for drawing new components and graphics in this style, in a form
+> you can hand to a designer or paste into Claude as context — see
+> [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
 
 ### Colour territories
 
