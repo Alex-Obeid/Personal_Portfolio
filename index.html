@@ -29,9 +29,11 @@
       --rule:rgba(10,10,10,.20);
       --rule-strong:rgba(10,10,10,.85);
 
-      /* Mark — ground/letter/dot flip per territory (design system: Brand / Mark) */
-      --mark-ground:var(--ink);
-      --mark-letter:var(--paper);
+      /* Mark — the ground matches the page ground on every territory, so the
+         square dissolves and only the letterforms and dot read. Custom props
+         resolve where they are declared, so each territory restates all three. */
+      --mark-ground:var(--paper);
+      --mark-letter:var(--ink);
       --mark-dot:var(--orange);
 
       --snap:.16s cubic-bezier(.4,0,.2,1);
@@ -57,7 +59,7 @@
       --surface:rgba(10,10,10,.07);
       --mark-ground:var(--orange);
       --mark-letter:var(--ink);
-      --mark-dot:var(--paper);
+      --mark-dot:var(--paper);   /* orange would vanish into the ground here */
       --rule:rgba(10,10,10,.30);
       --rule-strong:rgba(10,10,10,.88);
     }
@@ -69,8 +71,8 @@
       --accent:var(--orange);
       --on-accent:var(--ink);
       --surface:#161513;
-      --mark-ground:var(--paper);
-      --mark-letter:var(--ink);
+      --mark-ground:var(--ink);
+      --mark-letter:var(--paper);
       --mark-dot:var(--orange);
       --rule:rgba(240,235,225,.20);
       --rule-strong:rgba(240,235,225,.85);
@@ -79,7 +81,11 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     /* Momentum scrolling is driven in JS; native smooth would fight the rAF loop.
        Reduced-motion users fall back to the browser's own instant scrolling. */
-    html{scroll-behavior:auto;}
+    /* The canvas is whatever shows where no section has painted yet: the edges
+       during fast scroll, and beyond the page during overscroll. It had no
+       background, so it fell back to body's cream and every such gap flashed
+       cream. JS keeps this matched to the territory on screen. */
+    html{scroll-behavior:auto;background:var(--paper);}
     body{
       background:var(--bg);color:var(--fg);
       font-family:'Archivo',system-ui,sans-serif;font-weight:400;
@@ -104,7 +110,12 @@
          and break position:sticky on the pinned carousel inside. */
       overflow:clip;
     }
-    .terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:center;}
+    /* The hero hangs from its top edge rather than centring. Centring parked
+       ~240px of free space above the grid, putting the name 322px below the
+       fixed nav. The scroll cue pins to the panel foot so the panel keeps its
+       full-bleed height without dragging the name down with it. */
+    .terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding-top:clamp(128px,12.5vh,150px);}
+    .terr-min .scroll-cue{position:absolute;left:0;right:0;bottom:22px;}
 
     /* Drop-in slot for artwork: add .gfx to an <svg>/<img> inside a .terr
        and position it with inline top/right/bottom/left + width. */
@@ -283,7 +294,10 @@
     section{min-height:100vh;display:none;padding:120px 48px 80px;background:var(--bg);color:var(--fg);}
     section.active{display:block;}
     #home{display:none;}
-    #home.active{display:block;}
+    /* Full-bleed: the territories inside supply their own padding. Without
+       this the generic `section` padding inset every panel by 48px, leaving
+       cream strips down both edges of the orange and ink grounds. */
+    #home.active{display:block;padding:0;}
     .home-hero{display:flex;align-items:center;justify-content:center;gap:80px;min-height:calc(100vh - 220px);}
 
     /* HOME */
@@ -637,14 +651,15 @@
 
     /* FOOTER */
     .site-footer{border-top:1px solid var(--rule);padding:26px 48px 30px;background:var(--bg);color:var(--fg);}
-    .footer-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+    .footer-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 28px;flex-wrap:wrap;}
     .footer-links{display:flex;flex-direction:column;align-items:flex-start;gap:10px;}
     .footer-links a{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2);text-decoration:none;transition:color .2s;display:inline-flex;align-items:center;gap:8px;}
     .footer-links .footer-ico{width:13px;height:13px;display:inline-block;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.75;transform:translateY(-.5px);}
     .footer-links a:hover{color:var(--accent);}
-    .footer-easter{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);cursor:pointer;transition:background var(--snap),color var(--snap),border-color var(--snap);margin-left:auto;}
-    .footer-easter svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-    .footer-easter:hover{background:var(--fg);color:var(--bg);border-color:var(--fg);}
+    .footer-easter{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex:none;padding:0;border:1px solid var(--rule-strong);background:transparent;color:var(--accent);cursor:pointer;transition:background var(--snap),color var(--snap),border-color var(--snap);}
+    .footer-easter svg{width:12px;height:12px;display:block;}
+    .footer-easter:hover,.footer-easter:focus-visible{background:var(--accent);color:var(--on-accent);border-color:var(--accent);outline:none;}
+    .footer-easter:active{background:var(--fg);color:var(--bg);border-color:var(--fg);}
     .footer-copy{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2);}
 
     /* NOISE */
@@ -699,9 +714,10 @@
       nav.closing .nav-links li:nth-child(1){animation-delay:.15s;}
 
       section{padding:92px 20px 56px;}
-      #home.active{padding:0;}
       .terr{padding:96px 20px 72px;}
-      .spec-mark{left:20px!important;right:auto!important;top:80px!important;}
+      .terr-min{padding-top:112px;}
+      .terr-min .scroll-cue{bottom:16px;}
+      .spec-mark{left:20px!important;right:auto!important;top:76px!important;}
       /* Name and portrait stay paired; the rest runs full width below them */
       .hero-grid{
         column-gap:18px;align-items:center;
@@ -744,7 +760,7 @@
       .leaderboard-wrap{display:none;}
       .site-footer{padding:20px 20px 24px;}
       .footer-row{flex-direction:column;align-items:flex-start;gap:12px;}
-      .footer-easter{margin-left:0;}
+      .footer-easter{align-self:flex-end;}
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -797,7 +813,7 @@
 
   <!-- ── Territory 1 · PAPER ── -->
   <div class="terr terr-min" data-territory="paper">
-    <span class="spec-mark" style="top:104px;left:48px;">
+    <span class="spec-mark" style="top:92px;left:48px;">
       <span class="sm-bars"><i></i><i></i><i></i></span>Portfolio · 01
     </span>
 
@@ -1095,10 +1111,10 @@
       <a href="https://www.linkedin.com/in/alex-obeid/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg class="footer-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10v6"/><circle cx="8" cy="7.5" r=".9"/><path d="M12 16v-3.2c0-1.4.8-2.3 2-2.3s2 .9 2 2.3V16"/></svg><span>LinkedIn</span></a>
       <a href="mailto:alexobeid2006@gmail.com"><svg class="footer-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg><span>alexobeid2006@gmail.com</span></a>
     </div>
-    <button class="footer-easter" type="button" onclick="navigate('easter')" aria-label="Warning">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8.5 15H3.5L12 4z"/><path d="M12 9v5"/><circle cx="12" cy="17" r="1"/></svg>
-    </button>
     <div class="footer-copy">© 2026 Alex Obeid. All rights reserved.</div>
+    <button class="footer-easter" type="button" onclick="navigate('easter')" aria-label="Play a hidden game">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 21 19H3Z" fill="currentColor"/></svg>
+    </button>
   </div>
 </footer>
 
@@ -1238,6 +1254,7 @@ function applySection(target, options = {}) {
   window.scrollTo(0, 0);
   if (typeof syncSmoothScroll === 'function') { syncSmoothScroll(); }
   if (typeof updateNavTerritory === 'function') { updateNavTerritory(); }
+  if (typeof updateCanvasTerritory === 'function') { updateCanvasTerritory(); }
   if (resolvedTarget === 'easter') { resetDraw(); }
   if (resolvedTarget === 'home' && typeof updateCylinder === 'function') { updateCylinder(); }
 }
@@ -1595,6 +1612,7 @@ function ssApply() {
   window.scrollTo(0, ssCurrent);
   if (typeof updateCylinder === 'function') updateCylinder();
   if (typeof updateNavTerritory === 'function') updateNavTerritory();
+  if (typeof updateCanvasTerritory === 'function') updateCanvasTerritory();
 }
 
 function ssLoop() {
@@ -1663,8 +1681,34 @@ function updateNavTerritory() {
   else navBar.removeAttribute('data-territory');
 }
 
-window.addEventListener('scroll', updateNavTerritory, { passive:true });
-window.addEventListener('resize', updateNavTerritory, { passive:true });
+/* The nav probes a single point; the canvas needs whatever covers the middle
+   of the viewport, across every section — not just the home territories. */
+const TERRITORY_BG = { paper:'#f0ebe1', vermillion:'#f05a00', ink:'#0a0a0a' };
+const territoryNodes = [...document.querySelectorAll('[data-territory]')];
+
+function territoryAtY(y) {
+  let found = 'paper';
+  for (const n of territoryNodes) {
+    const r = n.getBoundingClientRect();
+    if (!r.width || !r.height) continue;          // hidden section
+    if (r.top <= y && r.bottom > y) found = n.dataset.territory;
+  }
+  return found;
+}
+
+function updateCanvasTerritory() {
+  const t = territoryAtY(window.innerHeight / 2);
+  document.documentElement.style.background = TERRITORY_BG[t] || TERRITORY_BG.paper;
+}
+
+function updateTerritories() {
+  updateNavTerritory();
+  updateCanvasTerritory();
+}
+
+window.addEventListener('scroll', updateTerritories, { passive:true });
+window.addEventListener('resize', updateTerritories, { passive:true });
+updateCanvasTerritory();
 
 /* ═══════════════════════════════════════
    HOME SKILL CYLINDER
@@ -1736,7 +1780,7 @@ function layoutCylinder() {
 
   cylItems.forEach((el, i) => {
     el.style.fontSize = size + 'px';
-    el.style.transform = `rotateX(${i * CYL_ANGLE}deg) translateZ(${radius}px)`;
+    el.style.transform = `rotateX(${-i * CYL_ANGLE}deg) translateZ(${radius}px)`;
   });
 }
 
@@ -1747,8 +1791,10 @@ function updateCylinder() {
     ? Math.min(1, Math.max(0, -cylWrap.getBoundingClientRect().top / total))
     : 0;
 
+  // Items sit at -i*ANGLE and the cage turns +rot, so the reel travels the
+  // opposite way to before. cos is even, so the opacity falloff is unchanged.
   const rot = p * (CYL_N - 1) * CYL_ANGLE;
-  cylEl.style.transform = `rotateX(${-rot}deg)`;
+  cylEl.style.transform = `rotateX(${rot}deg)`;
   const active = Math.round(rot / CYL_ANGLE);
 
   cylItems.forEach((el, i) => {
