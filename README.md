@@ -261,6 +261,20 @@ and Planetary Gearbox is deliberately excluded. Galleries for projects that do e
   labelled drawing-sheet tile. **Right now every entry is a tile** — the only photographed
   project was the one removed. Drop files into `Images/<Project>/` and swap the strings.
 
+### Placed graphics
+
+Two more from `Design system components/handoff/`:
+
+| Component | Where | Notes |
+| --- | --- | --- |
+| **05 · Plate — split disc** (`gfx-plate`) | Softwares panel | Sticks at the focal line beside the reel and crops against the right edge. **Hidden below 768px** — there is no horizontal room, and it is bleed artwork, so it drops rather than crushing the type. |
+| **02 · Stripe fan** (`gfx-fan`) | Skills panel | Its `color:var(--accent)` resolves to ink on the vermillion ground, so it is **already black there** with no override. Shears with scroll via `--sp`. |
+
+`--sp` comes from one shared driver for all `[data-gfx-scroll]` elements. It is called
+from `ssApply()` as well as the `scroll` event, for the reason the momentum scroller
+already documents — the fan would otherwise lag a frame behind the page. Reduced motion
+pins `--sp` to `1`, which is the component's *finished* state, not its starting one.
+
 ### Data panel — count-up stat
 
 The three figures use **`gfx-count` (16 · Count-up stat)** from
