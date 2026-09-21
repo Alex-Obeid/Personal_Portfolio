@@ -114,6 +114,7 @@
        ~240px of free space above the grid, putting the name 322px below the
        fixed nav. The scroll cue pins to the panel foot so the panel keeps its
        full-bleed height without dragging the name down with it. */
+    .terr-blank{min-height:100vh;}
     .terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding-top:clamp(128px,12.5vh,150px);}
     .terr-min .scroll-cue{position:absolute;left:0;right:0;bottom:22px;}
 
@@ -477,10 +478,14 @@
       justify-items:center;align-items:center;
       width:100%;max-width:1140px;padding-top:52px;
     }
+    /* Was a .62rem mono label in --fg-2, which on the vermillion ground is
+       only 3.4:1 and read as barely there. Now a title in full --fg. */
     .cyl-label{
       text-align:center;
-      font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;
-      text-transform:uppercase;color:var(--fg-2);margin-bottom:22px;
+      font-family:'Archivo Black',sans-serif;
+      font-size:clamp(1.15rem,2vw,1.75rem);
+      letter-spacing:-.02em;line-height:1;
+      text-transform:uppercase;color:var(--fg);margin-bottom:24px;
     }
 
     /* The rotating cylinder — tight cascade/echo stack */
@@ -976,9 +981,7 @@
 
   <!-- ── Territory 1 · PAPER ── -->
   <div class="terr terr-min" data-territory="paper">
-    <span class="spec-mark" style="top:92px;left:48px;">
-      <span class="sm-bars"><i></i><i></i><i></i></span>Portfolio · 01
-    </span>
+    <span class="spec-mark" data-section="Portfolio" style="top:92px;left:48px;"></span>
 
     <div class="hero-grid">
       <div class="hero-kicker t-label fade-in"><span class="bar"></span>Mechanical Engineer · Lebanon</div>
@@ -1014,7 +1017,7 @@
     <div class="px-wrap" id="px-wrap">
       <div class="px-sticky">
         <div class="px-head">
-          <span class="t-label">Selected work</span>
+          <span class="spec-mark" data-section="Project Gallery" style="position:static"></span>
           <button class="btn btn-primary px-cta" type="button" onclick="navigate('projects')">
             View My Projects!
           </button>
@@ -1032,12 +1035,10 @@
   <div class="terr" data-territory="vermillion" style="padding:0;">
     <div class="cyl-wrap" id="cyl-wrap">
       <div class="cyl-sticky">
-        <span class="spec-mark" style="top:96px;right:48px;">
-          Index · 02<span class="sm-bars"><i></i><i></i><i></i></span>
-        </span>
+        <span class="spec-mark" data-section="Skills" data-bars="after" style="top:96px;right:48px;"></span>
 
         <div class="cyl-stage">
-          <div class="cyl-label">What I Work On</div>
+          <div class="cyl-label">My Skills</div>
           <div class="cyl-viewport">
             <div class="cyl" id="cyl"></div>
           </div>
@@ -1048,14 +1049,17 @@
     </div>
   </div>
 
-  <!-- ── Territory 3 · INK ── -->
+  <!-- ── Territory 4 · PAPER · placeholder, content to come ── -->
+  <div class="terr terr-blank" data-territory="paper">
+    <span class="spec-mark" data-section="Softwares / Programs" style="top:96px;left:48px;"></span>
+  </div>
+
+  <!-- ── Territory 5 · INK ── -->
   <div class="terr" data-territory="ink">
-    <span class="spec-mark" style="top:96px;left:48px;">
-      <span class="sm-bars"><i></i><i></i><i></i></span>Data · 03
-    </span>
+    <span class="spec-mark" data-section="Data" style="top:96px;left:48px;"></span>
 
     <div class="stats-head t-label">
-      <span>// By the numbers</span><span>03 — Index</span>
+      <span>// By the numbers</span><span data-section-num>&mdash;</span>
     </div>
     <div class="stat-row">
       <div class="stat-num t-numeral">03</div>
@@ -2073,6 +2077,27 @@ if (!prefersReducedMotion && window.matchMedia('(pointer:fine)').matches) {
    The nav is fixed over full-bleed colour panels, so it adopts the
    palette of whichever territory is currently passing beneath it.
 ═══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   SECTION SLIVERS
+   Each home panel carries data-section="Name"; the index comes from DOM
+   order, so inserting, removing or reordering a panel renumbers the rest
+   with no hardcoded numbers to chase.
+═══════════════════════════════════════ */
+function numberSections(){
+  const marks = [...document.querySelectorAll('#home [data-section]')];
+  const bars = '<span class="sm-bars"><i></i><i></i><i></i></span>';
+  marks.forEach((el, i) => {
+    const label = el.dataset.section + ' \u00b7 ' + String(i + 1).padStart(2, '0');
+    el.innerHTML = el.dataset.bars === 'after' ? label + bars : bars + label;
+
+    // any panel can echo its own number elsewhere in its own panel
+    const panel = el.closest('.terr');
+    const echo = panel && panel.querySelector('[data-section-num]');
+    if (echo) echo.textContent = String(i + 1).padStart(2, '0') + ' \u2014 Index';
+  });
+}
+numberSections();
+
 const navBar = document.querySelector('nav');
 const territories = [...document.querySelectorAll('.terr')];
 
@@ -2204,9 +2229,10 @@ function buildParallax(){
    longer of the two needs. */
 function layoutParallax(){
   if (!pxWrap || !pxTrack) return;
-  const strip = window.matchMedia('(max-width:760px)').matches ||
-                window.matchMedia('(hover:none)').matches ||
-                prefersReducedMotion;
+  /* No width gate: a narrow desktop window should still pin. Touch keeps the
+     native strip, because there vertical swipes would fight the pin for
+     several screens' worth of travel. */
+  const strip = window.matchMedia('(hover:none)').matches || prefersReducedMotion;
   pxStrip = strip;
   pxWrap.classList.toggle('is-strip', strip);
   if (strip) {
@@ -2264,8 +2290,7 @@ window.pxWhy = function(){
   const r = {
     mode: pxStrip ? 'STRIP (manual scroll)' : 'PINNED (parallax)',
     windowWidth: window.innerWidth,
-    tooNarrow: window.matchMedia('(max-width:760px)').matches,
-    noHover: window.matchMedia('(hover:none)').matches,
+    touchDevice: window.matchMedia('(hover:none)').matches,
     reducedMotion: prefersReducedMotion,
   };
   console.table(r);
@@ -2310,7 +2335,7 @@ const CYL_ANGLE = 32;
 // Raised from 1.45 to open the cascade out: the copies sit roughly 70% further
 // apart. The layout pass shrinks the type a little to compensate, because a
 // bigger radius brings the front copy closer to the camera.
-const CYL_TIGHTNESS = 2.6;
+const CYL_TIGHTNESS = 2.15;
 let cylItems = [], cylDots = [], cylTicking = false;
 
 function buildCylinder() {

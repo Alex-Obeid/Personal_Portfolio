@@ -249,14 +249,32 @@ and Planetary Gearbox is deliberately excluded. Galleries for projects that do e
   edge can never appear.
 - **Driven from `ssApply()`**, like the carousel. The `scroll` event alone is not enough.
 - **If it scrolls by hand instead of pinning**, the `.is-strip` fallback is active. Call
-  `pxWhy()` in the console — it prints which of the three triggers fired: window under
-  **760px**, `hover:none`, or `prefers-reduced-motion`. That last one is an OS setting and
-  is the easy one to miss.
+  `pxWhy()` in the console — it prints which trigger fired. There is **no width gate**: a
+  narrow desktop window still pins. Only `hover:none` (touch) and `prefers-reduced-motion`
+  fall back. Touch is excluded on purpose — the track is several screens wide, so pinning
+  would capture vertical swipes for a long stretch. Note the browser devtools' device
+  emulation also sets `hover:none` below 768px, so a narrow *emulated* window falls back
+  where a real one would not.
 - `.px-sticky` carries padding reserving the absolute head and progress bands, so flex
   centring cannot push the rows under them; a `max-height:680px` query tightens both.
 - Gallery entries ending in an image extension render as photos, anything else as a
   labelled drawing-sheet tile. **Right now every entry is a tile** — the only photographed
   project was the one removed. Drop files into `Images/<Project>/` and swap the strings.
+
+### Section slivers
+
+Each home panel carries a mono sliver in its top corner — `Portfolio · 01`,
+`Project Gallery · 02`, and so on. **The numbers are not in the markup.** Each mark is an
+empty `<span class="spec-mark" data-section="Name">`, and `numberSections()` walks
+`#home [data-section]` in DOM order and fills in `Name · NN`. Insert, remove or reorder a
+panel and the rest renumber themselves.
+
+- `data-bars="after"` puts the three-bar cluster on the right, for right-aligned marks.
+- A panel can echo its own number elsewhere inside itself with `[data-section-num]` — the
+  stats panel uses this for its `NN — Index` line.
+
+The order is Portfolio, Project Gallery, Skills, Softwares / Programs, Data. The fourth
+is a deliberately empty cream panel holding its place until it has content.
 
 ### Skills carousel
 
@@ -272,11 +290,11 @@ A scroll-pinned 3D cylinder, built with CSS transforms and `position:sticky` —
 - `layoutCylinder()` sets **one uniform size for every skill**, scaled up until the
   longest line fills 92% of the stage. The longest string therefore caps the size for all
   of them.
-- `CYL_TIGHTNESS` (`2.6`) multiplies that size to get the radius — it controls overlap.
+- `CYL_TIGHTNESS` (`2.15`) multiplies that size to get the radius — it controls overlap.
   **Radius is not independent of type size**, and the two pull against each other: a
   bigger radius brings the front copy closer to the camera, so the fitting pass shrinks
   the type to keep it inside the stage. At 1280px, raising it from 1.45 opened the copies
-  from 67px to 118px apart while costing only 3px of type. Push it much further and the
+  from 67px to 99px apart while costing only 1px of type. Push it much further and the
   outer copies start reaching past the stage, which does not clip — `.cyl-viewport` has no
   `overflow` — so they would spill over the label and the dots.
 
