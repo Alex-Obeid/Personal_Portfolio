@@ -206,31 +206,24 @@
     /* Panel leaves upward, wiping the hero into view */
     .startup-intro.done{transform:translateY(-100%);}
     .startup-intro.hidden{display:none;}
-    /* Stack sizes itself to the wordmark so the rule matches its measure */
-    .startup-stack{display:inline-flex;flex-direction:column;align-items:stretch;}
+    /* The mark, not the wordmark. Rule 10 sanctions centring a single mark,
+       so the stack is a fixed measure with the mark centred over it. */
+    .startup-stack{display:inline-flex;flex-direction:column;align-items:stretch;
+      width:clamp(168px,22vw,236px);}
     .startup-logo-clip{
       overflow:hidden;
-      padding-top:.2em;
-      height:1.36em;
-      line-height:1;
-      font-family:'Archivo Black',sans-serif;
-      font-size:clamp(1.9rem,5.5vw,3.4rem);
-      letter-spacing:-.03em;
+      display:flex;justify-content:center;
+      padding-bottom:16px;
     }
-    .startup-logo-type{
-      display:inline-block;
-      font-family:'Archivo Black',sans-serif;
-      font-size:clamp(1.9rem,5.5vw,3.4rem);
-      letter-spacing:-.03em;
-      line-height:1;
-      color:var(--paper);
-      white-space:nowrap;
-      user-select:none;
-      pointer-events:none;
-      text-transform:uppercase;
-      transform:translateY(1.5em);   /* parked below the rule */
+    /* Scoped so the mark reads on the ink panel without giving the fixed
+       intro a data-territory, which the canvas prober would then pick up. */
+    .startup-intro{--mark-ground:var(--ink);--mark-letter:var(--paper);--mark-dot:var(--orange);}
+    .startup-mark{
+      display:block;
+      width:clamp(64px,9vw,94px);height:auto;
+      user-select:none;pointer-events:none;
+      transform:translateY(130%);   /* parked below the rule */
     }
-    .startup-logo-type span{color:var(--orange);}
     .startup-logo-rule{
       display:block;
       height:2px;width:100%;
@@ -245,15 +238,15 @@
     }
 
     .startup-intro.play .startup-logo-rule{animation:ruleDraw 360ms cubic-bezier(.3,.7,.2,1) 130ms forwards;}
-    .startup-intro.play .startup-logo-type{animation:markRise 580ms cubic-bezier(.16,.84,.26,1) 290ms forwards;}
+    .startup-intro.play .startup-mark{animation:markRise 580ms cubic-bezier(.16,.84,.26,1) 290ms forwards;}
     .startup-intro.play .startup-meta{animation:metaIn 420ms ease 640ms forwards;}
 
-    .startup-intro.closing .startup-logo-type{animation:markDrop 480ms cubic-bezier(.5,0,.78,1) forwards;}
+    .startup-intro.closing .startup-mark{animation:markDrop 480ms cubic-bezier(.5,0,.78,1) forwards;}
     .startup-intro.closing .startup-meta{animation:metaOut 240ms ease forwards;}
 
     @keyframes ruleDraw{from{transform:scaleX(0);}to{transform:scaleX(1);}}
-    @keyframes markRise{from{transform:translateY(1.5em);}to{transform:translateY(0);}}
-    @keyframes markDrop{from{transform:translateY(0);}to{transform:translateY(1.5em);}}
+    @keyframes markRise{from{transform:translateY(130%);}to{transform:translateY(0);}}
+    @keyframes markDrop{from{transform:translateY(0);}to{transform:translateY(130%);}}
     @keyframes metaIn{from{opacity:0;}to{opacity:.62;}}
     @keyframes metaOut{from{opacity:.62;}to{opacity:0;}}
     .page-sweep.is-active .page-sweep-layer.orange{animation:pageSweep 900ms linear 0ms both;}
@@ -360,6 +353,8 @@
     .px-sticky{
       position:sticky;top:0;height:100vh;
       display:flex;flex-direction:column;justify-content:center;
+      /* reserves the absolute head and progress bands */
+      padding:126px 0 72px;
       /* clip, not hidden: hidden would create a scroll container and kill the
          sticky positioning this depends on. */
       overflow:clip;
@@ -369,7 +364,13 @@
       display:flex;justify-content:space-between;align-items:baseline;
       color:var(--fg-2);pointer-events:none;
     }
+    .px-rows{display:flex;flex-direction:column;gap:clamp(16px,2.4vh,30px);}
     .px-track{display:flex;align-items:center;gap:0;will-change:transform;}
+    /* Counter-band: no titles, smaller plates, travels the other way. */
+    .px-track-b{align-items:flex-start;}
+    .px-track-b .px-plate{height:clamp(96px,17vh,188px);}
+    .px-track-b .px-cap{display:none;}
+    .px-track-b .px-plates{gap:clamp(10px,1.2vw,18px);}
 
     /* One project */
     .px-group{
@@ -397,7 +398,7 @@
     .px-plates{display:flex;gap:clamp(14px,1.6vw,26px);align-items:flex-end;}
     .px-plate{
       position:relative;flex:none;overflow:clip;
-      height:clamp(230px,44vh,430px);
+      height:clamp(150px,30vh,320px);
       border:1px solid var(--rule-strong);background:var(--surface);
     }
     .px-plate.r-45{aspect-ratio:4/5;}
@@ -430,10 +431,19 @@
     }
     .px-progress i{display:block;height:1px;width:0;background:var(--accent);}
 
+    /* Short windows: pull the bands in and shrink the counter row */
+    @media (max-height:680px){
+      .px-sticky{padding:100px 0 52px;}
+      .px-head{top:80px;}
+      .px-progress{bottom:36px;}
+      .px-track-b .px-plate{height:clamp(80px,13vh,140px);}
+      .px-rows{gap:14px;}
+    }
+
     /* Fallback: native horizontal strip on touch, narrow screens and
        reduced motion. No pinning, no hijacked scroll. */
     .px-wrap.is-strip{height:auto !important;}
-    .px-wrap.is-strip .px-sticky{position:static;height:auto;overflow:visible;padding:96px 0 72px;}
+    .px-wrap.is-strip .px-sticky{position:static;height:auto;overflow:visible;padding:96px 0 72px !important;}
     .px-wrap.is-strip .px-head{position:static;margin:0 20px 26px;}
     .px-wrap.is-strip .px-progress{display:none;}
     .px-wrap.is-strip .px-track{
@@ -444,6 +454,8 @@
       -webkit-overflow-scrolling:touch;
     }
     .px-wrap.is-strip .px-group{scroll-snap-align:start;}
+    /* One scroller is enough on a phone; two stacked reads as a mistake. */
+    .px-wrap.is-strip .px-track-b{display:none;}
     .px-wrap.is-strip .px-plate img{transform:none !important;}
     /* Keep the scroll affordance, but as a hairline rather than chrome */
     .px-wrap.is-strip .px-track{scrollbar-width:thin;scrollbar-color:var(--accent) transparent;}
@@ -924,7 +936,13 @@
 <div class="startup-intro" aria-hidden="true">
   <div class="startup-stack">
     <div class="startup-logo-clip">
-      <span class="startup-logo-type">Alex<span>.</span>Obeid</span>
+      <svg class="startup-mark" viewBox="0 0 64 64" role="img" aria-label="Alex Obeid">
+        <rect width="64" height="64" fill="var(--mark-ground)"/>
+        <path fill="var(--mark-letter)" fill-rule="evenodd" d="M5 46.5 16.5 17.5H22.5L34 46.5Z M19.5 28 23.8 38.5H15.2Z"/>
+        <circle cx="44.5" cy="32" r="10.7" fill="none" stroke="var(--mark-ground)" stroke-width="13.6"/>
+        <circle cx="44.5" cy="32" r="10.7" fill="none" stroke="var(--mark-letter)" stroke-width="7.6"/>
+        <circle cx="44.5" cy="32" r="5" fill="var(--mark-dot)"/>
+      </svg>
     </div>
     <span class="startup-logo-rule"></span>
     <span class="startup-meta"><span>Portfolio</span><span>2026</span></span>
@@ -1004,7 +1022,10 @@
           <span class="t-label">Selected work</span>
           <span class="spec-mark" style="position:static"><span class="sm-bars"><i></i><i></i><i></i></span>Index &middot; 02</span>
         </div>
-        <div class="px-track" id="px-track"></div>
+        <div class="px-rows">
+          <div class="px-track" id="px-track"></div>
+          <div class="px-track px-track-b" id="px-track-b" aria-hidden="true"></div>
+        </div>
         <div class="px-progress"><i id="px-progress-bar"></i></div>
       </div>
     </div>
@@ -2112,6 +2133,7 @@ updateCanvasTerritory();
 const pxHome  = document.getElementById('home');   // homeSection is declared later; const, so no TDZ peeking
 const pxWrap  = document.getElementById('px-wrap');
 const pxTrack = document.getElementById('px-track');
+const pxTrackB = document.getElementById('px-track-b');
 const pxBar   = document.getElementById('px-progress-bar');
 /* Ported from the Codrops gallery's three tunables, same names and meaning.
    Intensity and the multiplier are both raised over the demo's 0.4 / 1.0;
@@ -2126,7 +2148,10 @@ const PX_ZOOM = 1 / PX_UV_SCALE;
 const PX_RATIOS = ['r-45','r-1610','r-11','r-45','r-1610'];
 const IMG_RE = /\.(png|jpe?g|gif|webp|svg)$/i;
 
-let pxPlates = [], pxDistance = 0, pxStrip = false;
+let pxPlates = [], pxDistance = 0, pxDistanceB = 0, pxStrip = false;
+/* Row B travels this fraction of row A's distance, in the opposite
+   direction — enough contrast to read without looking frantic. */
+const PX_B_RATIO = 0.75;
 
 function buildParallax(){
   if (!pxTrack) return;
@@ -2157,7 +2182,9 @@ function buildParallax(){
            '</article>';
   }).join('');
 
-  pxPlates = [...pxTrack.querySelectorAll('.px-plate')];
+  buildCounterRow();
+  pxPlates = [...pxTrack.querySelectorAll('.px-plate'),
+              ...(pxTrackB ? pxTrackB.querySelectorAll('.px-plate') : [])];
   // Whole group is clickable for convenience, but the title is the real
   // control so the showcase is reachable by keyboard.
   pxTrack.addEventListener('click', e => {
@@ -2166,6 +2193,30 @@ function buildParallax(){
     const g = e.target.closest('.px-group');
     if (g) openProject(parseInt(g.dataset.idx, 10));
   });
+}
+
+/* Row B is every plate in reverse with the titles stripped: a counter-flowing
+   band rather than a second copy of the index. With only one project
+   photographed the set is short, so it repeats until it is wide enough to
+   actually travel. */
+function buildCounterRow(){
+  if (!pxTrackB) return;
+  const all = [];
+  PROJECTS.forEach(proj => (proj.gallery || []).forEach(entry => all.push({ entry, proj })));
+  all.reverse();
+  if (!all.length) return;
+
+  const cell = ({ entry, proj }, i) => {
+    const ratio = PX_RATIOS[i % PX_RATIOS.length];
+    return IMG_RE.test(entry)
+      ? '<figure class="px-plate ' + ratio + '"><img src="' + entry + '" alt="" aria-hidden="true" loading="lazy" decoding="async"></figure>'
+      : '<figure class="px-plate is-tile ' + ratio + '">' + entry + '</figure>';
+  };
+
+  let html = '', n = 0;
+  const target = Math.max(6, all.length * 2);
+  while (n < target) { html += cell(all[n % all.length], n); n++; }
+  pxTrackB.innerHTML = '<div class="px-plates">' + html + '</div>';
 }
 
 /* The wrapper's height is 100vh plus however far the track has to travel, so
@@ -2177,10 +2228,19 @@ function layoutParallax(){
                 prefersReducedMotion;
   pxStrip = strip;
   pxWrap.classList.toggle('is-strip', strip);
-  if (strip) { pxWrap.style.height = ''; pxTrack.style.transform = ''; return; }
+  if (strip) {
+    pxWrap.style.height = '';
+    pxTrack.style.transform = '';
+    if (pxTrackB) pxTrackB.style.transform = '';
+    return;
+  }
 
   const travel = Math.max(0, pxTrack.scrollWidth - window.innerWidth);
   pxDistance = travel;
+  // Row B covers a set fraction of row A's distance over the same progress.
+  pxDistanceB = pxTrackB
+    ? Math.min(Math.max(0, pxTrackB.scrollWidth - window.innerWidth), travel * PX_B_RATIO)
+    : 0;
   pxWrap.style.height = (window.innerHeight + travel) + 'px';
   updateParallax();
 }
@@ -2195,6 +2255,9 @@ function updateParallax(){
     : 0;
 
   pxTrack.style.transform = 'translate3d(' + (-p * pxDistance) + 'px,0,0)';
+  // Starts fully left and unwinds to zero, so it slides right while row A
+  // slides left — opposite travel off the same scroll.
+  if (pxTrackB) pxTrackB.style.transform = 'translate3d(' + (-(1 - p) * pxDistanceB) + 'px,0,0)';
   if (pxBar) pxBar.style.width = (p * 100) + '%';
 
   /* Per plate, exactly the demo's mapping: how far the frame's centre sits

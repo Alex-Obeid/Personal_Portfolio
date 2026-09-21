@@ -243,6 +243,16 @@ gallery](https://tympanus.net/codrops/2026/02/19/creating-a-smooth-horizontal-pa
 - **Driven from `ssApply()`**, like the carousel. The `scroll` event alone is not enough.
 - Plate ratios cycle through `PX_RATIOS` (4:5, 16:10, 1:1) so the row has rhythm without
   the widths being arbitrary.
+- **Two rows, travelling opposite ways.** Row A is the titled index. Row B underneath is
+  a counter-band — every plate in reverse with the titles stripped, smaller, captionless
+  and `aria-hidden` since it repeats content already announced above. Row A translates
+  `-p × distance`; row B translates `-(1-p) × distanceB`, so it starts fully left and
+  unwinds to zero while A unwinds the other way. `PX_B_RATIO` (0.75) caps B's travel as a
+  fraction of A's, and the set repeats until it is wide enough to actually move — with one
+  project photographed there is not otherwise enough to travel.
+- `.px-sticky` carries top/bottom padding that reserves the absolutely-positioned head and
+  progress bands, so flex centring cannot push the rows underneath them on a short window.
+  A `max-height:680px` query tightens both and shrinks row B.
 - Below 900px, on touch, or under `prefers-reduced-motion`, `.is-strip` drops the pinning
   entirely: the track becomes a native horizontally-scrolling strip with scroll-snap and
   the parallax is switched off. No hijacked scroll on a phone.
@@ -313,9 +323,16 @@ Masonry is CSS `columns: 3`, dropping to 2 at 1000px and 1 at 580px.
 
 ### Loading animation
 
-Ink panel. A rule draws across the wordmark's measure, the wordmark rises from behind it
-as a mask reveal, then a mono spec line fades in. On close the wordmark drops back below
-the rule and the panel slides up to wipe the hero into view.
+Ink panel. A rule draws, the **AO mark** rises from behind it as a mask reveal, then a
+mono spec line fades in. On close the mark drops back below the rule and the panel slides
+up to wipe the hero into view.
+
+The stack is a fixed measure with the mark centred over it — rule 10 permits centring a
+single mark. The rise is `translateY(130%)`, a percentage of the mark's own height, so it
+tracks the `clamp()` size. Mark colours are set as local custom properties on
+`.startup-intro` rather than by giving it `data-territory="ink"`: the intro is
+`position:fixed` over the whole viewport, and the canvas prober would then read it as the
+territory on screen.
 
 Timings live in JS: `closing` at `1620 ms`, `done` at `2080 ms`, `hidden` at `2780 ms`.
 Skipped entirely under `prefers-reduced-motion`.
