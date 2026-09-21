@@ -158,6 +158,17 @@
       margin:0;font-size:inherit;font-weight:400;
       flex:none;color:var(--fg);white-space:nowrap;
     }
+    /* The other panels' slivers sit inside something that already sticks, or
+       are only a viewport tall. This panel is ~1200px with a pinned reel, so
+       its mark has to hold position itself. height:0 keeps it out of the
+       flow the way position:absolute did. */
+    .sw-sect .sw-mark{
+      /* block-level, not the base inline-flex: an inline child generates a
+         line box and was adding a whole 109px line to the panel height */
+      position:sticky;top:96px;left:auto;right:auto;z-index:3;
+      display:flex;width:max-content;height:0;line-height:1;
+      margin-left:48px;align-items:flex-start;
+    }
     .sw-runout{height:var(--sw-space);}
     .sw-list{list-style:none;margin:0;padding:0;}
     .sw-list li{
@@ -165,7 +176,7 @@
       color:transparent;
       background-image:linear-gradient(180deg,
         var(--sw-dim) 0 calc(var(--sw-start) - .5lh),
-        var(--accent-text) calc(var(--sw-start) - .54lh) calc(var(--sw-start) + .54lh),
+        var(--accent) calc(var(--sw-start) - .54lh) calc(var(--sw-start) + .54lh),
         var(--sw-dim) calc(var(--sw-start) + .5lh));
       background-attachment:fixed;
       -webkit-background-clip:text;
@@ -180,6 +191,7 @@
     @media(max-width:768px){
       .sw-sect{--sw-start:44vh;--sw-space:26vh;font-size:clamp(1.4rem,8vw,2.6rem);}
       .sw-row{padding-left:20px;padding-right:20px;}
+      .sw-sect .sw-mark{margin-left:20px;top:76px;}
     }
 
     .terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding-top:clamp(128px,12.5vh,150px);}
@@ -1118,7 +1130,7 @@
 
   <!-- ── Territory 4 · PAPER · software reel ── -->
   <div class="terr sw-sect" data-territory="paper" style="--sw-count:5;">
-    <span class="spec-mark" data-section="Softwares / Programs" style="top:96px;left:48px;"></span>
+    <span class="spec-mark sw-mark" data-section="Softwares / Programs"></span>
     <div class="sw-sticky">
       <div class="sw-row">
         <h2 class="sw-lead">

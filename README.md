@@ -294,6 +294,15 @@ Three things that will break it if you edit them:
   with scroll, so a tight stack reads fast. `1.55` gives ~115px per item.
 - `--sw-count` on the panel must match the number of items; the sticky's
   `top: calc((count - 1) * -1lh)` depends on it.
+- The sliver is `position:sticky`, not the usual `absolute`, because this panel is far
+  taller than a viewport and the mark would otherwise scroll up under the fixed nav
+  mid-reel. It is `display:flex; height:0` — the base `.spec-mark` is `inline-flex`, and
+  an inline child generates a line box, which added a whole 109px line to the panel. The
+  rule is scoped `.sw-sect .sw-mark` to beat `.spec-mark`, which appears later in the
+  sheet.
+
+The highlight uses full-strength `--accent`. On cream that is **2.87:1**, just under the
+3:1 large-text floor — a deliberate choice to keep the palette to its three colours.
 
 iOS Safari ignores `background-attachment:fixed`, so touch and `prefers-reduced-motion`
 both get a solid static list instead.
