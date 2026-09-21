@@ -267,7 +267,7 @@ Two more from `Design system components/handoff/`:
 
 | Component | Where | Notes |
 | --- | --- | --- |
-| **05 · Plate — split disc** (`gfx-plate`) | Softwares panel | Sticks at the focal line beside the reel and crops against the right edge. **Hidden below 768px** — there is no horizontal room, and it is bleed artwork, so it drops rather than crushing the type. |
+| **05 · Plate — split disc** (`gfx-plate`) | Softwares panel | Turned portrait and inverted: cream ground, orange discs, the lens intersection and the slash knocked out in the ground. Centres move from `(112,100)/(208,100)` on the 320×200 board to `(100,112)/(100,208)` on a 200×320 one, and the slash swaps its endpoints' axes with them. No keyline — the ground is the panel's own, so it reads as artwork rather than a plate laid over it. **Hidden below 768px**: the lead and list already use 349px of a 375px viewport. |
 | **02 · Stripe fan** (`gfx-fan`) | Skills panel | Its `color:var(--accent)` resolves to ink on the vermillion ground, so it is **already black there** with no override. Shears with scroll via `--sp`. |
 
 `--sp` comes from one shared driver for all `[data-gfx-scroll]` elements. It is called

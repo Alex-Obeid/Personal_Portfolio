@@ -127,10 +127,12 @@
     .sw-row .sw-plate{
       position:sticky;top:calc(var(--sw-start) - .5lh);
       flex:none;margin-left:auto;align-self:flex-start;
-      width:clamp(160px,23vw,370px);height:auto;aspect-ratio:16/10;
-      /* crops against the panel edge rather than sitting politely inside */
-      margin-right:calc(-1 * clamp(44px,6.4vw,118px));
-      border:1px solid var(--rule-strong);
+      /* portrait now, so it is narrow enough to sit beside the reel */
+      width:clamp(112px,14.5vw,210px);height:auto;aspect-ratio:10/16;
+      /* ground is the panel's own, so no keyline — it reads as artwork
+         sitting on the panel rather than a plate laid over it */
+      background:transparent;
+      margin-right:clamp(4px,1.2vw,28px);
     }
 
     /* ══ 02 · STRIPE FAN — .gfx-fan ══
@@ -1190,11 +1192,11 @@
           <li>MATLAB</li>
           <li>Python</li>
         </ul>
-        <svg class="gfx-plate sw-plate" viewBox="0 0 320 200"
+        <svg class="gfx-plate sw-plate" viewBox="0 0 200 320"
              preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-          <rect width="320" height="200" fill="var(--accent)"/>
-          <path fill="var(--on-accent)" fill-rule="evenodd" d="M40 100a72 72 0 1 1 144 0 72 72 0 1 1-144 0M136 100a72 72 0 1 1 144 0 72 72 0 1 1-144 0"/>
-          <path d="M177.2 173.2 L281.2 69.2" stroke="var(--accent)" stroke-width="9" fill="none"/>
+          <rect width="200" height="320" fill="var(--bg)"/>
+          <path fill="var(--accent)" fill-rule="evenodd" d="M28 112a72 72 0 1 1 144 0 72 72 0 1 1-144 0M28 208a72 72 0 1 1 144 0 72 72 0 1 1-144 0"/>
+          <path d="M173.2 177.2 L69.2 281.2" stroke="var(--bg)" stroke-width="9" fill="none"/>
         </svg>
       </div>
     </div>
