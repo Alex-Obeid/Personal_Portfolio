@@ -261,6 +261,26 @@ and Planetary Gearbox is deliberately excluded. Galleries for projects that do e
   labelled drawing-sheet tile. **Right now every entry is a tile** — the only photographed
   project was the one removed. Drop files into `Images/<Project>/` and swap the strings.
 
+### Data panel — count-up stat
+
+The three figures use **`gfx-count` (16 · Count-up stat)** from
+`Design system components/handoff/`. Each numeral counts to its target the first time it
+enters the viewport and the accent rule draws out beneath it. As the component's manifest
+intends, it feeds the existing `.stat-row` pattern rather than replacing it — the grid and
+`.stat-meta` column are untouched.
+
+- The shipped file animates on **CSS only**, because the component catalogue previews it
+  inside an iframe whose document is `visibilityState:"hidden"`, where rAF and timers are
+  throttled dead. That demo block is deliberately **not** copied here; the driver from
+  `GRAPHICS-SPEC.md` runs it instead.
+- One addition to that driver: the value is padded back to the width it was authored at,
+  so `data-gfx-count-to="03"` renders `03` rather than `3`, matching how the panel already
+  set its numerals.
+- The counting target is an inner `<span data-gfx-count-to>` so the year's `'` unit is a
+  sibling and survives the `textContent` writes.
+- Resting values are in the markup, so the figures are correct with JS off, and the
+  observer unobserves on first hit — it never replays on scroll back.
+
 ### Section slivers
 
 Each home panel carries a mono sliver in its top corner — `Portfolio · 01`,

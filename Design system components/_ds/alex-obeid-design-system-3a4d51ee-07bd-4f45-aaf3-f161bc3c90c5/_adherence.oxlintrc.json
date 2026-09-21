@@ -1,0 +1,77 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": []
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {},
+    "tokens": [
+      "--accent",
+      "--bg",
+      "--fg",
+      "--fg-2",
+      "--ink",
+      "--on-accent",
+      "--orange",
+      "--orange2",
+      "--paper",
+      "--paper-shade",
+      "--rule",
+      "--rule-strong",
+      "--snap",
+      "--surface",
+      "--territory-fade",
+      "--warm-muted"
+    ],
+    "tokenKinds": {
+      "--paper": "color",
+      "--paper-shade": "color",
+      "--ink": "color",
+      "--orange": "color",
+      "--orange2": "color",
+      "--warm-muted": "color",
+      "--bg": "color",
+      "--fg": "color",
+      "--fg-2": "color",
+      "--accent": "color",
+      "--on-accent": "color",
+      "--surface": "color",
+      "--rule": "color",
+      "--rule-strong": "color",
+      "--snap": "other",
+      "--territory-fade": "other"
+    },
+    "fontFamilies": []
+  }
+}

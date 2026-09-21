@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="_ds/alex-obeid-design-system-3a4d51ee-07bd-4f45-aaf3-f161bc3c90c5/styles.css">
+<script src="_ds/alex-obeid-design-system-3a4d51ee-07bd-4f45-aaf3-f161bc3c90c5/_ds_bundle.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* --orange-deep / --accent-text ship in the repo's tokens.css but not in the
+   bundled styles.css. Lifted verbatim: full-strength #f05a00 as small text on
+   cream fails AA, which is exactly what link text is. */
+:root{--orange-deep:#ab4000;--accent-text:var(--orange-deep)}
+[data-territory="vermillion"]{--accent-text:var(--ink)}
+[data-territory="ink"]{--accent-text:var(--orange)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-text);text-decoration:none}
+a:hover{color:var(--fg)}
+</style>
+</helmet>
+
+<section data-territory="ink" style="background:var(--bg);color:var(--fg);padding:74px 48px 56px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:48px;align-items:flex-end">
+  <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+    <span style="display:block;width:46px;height:2px;background:var(--orange)"></span>
+    <h1 style="font-family:'Archivo Black',sans-serif;font-size:76px;line-height:.86;letter-spacing:-.035em;text-transform:uppercase;margin:0">Poster<br>Graphics</h1>
+    <p style="font-size:15px;line-height:1.55;color:var(--fg-2);max-width:46ch;margin:0">Seventeen graphic components drawn from the cassette-plate reference, built in the Alex Obeid language — <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--orange)">currentColor</code> and <code style="font-family:'DM Mono',monospace;font-size:13px;color:var(--orange)">var(--accent)</code> only, flat, orthographic, cropped by the panel. Each preview below is the real handoff file, loaded live.</p>
+  </div>
+  <dl style="display:grid;grid-template-columns:auto auto;gap:6px 22px;font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;margin:0;color:var(--fg-2)">
+    <dt style="margin:0">Sheets</dt><dd style="margin:0;color:var(--paper)">17</dd>
+    <dt style="margin:0">Slots</dt><dd style="margin:0;color:var(--paper)">5</dd>
+    <dt style="margin:0">Rev</dt><dd style="margin:0;color:var(--paper)">1.2</dd>
+    <dt style="margin:0">Spec</dt><dd style="margin:0"><a href="handoff/GRAPHICS-SPEC.md" style="color:var(--orange)">Graphics-Spec.md</a></dd>
+  </dl>
+</section>
+
+<section id="t1" style="padding:48px 48px 56px">
+
+  <div style="display:flex;align-items:center;gap:14px;margin:0 0 26px">
+    <span style="display:block;width:46px;height:2px;background:var(--orange)"></span>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-muted)">Group A &mdash; Hero &amp; bleed artwork</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;margin-bottom:56px">
+
+    <div id="1a" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1a" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1A</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Arc quadrant</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Fluid</span>
+      </div>
+      <iframe src="handoff/components/01-arc-quadrant.html" title="Arc quadrant" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">01-arc-quadrant.html</span>
+    </div>
+
+    <div id="1b" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1b" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1B</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Stripe fan</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Scroll &middot; Fluid</span>
+      </div>
+      <iframe src="handoff/components/02-stripe-fan.html" title="Stripe fan" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">02-stripe-fan.html &mdash; scroll inside the frame</span>
+    </div>
+
+    <div id="1c" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1c" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1C</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Numeral bleed</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Fluid</span>
+      </div>
+      <iframe src="handoff/components/03-numeral-bleed.html" title="Numeral bleed" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">03-numeral-bleed.html</span>
+    </div>
+
+    <div id="1d" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1d" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1D</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Halftone drift</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Scroll &middot; Fluid</span>
+      </div>
+      <iframe src="handoff/components/04-halftone-drift.html" title="Halftone drift" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">04-halftone-drift.html &mdash; scroll inside the frame</span>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:14px;margin:0 0 26px">
+    <span style="display:block;width:46px;height:2px;background:var(--orange)"></span>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-muted)">Group B &mdash; Project card plates</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;margin-bottom:56px">
+
+    <div id="1e" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1e" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1E</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Split disc</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Slice</span>
+      </div>
+      <iframe src="handoff/components/05-plate-disc.html" title="Split disc plate" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">05-plate-disc.html</span>
+    </div>
+
+    <div id="1f" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1f" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1F</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Checker ramp</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Slice</span>
+      </div>
+      <iframe src="handoff/components/06-plate-checker.html" title="Checker ramp plate" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">06-plate-checker.html</span>
+    </div>
+
+    <div id="1g" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1g" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1G</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Hatch ramp</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Slice</span>
+      </div>
+      <iframe src="handoff/components/07-plate-hatch.html" title="Hatch ramp plate" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">07-plate-hatch.html</span>
+    </div>
+
+    <div id="1h" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1h" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1H</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Index numeral</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Fluid</span>
+      </div>
+      <iframe src="handoff/components/08-index-plate.html" title="Index numeral plate" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">08-index-plate.html</span>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:14px;margin:0 0 26px">
+    <span style="display:block;width:46px;height:2px;background:var(--orange)"></span>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-muted)">Group C &mdash; Loading &amp; page transition</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;margin-bottom:56px">
+
+    <div id="1i" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1i" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1I</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Arc counter</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Driven &middot; Fixed</span>
+      </div>
+      <iframe src="handoff/components/09-load-arc.html" title="Arc counter loader" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">09-load-arc.html</span>
+    </div>
+
+    <div id="1j" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1j" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1J</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Stripe shutter</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Driven &middot; Overlay</span>
+      </div>
+      <iframe src="handoff/components/10-shutter.html" title="Stripe shutter" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">10-shutter.html</span>
+    </div>
+
+    <div id="1k" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1k" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1K</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Grid fill</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Driven &middot; Fixed</span>
+      </div>
+      <iframe src="handoff/components/11-grid-fill.html" title="Grid fill loader" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">11-grid-fill.html</span>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:14px;margin:0 0 26px">
+    <span style="display:block;width:46px;height:2px;background:var(--orange)"></span>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-muted)">Group D &mdash; Corner marks &amp; stamps</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start">
+
+    <div id="1l" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1l" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1L</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Spec stamp</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Fixed</span>
+      </div>
+      <iframe src="handoff/components/12-spec-stamp.html" title="Spec stamp" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">12-spec-stamp.html</span>
+    </div>
+
+    <div id="1m" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1m" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1M</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Crop marks</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Static &middot; Overlay</span>
+      </div>
+      <iframe src="handoff/components/13-crop-marks.html" title="Crop marks" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">13-crop-marks.html</span>
+    </div>
+
+    <div id="1n" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1n" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1N</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Edge ticker</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Scroll &middot; Fluid</span>
+      </div>
+      <iframe src="handoff/components/14-edge-ticker.html" title="Edge ticker" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">14-edge-ticker.html &mdash; scroll inside the frame</span>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:14px;margin:56px 0 26px">
+    <span style="display:block;width:46px;height:2px;background:var(--orange)"></span>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-muted)">Group E &mdash; Progress &amp; readouts</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start">
+
+    <div id="1o" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1o" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1O</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Scan bar</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Driven &middot; Indeterminate</span>
+      </div>
+      <iframe src="handoff/components/15-scan.html" title="Scan bar" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">15-scan.html</span>
+    </div>
+
+    <div id="1p" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1p" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1P</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Count-up stat</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Driven &middot; On sight</span>
+      </div>
+      <iframe src="handoff/components/16-count.html" title="Count-up stat" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">16-count.html</span>
+    </div>
+
+    <div id="1q" style="display:flex;flex-direction:column;gap:9px;width:470px;scroll-margin-top:16px">
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <a href="#1q" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;padding:3px 7px;background:var(--ink);color:var(--paper)">1Q</a>
+        <span style="font-family:'Archivo Black',sans-serif;font-size:13px;letter-spacing:-.01em;text-transform:uppercase">Step sequencer</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-muted);margin-left:auto">Driven &middot; Stateful</span>
+      </div>
+      <iframe src="handoff/components/17-steps.html" title="Step sequencer" loading="lazy" style="width:470px;height:294px;border:1px solid var(--rule-strong);display:block"></iframe>
+      <span style="font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-muted)">17-steps.html</span>
+    </div>
+  </div>
+
+  <p style="margin:34px 0 0;font-family:'DM Mono',monospace;font-size:10.5px;line-height:1.9;letter-spacing:.12em;text-transform:uppercase;color:var(--warm-muted)">Try next: &ldquo;push <a href="#1c" style="color:var(--accent-text)">1C</a> further off the edge&rdquo; &middot; &ldquo;a paper-ground version of <a href="#1g" style="color:var(--accent-text)">1G</a>&rdquo; &middot; &ldquo;more directions for the loaders&rdquo;</p>
+</section>
+</x-dc>
+</body>
+</html>

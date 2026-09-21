@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>15 Scan bar — Alex Obeid graphics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── tokens.css (excerpt) — already in your site, do not duplicate ── */
+:root{--paper:#f0ebe1;--paper-shade:#e5dfd3;--ink:#0a0a0a;--orange:#f05a00;--orange-deep:#ab4000;--orange2:#ff7a1a;--warm-muted:#6b6459;
+--bg:var(--paper);--fg:var(--ink);--fg-2:var(--warm-muted);--accent:var(--orange);--accent-text:var(--orange-deep);--on-accent:var(--ink);--surface:var(--paper-shade);
+--rule:rgba(10,10,10,.20);--rule-strong:rgba(10,10,10,.85);--snap:.16s cubic-bezier(.4,0,.2,1);--territory-fade:.65s cubic-bezier(.4,0,.2,1);}
+[data-territory="vermillion"]{--bg:var(--orange);--fg:var(--ink);--fg-2:rgba(10,10,10,.62);--accent:var(--ink);--accent-text:var(--ink);--on-accent:var(--orange);--surface:rgba(10,10,10,.07);--rule:rgba(10,10,10,.30);--rule-strong:rgba(10,10,10,.88);}
+[data-territory="ink"]{--bg:var(--ink);--fg:var(--paper);--fg-2:rgba(240,235,225,.55);--accent:var(--orange);--accent-text:var(--orange);--on-accent:var(--ink);--surface:#161513;--rule:rgba(240,235,225,.20);--rule-strong:rgba(240,235,225,.85);}
+/* ── system.css (excerpt) ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:'Archivo',system-ui,sans-serif}
+.t-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase}
+.terr{position:relative;background:var(--bg);color:var(--fg);padding:118px 48px 96px;overflow:clip}
+.gfx{position:absolute;pointer-events:none;z-index:0}
+.spec-mark{position:absolute;z-index:1;display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2)}
+.spec-mark .sm-bars{display:inline-flex;gap:2px}
+.spec-mark .sm-bars i{width:2px;height:9px;background:currentColor;display:block}
+.bar{display:block;width:46px;height:2px;background:var(--accent);flex:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+/* ── demo harness only — delete when you lift the component ── */
+html,body{height:100%}
+.demo{height:100%;min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 34px 32px}
+.demo-hd{position:relative;z-index:2;display:flex;flex-direction:column;gap:12px;max-width:60%}
+.demo-hd h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.6rem,4.4vw,2.9rem);line-height:.9;letter-spacing:-.03em;text-transform:uppercase}
+.demo-hd p{font-size:.8rem;line-height:1.55;color:var(--fg-2);max-width:32ch}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     15 · SCAN BAR
+     Slot     Loading & page transition
+     Ground   ink   Sizing  Fluid   Motion  Driven
+     The indeterminate twin of the arc counter. Nine uneven keylined segments with one accent block sweeping at constant speed — for waits whose length you do not know.
+     ══════════════════════════════════════════════════════════════════ -->
+<style>
+.gfx-scan{position:relative;width:clamp(200px,34vw,440px)}
+.gfx-scan-rail{position:relative;display:flex;gap:4px;height:28px;overflow:hidden}
+.gfx-scan-rail i{display:block;height:100%;border:1px solid var(--rule)}
+.gfx-scan-blk{position:absolute;left:0;top:0;height:100%;width:20%;background:var(--accent);animation:gfx-scan 1.7s linear infinite}
+.gfx-scan-cap{display:flex;justify-content:space-between;margin-top:8px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-2)}
+@keyframes gfx-scan{0%{transform:translateX(-105%)}100%{transform:translateX(505%)}}
+</style>
+</head>
+<body data-territory="ink">
+<section class="terr demo" style="align-items:flex-start;justify-content:center" data-territory="ink">
+  <div class="gfx-scan" role="progressbar" aria-label="Working">
+    <div class="gfx-scan-rail">
+      <i style="flex:3"></i><i style="flex:7"></i><i style="flex:2"></i><i style="flex:5"></i><i style="flex:9"></i><i style="flex:3"></i><i style="flex:6"></i><i style="flex:2"></i><i style="flex:4"></i>
+      <span class="gfx-scan-blk"></span>
+    </div>
+    <div class="gfx-scan-cap"><span>Reading</span><span>&mdash;&mdash;</span></div>
+  </div>
+  <span class="spec-mark" style="right:26px;bottom:22px"><i class="sm-bars"><i></i><i></i><i></i></i>Fig. 15</span>
+</section>
+</body>
+</html>

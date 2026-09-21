@@ -120,6 +120,22 @@
        ~240px of free space above the grid, putting the name 322px below the
        fixed nav. The scroll cue pins to the panel foot so the panel keeps its
        full-bleed height without dragging the name down with it. */
+    /* ══ 16 · COUNT-UP STAT — .gfx-count ══
+       From Design system components / handoff. The numeral counts to its
+       target on first sight and the accent rule draws out beneath it. Feeds
+       the stat-row pattern rather than replacing it, so .stat-row keeps its
+       grid and .stat-meta is untouched. */
+    .gfx-count{display:flex;flex-direction:column;align-items:flex-start;gap:12px;}
+    .gfx-count-n{
+      font-family:'Archivo Black',sans-serif;
+      font-size:clamp(3.4rem,9vw,7rem);line-height:.8;letter-spacing:-.045em;
+      font-variant-numeric:tabular-nums;color:var(--fg);
+    }
+    /* the year stat carries a unit, so it keeps the stat-num treatment */
+    .gfx-count-n .unit{font-size:.28em;letter-spacing:.02em;vertical-align:super;color:var(--accent);}
+    .gfx-count-rule{display:block;width:calc(var(--p,0) * 168px);height:2px;background:var(--accent);}
+    .gfx-count figcaption{color:var(--fg-2);}
+
     /* ══ SOFTWARE REEL ══
        The lead phrase pins at the focal line while the list scrolls past it.
        Each item is painted with a viewport-fixed gradient clipped to the
@@ -1157,15 +1173,24 @@
       <span>// By the numbers</span><span data-section-num>&mdash;</span>
     </div>
     <div class="stat-row">
-      <div class="stat-num t-numeral">03</div>
+      <figure class="gfx-count">
+        <span class="gfx-count-n"><span data-gfx-count-to="03">03</span></span>
+        <span class="gfx-count-rule"></span>
+      </figure>
       <div class="stat-meta t-label"><strong>Projects documented</strong>CNC machining, aerodynamic CFD and a fully 3D-printed planetary gearbox.</div>
     </div>
     <div class="stat-row">
-      <div class="stat-num t-numeral">07</div>
+      <figure class="gfx-count">
+        <span class="gfx-count-n"><span data-gfx-count-to="07">07</span></span>
+        <span class="gfx-count-rule"></span>
+      </figure>
       <div class="stat-meta t-label"><strong>Core disciplines</strong>From Formula Student through to topology optimisation.</div>
     </div>
     <div class="stat-row">
-      <div class="stat-num t-numeral">29<span class="unit">'</span></div>
+      <figure class="gfx-count">
+        <span class="gfx-count-n"><span data-gfx-count-to="29">29</span><span class="unit">'</span></span>
+        <span class="gfx-count-rule"></span>
+      </figure>
       <div class="stat-meta t-label"><strong>Graduating</strong>B.E. Mechanical Engineering, Lebanese American University.</div>
     </div>
   </div>
@@ -2173,6 +2198,44 @@ if (!prefersReducedMotion && window.matchMedia('(pointer:fine)').matches) {
    The nav is fixed over full-bleed colour panels, so it adopts the
    palette of whichever territory is currently passing beneath it.
 ═══════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   16 · COUNT-UP STAT
+   The shipped component animates on CSS alone so it runs inside the
+   catalogue's throttled preview iframe; in production it is driven from
+   here, per GRAPHICS-SPEC.md. One addition: the target is padded back to
+   the width it was authored at, so 3 renders as "03" the way the panel
+   already set its numerals.
+═══════════════════════════════════════ */
+(function(){
+  var els = [].slice.call(document.querySelectorAll('.gfx-count'));
+  if (!els.length || typeof IntersectionObserver !== 'function') return;
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  function run(fig){
+    var n = fig.querySelector('[data-gfx-count-to]');
+    if (!n) return;
+    var raw = (n.getAttribute('data-gfx-count-to') || '').trim();
+    var to  = parseInt(raw, 10) || 0;
+    var pad = raw.length;
+    var show = function(v){ return String(v).padStart(pad, '0'); };
+
+    if (reduce) { n.textContent = show(to); fig.style.setProperty('--p', 1); return; }
+
+    var t0 = performance.now(), dur = 900;
+    requestAnimationFrame(function step(t){
+      var p = Math.min(1, (t - t0) / dur);
+      n.textContent = show(Math.round(p * to));
+      fig.style.setProperty('--p', p.toFixed(3));
+      if (p < 1) requestAnimationFrame(step);
+    });
+  }
+
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if (e.isIntersecting) { io.unobserve(e.target); run(e.target); } });
+  }, { threshold:.4 });
+  els.forEach(function(e){ io.observe(e); });
+})();
+
 /* ═══════════════════════════════════════
    SECTION SLIVERS
    Each home panel carries data-section="Name"; the index comes from DOM

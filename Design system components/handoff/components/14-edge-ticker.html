@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>14 Edge ticker — Alex Obeid graphics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── tokens.css (excerpt) — already in your site, do not duplicate ── */
+:root{--paper:#f0ebe1;--paper-shade:#e5dfd3;--ink:#0a0a0a;--orange:#f05a00;--orange-deep:#ab4000;--orange2:#ff7a1a;--warm-muted:#6b6459;
+--bg:var(--paper);--fg:var(--ink);--fg-2:var(--warm-muted);--accent:var(--orange);--accent-text:var(--orange-deep);--on-accent:var(--ink);--surface:var(--paper-shade);
+--rule:rgba(10,10,10,.20);--rule-strong:rgba(10,10,10,.85);--snap:.16s cubic-bezier(.4,0,.2,1);--territory-fade:.65s cubic-bezier(.4,0,.2,1);}
+[data-territory="vermillion"]{--bg:var(--orange);--fg:var(--ink);--fg-2:rgba(10,10,10,.62);--accent:var(--ink);--accent-text:var(--ink);--on-accent:var(--orange);--surface:rgba(10,10,10,.07);--rule:rgba(10,10,10,.30);--rule-strong:rgba(10,10,10,.88);}
+[data-territory="ink"]{--bg:var(--ink);--fg:var(--paper);--fg-2:rgba(240,235,225,.55);--accent:var(--orange);--accent-text:var(--orange);--on-accent:var(--ink);--surface:#161513;--rule:rgba(240,235,225,.20);--rule-strong:rgba(240,235,225,.85);}
+/* ── system.css (excerpt) ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:'Archivo',system-ui,sans-serif}
+.t-label{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase}
+.terr{position:relative;background:var(--bg);color:var(--fg);padding:118px 48px 96px;overflow:clip}
+.gfx{position:absolute;pointer-events:none;z-index:0}
+.spec-mark{position:absolute;z-index:1;display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2)}
+.spec-mark .sm-bars{display:inline-flex;gap:2px}
+.spec-mark .sm-bars i{width:2px;height:9px;background:currentColor;display:block}
+.bar{display:block;width:46px;height:2px;background:var(--accent);flex:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+/* ── demo harness only — delete when you lift the component ── */
+html,body{height:100%}
+.demo{height:100%;min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 34px 32px}
+.demo-hd{position:relative;z-index:2;display:flex;flex-direction:column;gap:12px;max-width:60%}
+.demo-hd h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.6rem,4.4vw,2.9rem);line-height:.9;letter-spacing:-.03em;text-transform:uppercase}
+.demo-hd p{font-size:.8rem;line-height:1.55;color:var(--fg-2);max-width:32ch}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     14 · EDGE TICKER
+     Slot     Corner marks & stamps
+     Ground   ink   Sizing  Fluid   Motion  Scroll-reactive
+     A ruler rail hugging the panel edge: rotated mono label, 25 ticks, and an accent marker that travels with scroll position.
+     ══════════════════════════════════════════════════════════════════ -->
+<style>
+.gfx-ticker{position:absolute;left:0;top:0;bottom:0;width:58px;display:flex;align-items:stretch;z-index:2;border-right:1px solid var(--rule);color:var(--fg-2)}
+.gfx-ticker-lbl{writing-mode:vertical-rl;padding:22px 0 0 16px;font-family:'DM Mono',monospace;font-size:.54rem;letter-spacing:.2em;text-transform:uppercase}
+.gfx-ticker-rail{position:relative;flex:1;margin:22px 0}
+.gfx-ticker-rail i{position:absolute;right:0;top:var(--t);width:var(--w);height:1px;background:currentColor}
+.gfx-ticker-rail i.gfx-ticker-mk{top:calc(var(--sp,0) * 100%);width:24px;height:3px;background:var(--accent)}
+</style>
+</head>
+<body data-territory="ink">
+<div style="height:150%"><section class="terr demo"  style="padding:40px 34px 32px 92px" data-territory="ink">
+  <div class="gfx-ticker" data-gfx-scroll aria-hidden="true">
+    <span class="gfx-ticker-lbl">Index 07 / 14 &mdash; Structures</span>
+    <span class="gfx-ticker-rail"><i style="--t:0.00%;--w:14px"></i><i style="--t:4.17%;--w:7px"></i><i style="--t:8.33%;--w:7px"></i><i style="--t:12.50%;--w:7px"></i><i style="--t:16.67%;--w:14px"></i><i style="--t:20.83%;--w:7px"></i><i style="--t:25.00%;--w:7px"></i><i style="--t:29.17%;--w:7px"></i><i style="--t:33.33%;--w:14px"></i><i style="--t:37.50%;--w:7px"></i><i style="--t:41.67%;--w:7px"></i><i style="--t:45.83%;--w:7px"></i><i style="--t:50.00%;--w:14px"></i><i style="--t:54.17%;--w:7px"></i><i style="--t:58.33%;--w:7px"></i><i style="--t:62.50%;--w:7px"></i><i style="--t:66.67%;--w:14px"></i><i style="--t:70.83%;--w:7px"></i><i style="--t:75.00%;--w:7px"></i><i style="--t:79.17%;--w:7px"></i><i style="--t:83.33%;--w:14px"></i><i style="--t:87.50%;--w:7px"></i><i style="--t:91.67%;--w:7px"></i><i style="--t:95.83%;--w:7px"></i><i style="--t:100.00%;--w:14px"></i><i class="gfx-ticker-mk"></i></span>
+  </div>
+  <div class="demo-hd"><span class="bar"></span><h1>Edge<br>Ticker</h1><p>Scroll the frame — the accent marker tracks position.</p></div>
+  <span class="spec-mark" style="right:26px;bottom:22px"><i class="sm-bars"><i></i><i></i><i></i></i>Fig. 14</span>
+</section></div>
+<script>
+(function(){var els=[].slice.call(document.querySelectorAll('[data-gfx-scroll]'));if(!els.length)return;
+if(matchMedia('(prefers-reduced-motion:reduce)').matches){els.forEach(function(e){e.style.setProperty('--sp','1')});return;}
+var q=false;function u(){q=false;var vh=innerHeight||1;els.forEach(function(el){var r=el.getBoundingClientRect();var p=(vh-r.top)/(vh+r.height);el.style.setProperty('--sp',Math.min(1,Math.max(0,p)).toFixed(4));});}
+addEventListener('scroll',function(){if(!q){q=true;requestAnimationFrame(u);}},{passive:true});addEventListener('resize',u);u();})();
+</script>
+</body>
+</html>
