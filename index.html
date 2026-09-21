@@ -16,6 +16,7 @@
       --paper-shade:#e5dfd3;
       --ink:#0a0a0a;
       --orange:#f05a00;
+      --orange-deep:#ab4000;   /* same hue, AA as TEXT on cream — see DESIGN-SYSTEM.md */
       --orange2:#ff7a1a;
       --warm-muted:#6b6459;
 
@@ -24,6 +25,9 @@
       --fg:var(--ink);
       --fg-2:var(--warm-muted);
       --accent:var(--orange);
+      /* Raw vermillion on cream is 2.87:1 — fails AA. Accent TEXT on a cream
+         ground uses the deepened hue instead; fills keep --accent. */
+      --accent-text:var(--orange-deep);
       --on-accent:var(--paper);
       --surface:var(--paper-shade);
       --rule:rgba(10,10,10,.20);
@@ -55,6 +59,7 @@
       --fg:var(--ink);
       --fg-2:rgba(10,10,10,.62);
       --accent:var(--ink);
+      --accent-text:var(--ink);
       --on-accent:var(--orange);
       --surface:rgba(10,10,10,.07);
       --mark-ground:var(--orange);
@@ -69,6 +74,7 @@
       --fg:var(--paper);
       --fg-2:rgba(240,235,225,.55);
       --accent:var(--orange);
+      --accent-text:var(--orange);   /* full strength is safe on ink */
       --on-accent:var(--ink);
       --surface:#161513;
       --mark-ground:var(--ink);
@@ -114,7 +120,68 @@
        ~240px of free space above the grid, putting the name 322px below the
        fixed nav. The scroll cue pins to the panel foot so the panel keeps its
        full-bleed height without dragging the name down with it. */
-    .terr-blank{min-height:100vh;}
+    /* ══ SOFTWARE REEL ══
+       The lead phrase pins at the focal line while the list scrolls past it.
+       Each item is painted with a viewport-fixed gradient clipped to the
+       glyphs, so whichever line crosses the band lights up — no JS, and it
+       stays in step with the momentum scroller because the band is fixed to
+       the viewport rather than driven by a scroll handler. */
+    .sw-sect{
+      --sw-start:50vh;                 /* where the focal band sits */
+      --sw-space:38vh;                 /* run-out after the last item */
+      --sw-dim:rgba(10,10,10,.17);
+      /* Trailing room is a sibling element, not margin or padding. A margin
+         on the sticky collapses through (overflow:clip opens no BFC), and
+         padding here sits outside the content box the sticky is constrained
+         to — either way the sticky ends up exactly as tall as the space it
+         has and can never pin. */
+      padding:0;
+      font-family:'Archivo Black',sans-serif;
+      font-size:clamp(1.7rem,5.6vw,4.4rem);
+      letter-spacing:-.03em;
+      /* Line height is also the scroll distance per item — the list moves
+         past the band 1:1 with scroll — so a tight stack reads fast. */
+      line-height:1.55;
+      text-transform:uppercase;
+    }
+    .sw-sticky{
+      position:sticky;
+      top:calc((var(--sw-count) - 1) * -1lh);
+      display:flex;align-items:flex-start;width:100%;
+    }
+    .sw-row{
+      display:flex;align-items:flex-start;gap:.28em;width:100%;
+      padding:calc(var(--sw-start) - .5lh) 48px 0;
+    }
+    .sw-lead{
+      position:sticky;top:calc(var(--sw-start) - .5lh);
+      margin:0;font-size:inherit;font-weight:400;
+      flex:none;color:var(--fg);white-space:nowrap;
+    }
+    .sw-runout{height:var(--sw-space);}
+    .sw-list{list-style:none;margin:0;padding:0;}
+    .sw-list li{
+      white-space:nowrap;
+      color:transparent;
+      background-image:linear-gradient(180deg,
+        var(--sw-dim) 0 calc(var(--sw-start) - .5lh),
+        var(--accent-text) calc(var(--sw-start) - .54lh) calc(var(--sw-start) + .54lh),
+        var(--sw-dim) calc(var(--sw-start) + .5lh));
+      background-attachment:fixed;
+      -webkit-background-clip:text;
+              background-clip:text;
+    }
+    /* iOS Safari ignores background-attachment:fixed, and the effect is
+       scroll-linked, so both touch and reduced-motion get it solid instead. */
+    @media (hover:none), (prefers-reduced-motion:reduce){
+      .sw-list li{background-image:none;color:var(--fg);}
+      .sw-list li + li{opacity:.55;}
+    }
+    @media(max-width:768px){
+      .sw-sect{--sw-start:44vh;--sw-space:26vh;font-size:clamp(1.4rem,8vw,2.6rem);}
+      .sw-row{padding-left:20px;padding-right:20px;}
+    }
+
     .terr-min{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;padding-top:clamp(128px,12.5vh,150px);}
     .terr-min .scroll-cue{position:absolute;left:0;right:0;bottom:22px;}
 
@@ -1049,9 +1116,25 @@
     </div>
   </div>
 
-  <!-- ── Territory 4 · PAPER · placeholder, content to come ── -->
-  <div class="terr terr-blank" data-territory="paper">
+  <!-- ── Territory 4 · PAPER · software reel ── -->
+  <div class="terr sw-sect" data-territory="paper" style="--sw-count:5;">
     <span class="spec-mark" data-section="Softwares / Programs" style="top:96px;left:48px;"></span>
+    <div class="sw-sticky">
+      <div class="sw-row">
+        <h2 class="sw-lead">
+          <span aria-hidden="true">I work in&nbsp;</span>
+          <span class="sr-only">I work in SolidWorks, Fusion 360, AutoCAD, MATLAB and Python.</span>
+        </h2>
+        <ul class="sw-list" aria-hidden="true">
+          <li>SolidWorks</li>
+          <li>Fusion&nbsp;360</li>
+          <li>AutoCAD</li>
+          <li>MATLAB</li>
+          <li>Python</li>
+        </ul>
+      </div>
+    </div>
+    <div class="sw-runout" aria-hidden="true"></div>
   </div>
 
   <!-- ── Territory 5 · INK ── -->
@@ -1253,6 +1336,7 @@
         <div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zM12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>Fusion 360</div>
         <div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="1.6"/><path d="M12 6.1L7 20M12 6.1L17 20M9 15h6"/></svg>AutoCAD</div>
         <div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18h14M8 14l2-4 3 3 3-5"/></svg>MATLAB</div>
+        <div class="skill-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4M13.5 6l-3 12"/></svg>Python</div>
       </div>
     </div>
     <div style="margin-top:40px">

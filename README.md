@@ -276,6 +276,28 @@ panel and the rest renumber themselves.
 The order is Portfolio, Project Gallery, Skills, Softwares / Programs, Data. The fourth
 is a deliberately empty cream panel holding its place until it has content.
 
+### Software reel
+
+The `Softwares / Programs` panel. Adapted from jh3y's sticky scroll-highlight list: the
+lead phrase pins at a focal line while the list scrolls past it, and each item is painted
+with a **viewport-fixed gradient clipped to the glyphs**, so whichever line crosses the
+band lights up. No JS, and it stays in step with the momentum scroller because the band
+is fixed to the viewport rather than driven by a scroll handler.
+
+Three things that will break it if you edit them:
+
+- **The trailing space must be a sibling** (`.sw-runout`), not margin or padding. A margin
+  on the sticky collapses through — `overflow:clip` opens no block formatting context —
+  and padding on the panel sits outside the content box the sticky is constrained to.
+  Either way the sticky ends up exactly as tall as its container and never pins.
+- **Line height is also the scroll distance per item.** The list travels past the band 1:1
+  with scroll, so a tight stack reads fast. `1.55` gives ~115px per item.
+- `--sw-count` on the panel must match the number of items; the sticky's
+  `top: calc((count - 1) * -1lh)` depends on it.
+
+iOS Safari ignores `background-attachment:fixed`, so touch and `prefers-reduced-motion`
+both get a solid static list instead.
+
 ### Skills carousel
 
 A scroll-pinned 3D cylinder, built with CSS transforms and `position:sticky` — no library.
