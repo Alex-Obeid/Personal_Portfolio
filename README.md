@@ -1,28 +1,100 @@
+![Alex Obeid — portfolio](docs/banner.png)
+
 # Alex Obeid — Personal Portfolio
 
-A single-file, dependency-free portfolio site for a mechanical engineering student. No
-build step, no framework, no package manager — open the HTML file and it runs.
+**A single-file, dependency-free portfolio for a mechanical engineering student.**
+No build step, no framework, no package manager. Open `index.html` and it runs.
 
 The design language is Swiss / International Typographic Style: heavy neo-grotesque type
-at poster scale, flat colour blocking, hairline rules, and no depth effects.
+at poster scale, flat colour blocking, hairline rules, and no depth effects anywhere.
 
-## Contents
+<table>
+<tr>
+<td><b>Stack</b></td><td>One HTML file — markup, CSS and JS</td>
+<td><b>Dependencies</b></td><td>Google Fonts. That is the entire list.</td>
+</tr>
+<tr>
+<td><b>Pages</b></td><td>6 sections, hash-routed, no router library</td>
+<td><b>Build</b></td><td>None. Three optional Python asset scripts.</td>
+</tr>
+</table>
+
+### Contents
+
+[Running it](#running-it-locally) ·
+[Deploying](#deploying) ·
+[Design system](#design-system) ·
+[How the site works](#how-the-site-works) ·
+[Adding a project](#adding-a-project) ·
+[Gotchas](#gotchas)
+
+---
+
+## The palette
+
+Three colours. No blue, no green, no second accent, no success/warning set.
+
+![Paper #f0ebe1, Ink #0a0a0a, Vermillion #f05a00](docs/palette.png)
+
+| Token | Hex | Role |
+| --- | --- | --- |
+| `--paper` | `#f0ebe1` | Warm cream. The default ground — never pure white. |
+| `--ink` | `#0a0a0a` | Near-black — never pure `#000`. |
+| `--orange` | `#f05a00` | Vermillion. The only chromatic colour. |
+
+Applied as **territories** — full-bleed panels that redefine a set of semantic custom
+properties, so a component adapts wherever it sits:
+
+| Territory | Ground | Type | Accent |
+| --- | --- | --- | --- |
+| **Paper** (`:root` default) | cream | ink | vermillion |
+| **Vermillion** | vermillion | ink | **ink** |
+| **Ink** | ink | cream | vermillion |
+
+> On the orange ground the accent is **ink, not orange**. Orange-on-orange does not exist.
+> The accent is always whatever contrasts hardest with the ground.
+
+Apply with `data-territory="vermillion"` or `="ink"` on any element.
+
+**Build against the semantic tokens, never the raw brand colours.** A component using
+`var(--fg)` works on all three grounds; one using `var(--ink)` disappears on the Ink panel.
+
+> [!TIP]
+> The full design language — tokens, type scale, graphics rules, measured contrast — lives
+> in **[DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)**, written so it can be handed to a designer or
+> pasted into Claude as standalone context.
+
+---
+
+## Repository
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The entire site: markup, CSS and JS in one file |
-| `DESIGN-SYSTEM.md` | The design language as a portable spec — tokens, type, graphics rules |
-| `design-system/` | Generated Claude Design bundle — 17 preview cards + `tokens.css` |
-| `tools/build-design-system.py` | Generator for `design-system/` — edit this, not the output |
-| `favicon.svg` | AO monogram mark — A over O, vermillion dot in the counter |
-| `favicon.ico` `apple-touch-icon.png` `icon-512.png` `favicon-{16,32,48}.png` | Raster icons, generated from the mark |
-| `tools/build-icons.py` | Redraws the raster icons from the mark's geometry |
-| `Images/Headshot/` | Home-page portrait |
-| `Images/Planetary Gearbox/` | Renders and build photos for the Planetary Gearbox project |
+| **`index.html`** | The entire site: markup, CSS and JS in one file |
+| **`DESIGN-SYSTEM.md`** | The design language as a portable spec |
+| `design-system/` | Generated Claude Design bundle — 23 preview cards, `tokens.css`, `system.css` |
+| `Design system components/` | Delivered component library — 17 graphics + `GRAPHICS-SPEC.md` |
+| `favicon.svg` | AO monogram — A over O, vermillion dot in the counter |
+| `favicon.ico` · `apple-touch-icon.png` · `icon-512.png` · `favicon-{16,32,48}.png` | Raster icons, generated from the mark |
+| `Images/` | Headshot and Planetary Gearbox photography |
+| `docs/` | This README's banner and palette strip |
+| `tools/` | Three generators — see below |
 | `.claude/launch.json` | Local dev-server config (git-ignored) |
 
-The only external dependency is Google Fonts. Everything else — icons, paper grain,
-loading animation, the Snake game — is inline SVG, CSS or vanilla JS.
+Everything except the fonts — icons, paper grain, loading animation, all artwork, the
+Snake game — is inline SVG, CSS or vanilla JS.
+
+### Generators
+
+**Edit the generator, never its output.** The next build silently discards hand edits.
+
+```bash
+python tools/build-design-system.py   # → design-system/   (23 cards + stylesheets)
+python tools/build-icons.py           # → favicon PNGs, from the mark's geometry
+python tools/build-banner.py          # → docs/banner.png + palette.png
+```
+
+---
 
 ## Running it locally
 
@@ -36,109 +108,80 @@ Then open `http://localhost:5500/index.html`.
 
 ## Deploying
 
-Served from the `main` branch. Any static host works — GitHub Pages, Netlify, Cloudflare
-Pages, plain FTP. Upload `index.html`, `favicon.svg` and the `Images/` folder, preserving
-folder structure **and file-name casing** (see [Gotchas](#gotchas)).
+Served from `main`. Any static host works — GitHub Pages, Netlify, Cloudflare Pages, plain
+FTP. Upload `index.html`, the icons and `Images/`, preserving folder structure **and
+file-name casing** ([why](#gotchas)).
 
-> **GitHub Pages is not yet enabled.** Repo → Settings → Pages → Source: *Deploy from a
+> [!WARNING]
+> **GitHub Pages is not enabled yet.** Repo → Settings → Pages → Source: *Deploy from a
 > branch* → `main` / `/ (root)`. The site will then be at
 > `https://alex-obeid.github.io/Personal_Portfolio/`.
 
----
+<details>
+<summary><b>Shipping the design system to Claude Design</b></summary>
 
-## Shipping to Claude Design
+<br>
 
-`design-system/` is a ready-to-push Claude Design project: 17 self-contained preview
+`design-system/` is a ready-to-push Claude Design project: 23 self-contained preview
 pages, each opening with a `<!-- @dsCard group="…" name="…" subtitle="…" viewport="…" -->`
 marker that the app compiles into its card index. Cards are grouped **Foundations ·
 Brand · Components · Patterns · Graphics**.
 
-It is generated. **Edit `tools/build-design-system.py` and rebuild — never edit the
-output**, or the next build silently discards your changes:
-
-```bash
-python tools/build-design-system.py
-```
-
 Tokens are inlined into every preview rather than linked, so a card renders correctly
-regardless of how the host resolves relative paths. `tokens.css` ships alongside as the
-canonical copy for anything consuming the system in code, and `README.md` inside the
-bundle is a copy of [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
-
-### Pushing
+regardless of how the host resolves relative paths. `tokens.css` and `system.css` ship
+alongside as the canonical copies, and the bundle's `README.md` is a copy of
+[DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
 
 Pushing needs design-system authorization, which only an **interactive** Claude Code
 session can grant. Once, on this machine:
 
-```bash
+```
 /design-login
 ```
 
 Then, from an interactive session in this directory:
 
-```bash
+```
 /design-sync
 ```
 
-That skill drives the upload: it lists your writable design-system projects (or creates
-one), diffs `design-system/` against the remote, shows you the exact write/delete plan
-for approval, and uploads. Headless and SDK runs reuse the authorization afterwards.
+That skill lists your writable projects (or creates one), diffs `design-system/` against
+the remote, shows the exact write/delete plan for approval, and uploads. Headless and SDK
+runs reuse the authorization afterwards.
+
+**This project is synced as a manual CSS-only bundle** — no `_ds_bundle.js`, no props.
+`/design-sync` will resist the repo because it looks for a compiled JS component library
+and this site is deliberately one static file; its *Manual CSS-only bundle* option is the
+right answer. The pin and a note live in `.design-sync/config.json`.
+
+</details>
 
 ---
 
 ## Design system
 
-> This section covers how the system is implemented here. For the design language
-> itself — the rules for drawing new components and graphics in this style, in a form
-> you can hand to a designer or paste into Claude as context — see
+> This section is how the system is *implemented here*. For the language itself, see
 > [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md).
-
-### Colour territories
-
-The palette is three "territories". Each is a full-bleed colour panel that redefines a
-set of semantic custom properties, so components adapt automatically wherever they sit.
-
-| Territory | Ground | Type | Accent |
-| --- | --- | --- | --- |
-| **Paper** (default) | `--paper` `#f0ebe1` | ink | orange |
-| **Vermillion** | `--orange` `#f05a00` | ink | ink |
-| **Ink** | `--ink` `#0a0a0a` | paper | orange |
-
-Apply one with `data-territory="vermillion"` or `="ink"` on any element; Paper is the
-`:root` default. The semantic tokens are:
-
-| Token | Role |
-| --- | --- |
-| `--bg` / `--fg` | ground and primary type |
-| `--fg-2` | secondary type |
-| `--accent` / `--on-accent` | accent fill and the colour that reads on it |
-| `--surface` | tinted blocks |
-| `--rule` / `--rule-strong` | hairlines and keylines |
-
-**Build components against the semantic tokens, never the raw brand colours.** A
-component using `var(--fg)` works on all three grounds; one using `var(--ink)` breaks on
-the Ink panel.
-
-A set of legacy aliases (`--black`, `--white`, `--mid`, `--grey`…) map onto the semantic
-layer so nothing needed rewriting at once. Prefer the semantic names in new code.
 
 ### Type
 
-- **`Archivo Black`** — display. Everything large, set tight (`-0.03em`).
-- **`Archivo`** — body and UI.
-- **`DM Mono`** — labels, spec tags, index numbers. Uppercase, `0.2em` tracking.
+| Face | Use | Setting |
+| --- | --- | --- |
+| **Archivo Black** | Display, titles, numerals | Uppercase, tight (`-0.03em`) |
+| **Archivo** | Body and UI | Normal tracking |
+| **DM Mono** | Labels, spec tags, index numbers | Uppercase, `0.2em` tracking |
 
-Helper classes: `.t-display`, `.t-title`, `.t-numeral`, `.t-label`. The scale is
-deliberately polarised — huge or tiny, with nothing in between.
+Helper classes `.t-display` · `.t-title` · `.t-numeral` · `.t-label`. The scale is
+deliberately polarised — huge or tiny, nothing in between.
 
 ### Interaction: colour inversion
 
 There are **no shadows anywhere**. Hover and press invert colour instead:
 
 ```css
-.thing      { border:1px solid var(--rule-strong); background:transparent; color:var(--fg); }
-.thing:hover{ background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
-.thing:active{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.thing        { border:1px solid var(--rule-strong); background:transparent; color:var(--fg); }
+.thing:hover  { background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+.thing:active { background:var(--fg);     color:var(--bg);        border-color:var(--fg); }
 ```
 
 `--snap` (`.16s cubic-bezier(.4,0,.2,1)`) is the standard transition.
@@ -160,59 +203,68 @@ file works on all three grounds.
 
 ## How the site works
 
+The home page is **five stacked territories**, in this order:
+
+| # | Sliver | Territory | What it is |
+| :-: | --- | --- | --- |
+| 01 | Portfolio | Paper | Hero — name, bio, portrait |
+| 02 | Project Gallery | Ink | Horizontal parallax showcase |
+| 03 | Skills | Vermillion | Scroll-pinned 3D carousel |
+| 04 | Softwares / Programs | Paper | Sticky scroll-highlight reel |
+| 05 | Data | Ink | Count-up stat figures |
+
+The fixed nav reads whichever territory is beneath it and adopts its palette.
+
 ### Routing
 
 A single-page app with no router library. Every `<section>` is a page; exactly one carries
-`.active`, the rest are `display:none`.
+`.active`, the rest are `display:none`. Sections: `home`, `projects`, `project-detail`,
+`contact`, `cv`, `easter`.
 
-- `navigate(target, options)` — plays the three-bar sweep, then calls `applySection()` at
-  **730 ms**, which is when the last sweep layer fully covers the viewport. The sweep
-  itself runs `900 ms` linear per layer, staggered `140 ms`; the lock releases at
-  `1180 ms`.
-- `applySection(target)` — swaps `.active`, restarts `.fade-in` animations, updates
-  `location.hash`, closes the mobile menu, resets scroll and the momentum scroller.
-- `routeFromHash()` — runs on load and on `hashchange`; unknown hashes fall back to `home`.
-
-Sections: `home`, `projects`, `project-detail`, `contact`, `cv`, `easter`.
+| Function | Does |
+| --- | --- |
+| `navigate(target)` | Plays the three-bar sweep, calls `applySection()` at **730 ms** — when the last layer fully covers the viewport. Sweep is `900 ms` linear per layer, staggered `140 ms`; lock releases at `1180 ms`. |
+| `applySection(target)` | Swaps `.active`, restarts `.fade-in`, updates the hash, closes the mobile menu, resets scroll and the momentum scroller. |
+| `routeFromHash()` | Runs on load and `hashchange`; unknown hashes fall back to `home`. |
 
 ### Momentum scrolling
 
-Desktop scrolling is eased in JS: `ssTarget` accumulates wheel delta, and a rAF loop
-lerps `ssCurrent` toward it at `SS_EASE` (`0.082`) — lower is a longer glide.
+Desktop scrolling is eased in JS: `ssTarget` accumulates wheel delta and a rAF loop lerps
+`ssCurrent` toward it at `SS_EASE` (`0.082`) — lower is a longer glide.
 
 It eases the **real document scroll position** rather than transforming a wrapper. That
-matters: the wrapper-transform approach used by most smooth-scroll libraries would break
-`position:sticky`, which the home carousel depends on.
+matters: the wrapper-transform approach most smooth-scroll libraries use would break
+`position:sticky`, which three sections depend on.
 
-Two consequences worth knowing:
+> [!IMPORTANT]
+> **Scroll-linked animation is driven from `ssApply()`, not the `scroll` event.**
+> Programmatic scrolls fire `scroll` unreliably, which left the carousel a frame or more
+> behind. Anything tracking scroll position belongs there — the carousel, the parallax
+> gallery, the canvas colour and the `--sp` graphics driver all are.
 
-- `html { scroll-behavior: auto }` is deliberate. Native smooth scrolling fights the loop.
-- **Scroll-linked animation is driven from `ssApply()`, not the `scroll` event.**
-  Programmatic scrolls fire `scroll` unreliably, which left the carousel a frame or more
-  behind. Anything that must track scroll position should be called from there.
+`html { scroll-behavior: auto }` is deliberate; native smooth scrolling fights the loop.
+Touch is excluded (`pointer:fine`) — phones already have native momentum — and the whole
+thing is off under `prefers-reduced-motion`.
 
-Touch is excluded (`pointer:fine` gate) — phones already have native momentum. Disabled
-entirely under `prefers-reduced-motion`.
+### Section slivers
 
-### Home page
+Each panel carries a mono sliver in its top corner. **The numbers are not in the markup.**
+Each mark is an empty `<span class="spec-mark" data-section="Name">`, and
+`numberSections()` walks `#home [data-section]` in DOM order filling in `Name · NN`.
+Insert, remove or reorder a panel and the rest renumber themselves.
 
-Three stacked territories:
+- `data-bars="after"` puts the three-bar cluster on the right, for right-aligned marks.
+- A panel can echo its own number inside itself with `[data-section-num]` — the Data panel
+  uses this for its `NN — Index` line.
 
-1. **Paper** — hero. Portrait occupies its own grid column at every width via
-   `grid-template-areas`; on narrow screens it pairs with just the name while the bio,
-   meta and buttons run full width beneath.
-2. **Vermillion** — the skills carousel.
-3. **Ink** — big-numeral stats panel.
+<details>
+<summary><b>02 · Project gallery — horizontal parallax</b></summary>
 
-The fixed nav reads which territory is beneath it (`updateNavTerritory()`) and adopts its
-palette.
+<br>
 
-### Project showcase
-
-A scroll-pinned **horizontal parallax** gallery on an Ink panel between the hero and the
-skills carousel. Adapted from [Codrops' horizontal parallax
-gallery](https://tympanus.net/codrops/2026/02/19/creating-a-smooth-horizontal-parallax-gallery-from-dom-to-webgl/),
-rebuilt with no dependencies (the original is Vite + TypeScript with a Three.js path).
+Scroll-pinned, adapted from [Codrops' horizontal parallax
+gallery](https://tympanus.net/codrops/2026/02/19/creating-a-smooth-horizontal-parallax-gallery-from-dom-to-webgl/)
+and rebuilt with no dependencies (the original is Vite + TypeScript with a Three.js path).
 
 **Two rows of two, travelling against each other.** Both rows are the same thing — a
 project title over its own plates — rendered by the same `pxGroup()`. They differ only in
@@ -220,62 +272,122 @@ direction: row A translates `-p × travelA`, row B `-(1-p) × travelB`, so B sta
 left and unwinds to zero as A unwinds left. Each covers its own full distance over the
 same progress; the pin lasts as long as the longer one needs.
 
-Membership lives in `SHOWCASE_ROWS`, **not** `PROJECTS` — the gallery is a curated subset
-and Planetary Gearbox is deliberately excluded. Galleries for projects that do exist in
-`PROJECTS` are referenced rather than copied, so image lists stay single-sourced:
-
 | Row | Projects |
 | --- | --- |
-| A (travels left) | Wheel Hub CNC Machining, Generic SUV CFD |
-| B (travels right) | Formula Student, Custom CNC Machine Design |
+| A — travels left | Wheel Hub CNC Machining, Generic SUV CFD |
+| B — travels right | Formula Student, Custom CNC Machine Design |
 
-- **Parallax.** Ported from the demo's three tunables, pushed well past its defaults
-  because here the whole row is sliding too, which the demo never has to fight:
+Membership lives in `SHOWCASE_ROWS`, **not** `PROJECTS` — the gallery is a curated subset
+and Planetary Gearbox is deliberately excluded. Galleries for projects that *do* exist in
+`PROJECTS` are referenced rather than copied, so image lists stay single-sourced.
 
-  | Constant | Here | Demo |
-  | --- | --- | --- |
-  | `PX_INTENSITY` | `1.15` | `0.4` |
-  | `PX_SHADER_MULT` | `1.75` | `1.0` |
-  | `PX_UV_SCALE` | `0.64` | `0.85` |
+**Parallax** is ported from the demo's three tunables, pushed well past its defaults
+because here the whole row is sliding too, which the demo never has to fight:
 
-  Per plate: `n = (plateCentre − vw/2) / vw`, so **n spans about ±0.5 — the full viewport,
-  not half**. Drift is `n × intensity × multiplier` as a **fraction of plate width**, so
-  wide plates travel further. The image is scaled `1/PX_UV_SCALE` (1.563×), the DOM
-  equivalent of the shader's `uv -= .5; uv *= uUvScale; uv += .5` — that zoom is the
-  buffer the drift moves through. Max drift is **28% of plate width**.
-  Raising intensity means lowering `PX_UV_SCALE` to match, at the cost of a tighter crop.
-- Drift is eased into the buffer with `tanh` rather than clipping at it, bounded at
-  `(1 − uvScale) / (2 × uvScale)` — exactly the headroom the zoom provides — so an image
-  edge can never appear.
-- **Driven from `ssApply()`**, like the carousel. The `scroll` event alone is not enough.
-- **If it scrolls by hand instead of pinning**, the `.is-strip` fallback is active. Call
-  `pxWhy()` in the console — it prints which trigger fired. There is **no width gate**: a
-  narrow desktop window still pins. Only `hover:none` (touch) and `prefers-reduced-motion`
-  fall back. Touch is excluded on purpose — the track is several screens wide, so pinning
-  would capture vertical swipes for a long stretch. Note the browser devtools' device
-  emulation also sets `hover:none` below 768px, so a narrow *emulated* window falls back
-  where a real one would not.
-- `.px-sticky` carries padding reserving the absolute head and progress bands, so flex
-  centring cannot push the rows under them; a `max-height:680px` query tightens both.
-- Gallery entries ending in an image extension render as photos, anything else as a
-  labelled drawing-sheet tile. **Right now every entry is a tile** — the only photographed
-  project was the one removed. Drop files into `Images/<Project>/` and swap the strings.
+| Constant | Here | Demo |
+| --- | :-: | :-: |
+| `PX_INTENSITY` | `1.15` | `0.4` |
+| `PX_SHADER_MULT` | `1.75` | `1.0` |
+| `PX_UV_SCALE` | `0.64` | `0.85` |
 
-### Placed graphics
+Per plate: `n = (plateCentre − vw/2) / vw`, so **n spans about ±0.5 — the full viewport,
+not half**. Drift is `n × intensity × multiplier` as a **fraction of plate width**, so wide
+plates travel further. The image is scaled `1/PX_UV_SCALE` (1.563×) — the DOM equivalent
+of the shader's `uv -= .5; uv *= uUvScale; uv += .5`, and that zoom is the buffer the
+drift moves through. Max drift is **28% of plate width**. Raising intensity means lowering
+`PX_UV_SCALE` to match, at the cost of a tighter crop.
 
-Two more from `Design system components/handoff/`:
+Drift is eased into the buffer with `tanh` rather than clipping at it, bounded at
+`(1 − uvScale) / (2 × uvScale)` — exactly the headroom the zoom provides — so an image
+edge can never appear.
 
-| Component | Where | Notes |
-| --- | --- | --- |
-| **05 · Plate — split disc** (`gfx-plate`) | Softwares panel | Turned portrait and inverted: cream ground, orange discs, the lens intersection and the slash knocked out in the ground. Centres move from `(112,100)/(208,100)` on the 320×200 board to `(100,112)/(100,208)` on a 200×320 one, and the slash swaps its endpoints' axes with them. No keyline — the ground is the panel's own, so it reads as artwork rather than a plate laid over it. **Hidden below 768px**: the lead and list already use 349px of a 375px viewport. |
-| **02 · Stripe fan** (`gfx-fan`) | Skills panel | Its `color:var(--accent)` resolves to ink on the vermillion ground, so it is **already black there** with no override. Shears with scroll via `--sp`. |
+**If it scrolls by hand instead of pinning**, the `.is-strip` fallback is active. Call
+`pxWhy()` in the console; it prints which trigger fired. There is **no width gate** — a
+narrow desktop window still pins. Only `hover:none` (touch) and `prefers-reduced-motion`
+fall back, touch on purpose: the track is several screens wide, so pinning would capture
+vertical swipes for a long stretch. Note devtools device emulation also sets `hover:none`
+below 768px, so a narrow *emulated* window falls back where a real one would not.
 
-`--sp` comes from one shared driver for all `[data-gfx-scroll]` elements. It is called
-from `ssApply()` as well as the `scroll` event, for the reason the momentum scroller
-already documents — the fan would otherwise lag a frame behind the page. Reduced motion
-pins `--sp` to `1`, which is the component's *finished* state, not its starting one.
+`.px-sticky` carries padding reserving the absolute head and progress bands, so flex
+centring cannot push the rows under them; a `max-height:680px` query tightens both.
 
-### Data panel — count-up stat
+> Gallery entries ending in an image extension render as photos, anything else as a
+> labelled drawing-sheet tile. **Right now every entry is a tile** — the only photographed
+> project was the one removed. Drop files into `Images/<Project>/` and swap the strings.
+
+</details>
+
+<details>
+<summary><b>03 · Skills carousel — scroll-pinned 3D cylinder</b></summary>
+
+<br>
+
+CSS transforms and `position:sticky`, no library. Skills live in `SKILL_REEL`.
+
+Each is a layer at `rotateX(-i × CYL_ANGLE) translateZ(radius)` inside a `preserve-3d`
+container under `perspective`; scroll progress drives the container's `rotateX`. The
+negative sign on the item and the positive one on the cage are what set the direction of
+travel — flip both to reverse it.
+
+- `CYL_ANGLE` is **32°**, not `360/n`. It is an arc, not a closed circle: tighter spacing
+  keeps ~5 copies inside the visible ±90°, which is what creates the stacked cascade.
+- Opacity falls off as `cos³·⁴` of the angle from front, so the lead copy reads solid and
+  the rest recede. `cos` is even, so reversing direction leaves the falloff untouched.
+- `layoutCylinder()` sets **one uniform size for every skill**, scaled up until the longest
+  line fills 92% of the stage. The longest string therefore caps the size for all of them.
+- `CYL_TIGHTNESS` (`2.15`) multiplies that size to get the radius — it controls overlap.
+
+> [!NOTE]
+> **Radius is not independent of type size**, and the two pull against each other. A bigger
+> radius brings the front copy closer to the camera, so the fitting pass shrinks the type
+> to keep it inside the stage. At 1280px, raising it from 1.45 opened the copies from 67px
+> to 99px apart while costing 1px of type. Push much further and the outer copies reach
+> past the stage — `.cyl-viewport` has no `overflow`, so they spill over the label and dots.
+
+The wrapper's height (`100vh + 6 × --cyl-step`) is the scroll distance the pinned stage
+consumes. Add or remove skills and that `6` must change to match `n − 1`.
+
+</details>
+
+<details>
+<summary><b>04 · Software reel — sticky scroll highlight</b></summary>
+
+<br>
+
+Adapted from jh3y's sticky scroll-highlight list: the lead phrase pins at a focal line
+while the list scrolls past it, and each item is painted with a **viewport-fixed gradient
+clipped to the glyphs**, so whichever line crosses the band lights up. No JS, and it stays
+in step with the momentum scroller for free — the band is fixed to the viewport rather
+than driven by a scroll handler.
+
+Four things that will break it if you edit them:
+
+- **The trailing space must be a sibling** (`.sw-runout`), not margin or padding. A margin
+  on the sticky collapses through — `overflow:clip` opens no block formatting context —
+  and padding on the panel sits outside the content box the sticky is constrained to.
+  Either way the sticky ends up exactly as tall as its container and never pins.
+- **Line height is also the scroll distance per item.** The list travels past the band 1:1
+  with scroll, so a tight stack reads fast. `1.55` gives ~115px per item.
+- `--sw-count` on the panel must match the number of items; the sticky's
+  `top: calc((count - 1) * -1lh)` depends on it.
+- The sliver is `position:sticky`, not the usual `absolute` — this panel is far taller than
+  a viewport and the mark would otherwise scroll up under the fixed nav mid-reel. It is
+  `display:flex; height:0`, because the base `.spec-mark` is `inline-flex` and an inline
+  child generates a line box, which added a whole 109px line to the panel. The rule is
+  scoped `.sw-sect .sw-mark` to beat `.spec-mark`, which appears later in the sheet.
+
+The highlight uses full-strength `--accent`. On cream that is **2.87:1**, just under the
+3:1 large-text floor — a deliberate choice to keep the palette to its three colours.
+
+iOS Safari ignores `background-attachment:fixed`, so touch and `prefers-reduced-motion`
+both get a solid static list instead.
+
+</details>
+
+<details>
+<summary><b>05 · Data panel — count-up stat</b></summary>
+
+<br>
 
 The three figures use **`gfx-count` (16 · Count-up stat)** from
 `Design system components/handoff/`. Each numeral counts to its target the first time it
@@ -288,161 +400,60 @@ intends, it feeds the existing `.stat-row` pattern rather than replacing it — 
   throttled dead. That demo block is deliberately **not** copied here; the driver from
   `GRAPHICS-SPEC.md` runs it instead.
 - One addition to that driver: the value is padded back to the width it was authored at,
-  so `data-gfx-count-to="03"` renders `03` rather than `3`, matching how the panel already
-  set its numerals.
+  so `data-gfx-count-to="03"` renders `03` rather than `3`.
 - The counting target is an inner `<span data-gfx-count-to>` so the year's `'` unit is a
   sibling and survives the `textContent` writes.
-- Resting values are in the markup, so the figures are correct with JS off, and the
-  observer unobserves on first hit — it never replays on scroll back.
+- Resting values are in the markup, so figures are correct with JS off, and the observer
+  unobserves on first hit — it never replays on scroll back.
 
-### Section slivers
+</details>
 
-Each home panel carries a mono sliver in its top corner — `Portfolio · 01`,
-`Project Gallery · 02`, and so on. **The numbers are not in the markup.** Each mark is an
-empty `<span class="spec-mark" data-section="Name">`, and `numberSections()` walks
-`#home [data-section]` in DOM order and fills in `Name · NN`. Insert, remove or reorder a
-panel and the rest renumber themselves.
+<details>
+<summary><b>Placed graphics — split disc & stripe fan</b></summary>
 
-- `data-bars="after"` puts the three-bar cluster on the right, for right-aligned marks.
-- A panel can echo its own number elsewhere inside itself with `[data-section-num]` — the
-  stats panel uses this for its `NN — Index` line.
+<br>
 
-The order is Portfolio, Project Gallery, Skills, Softwares / Programs, Data. The fourth
-is a deliberately empty cream panel holding its place until it has content.
+| Component | Where | Notes |
+| --- | --- | --- |
+| **05 · Plate — split disc** | Softwares | Turned portrait and inverted: cream ground, orange discs, the lens intersection and the slash knocked out in the ground. Centres transposed from `(112,100)/(208,100)` on the 320×200 board to `(100,112)/(100,208)` on a 200×320 one, so the arcs stay axis-aligned. No keyline — the ground is the panel's own, so it reads as artwork rather than a plate laid over it. **Hidden below 768px**: the lead and list already use 349px of a 375px viewport. |
+| **02 · Stripe fan** | Skills | Its `color:var(--accent)` resolves to ink on the vermillion ground, so it is **already black there** with no override. Shears with scroll via `--sp`. |
 
-### Software reel
+`--sp` comes from one shared driver for all `[data-gfx-scroll]` elements, called from
+`ssApply()` as well as the `scroll` event. Reduced motion pins it to `1`, which is each
+component's *finished* state, not its starting one.
 
-The `Softwares / Programs` panel. Adapted from jh3y's sticky scroll-highlight list: the
-lead phrase pins at a focal line while the list scrolls past it, and each item is painted
-with a **viewport-fixed gradient clipped to the glyphs**, so whichever line crosses the
-band lights up. No JS, and it stays in step with the momentum scroller because the band
-is fixed to the viewport rather than driven by a scroll handler.
+</details>
 
-Three things that will break it if you edit them:
+<details>
+<summary><b>Loading animation, contact form, easter egg</b></summary>
 
-- **The trailing space must be a sibling** (`.sw-runout`), not margin or padding. A margin
-  on the sticky collapses through — `overflow:clip` opens no block formatting context —
-  and padding on the panel sits outside the content box the sticky is constrained to.
-  Either way the sticky ends up exactly as tall as its container and never pins.
-- **Line height is also the scroll distance per item.** The list travels past the band 1:1
-  with scroll, so a tight stack reads fast. `1.55` gives ~115px per item.
-- `--sw-count` on the panel must match the number of items; the sticky's
-  `top: calc((count - 1) * -1lh)` depends on it.
-- The sliver is `position:sticky`, not the usual `absolute`, because this panel is far
-  taller than a viewport and the mark would otherwise scroll up under the fixed nav
-  mid-reel. It is `display:flex; height:0` — the base `.spec-mark` is `inline-flex`, and
-  an inline child generates a line box, which added a whole 109px line to the panel. The
-  rule is scoped `.sw-sect .sw-mark` to beat `.spec-mark`, which appears later in the
-  sheet.
+<br>
 
-The highlight uses full-strength `--accent`. On cream that is **2.87:1**, just under the
-3:1 large-text floor — a deliberate choice to keep the palette to its three colours.
-
-iOS Safari ignores `background-attachment:fixed`, so touch and `prefers-reduced-motion`
-both get a solid static list instead.
-
-### Skills carousel
-
-A scroll-pinned 3D cylinder, built with CSS transforms and `position:sticky` — no library.
-
-- Skills live in the `SKILL_REEL` array.
-- Each is a layer at `rotateX(i × CYL_ANGLE) translateZ(radius)` inside a `preserve-3d`
-  container under `perspective`. Scroll progress drives the container's `rotateX`.
-- `CYL_ANGLE` is **32°**, not `360/n`. It's an arc, not a closed circle: tighter spacing
-  keeps ~5 copies inside the visible ±90°, which is what creates the stacked cascade.
-- Opacity falls off as `cos³·⁴` of the angle from front, so the lead copy reads solid and
-  the rest recede.
-- `layoutCylinder()` sets **one uniform size for every skill**, scaled up until the
-  longest line fills 92% of the stage. The longest string therefore caps the size for all
-  of them.
-- `CYL_TIGHTNESS` (`2.15`) multiplies that size to get the radius — it controls overlap.
-  **Radius is not independent of type size**, and the two pull against each other: a
-  bigger radius brings the front copy closer to the camera, so the fitting pass shrinks
-  the type to keep it inside the stage. At 1280px, raising it from 1.45 opened the copies
-  from 67px to 99px apart while costing only 1px of type. Push it much further and the
-  outer copies start reaching past the stage, which does not clip — `.cyl-viewport` has no
-  `overflow` — so they would spill over the label and the dots.
-
-The wrapper's height (`100vh + 6 × --cyl-step`) is the scroll distance the pinned stage
-consumes. Add or remove skills and that `6` should change to match `n − 1`.
-
-### Projects
-
-Content lives in the `PROJECTS` array. Cards in `#projects` are hand-written HTML; clicking
-one calls `openProject(idx)`, which fills `#project-detail`.
-
-**`idx` is a raw array index and does not match the number on the card.** The card labelled
-`03` (Planetary Gearbox) calls `openProject(0)`; `01` calls `openProject(1)`; `02` calls
-`openProject(2)`. Check the array, not the badge.
-
-#### Adding a project
-
-1. Add an entry to `PROJECTS`:
-
-   ```js
-   {
-     num: '04',
-     badge: 'Category · Discipline',            // shown top-left of the detail hero
-     heroImage: 'Images/My Project/hero.png',   // optional; omit for a plain panel
-     title: 'My Project',
-     tags: ['SolidWorks', 'FEA'],
-     meta: [{ k: 'Year', v: '2026' }, { k: 'Role', v: 'Design' }],
-     body: `<p>Paragraphs of HTML.</p>`,
-     gallery: [
-       'Images/My Project/photo-1.jpg',   // image paths render as photos
-       'Caption Only Tile',               // any other string renders as a labelled tile
-     ],
-   }
-   ```
-
-   `gallery` entries ending `.png/.jpg/.jpeg/.gif/.webp/.svg` render as `<img>`; anything
-   else becomes a labelled placeholder tile. The same convention applies to `heroImage` —
-   omit it and the hero shows the panel ground with the `num` watermark.
-
-2. Copy an existing `.proj-brick` inside the right `.projects-group` and point its
-   `onclick` at the new index.
-
-3. Pick a size class — `tall` (3:4), `wide` (16:9), `sq` (1:1), `short` (4:3), `mini`
-   (3:2) — and a colour class `ca`–`ch`. These are **flat panels, not gradients**:
-   `cb/ce/ch` are ink, `cc/cf` are orange, the rest paper-shade. Each sets `--v-bg` and
-   `--v-fg`, so the badge and corner marks adapt automatically.
-
-Masonry is CSS `columns: 3`, dropping to 2 at 1000px and 1 at 580px.
-
-### Loading animation
-
-Ink panel. A rule draws, the **AO mark** rises from behind it as a mask reveal, then a
-mono spec line fades in. On close the mark drops back below the rule and the panel slides
-up to wipe the hero into view.
+**Loading animation.** Ink panel. A rule draws, the **AO mark** rises from behind it as a
+mask reveal, then a mono spec line fades in. On close the mark drops back below the rule
+and the panel slides up to wipe the hero into view.
 
 The stack is a fixed measure with the mark centred over it — rule 10 permits centring a
 single mark. The rise is `translateY(130%)`, a percentage of the mark's own height, so it
-tracks the `clamp()` size. Mark colours are set as local custom properties on
-`.startup-intro` rather than by giving it `data-territory="ink"`: the intro is
-`position:fixed` over the whole viewport, and the canvas prober would then read it as the
-territory on screen.
+tracks the `clamp()` size. Mark colours are local custom properties on `.startup-intro`
+rather than `data-territory="ink"`: the intro is `position:fixed` over the whole viewport,
+and the canvas prober would otherwise read it as the territory on screen.
 
-Timings live in JS: `closing` at `1620 ms`, `done` at `2080 ms`, `hidden` at `2780 ms`.
-Skipped entirely under `prefers-reduced-motion`.
+Timings live in JS — `closing` `1620 ms`, `done` `2080 ms`, `hidden` `2780 ms`. Skipped
+under `prefers-reduced-motion`.
 
-### Contact form
+**Contact form.** `handleForm()` validates and shows a "Message Sent ✓" confirmation.
+**It does not send anything** — no backend, no form service. See [Gotchas](#gotchas).
 
-`handleForm()` validates and shows a "Message Sent ✓" confirmation. **It does not send
-anything** — no backend, no form service. See [Gotchas](#gotchas).
-
-### Easter egg
-
-The keylined triangle at the right of the footer opens `#easter`, a Snake game on a
-420×420 board. Fixed 130 ms timestep with interpolated rendering, WebAudio blips, and
-`localStorage` for best score (`snakeBest`) and the top five (`snakeScores`). 50 points
-wins. Keyboard input is only captured while `#easter` is active.
+**Easter egg.** The keylined triangle at the right of the footer opens `#easter`, a Snake
+game on a 420×420 board. Fixed 130 ms timestep with interpolated rendering, WebAudio
+blips, and `localStorage` for best score (`snakeBest`) and the top five (`snakeScores`).
+50 points wins. Keyboard input is only captured while `#easter` is active.
 
 The board is drawn as a drafting sheet: hairline cell dots, a heavier rule every seven
 cells (21 divides by 7), and a registration crosshair on the target. The snake is paper,
 tapering from a 1 px inset at the head to 4 px at the tail so **direction reads by shape,
 not by a fourth colour** — the only vermillion on the board is the food.
-
-Things worth knowing before editing it:
 
 - **The canvas is DPR-scaled.** `sizeCanvas()` sets the backing store to `420 × dpr` and
   transforms the context, so all drawing is still in 420-unit CSS space. Draw in CSS
@@ -457,28 +468,82 @@ Things worth knowing before editing it:
 - **Touch is swipe-to-steer, tap to start/pause**, which needs `touch-action:none` on the
   canvas. `TOUCH` also swaps the overlay and hint copy from "Press Space" to "Tap".
 
+</details>
+
+---
+
+## Projects
+
+Content lives in the `PROJECTS` array. Cards in `#projects` are hand-written HTML; clicking
+one calls `openProject(idx)`, which fills `#project-detail`.
+
+> [!CAUTION]
+> **`idx` is a raw array index and does not match the number on the card.** The card
+> labelled `03` (Planetary Gearbox) calls `openProject(0)`; `01` calls `openProject(1)`;
+> `02` calls `openProject(2)`. Check the array, not the badge.
+
+### Adding a project
+
+**1.** Add an entry to `PROJECTS`:
+
+```js
+{
+  num: '04',
+  badge: 'Category · Discipline',            // shown top-left of the detail hero
+  heroImage: 'Images/My Project/hero.png',   // optional; omit for a plain panel
+  title: 'My Project',
+  tags: ['SolidWorks', 'FEA'],
+  meta: [{ k: 'Year', v: '2026' }, { k: 'Role', v: 'Design' }],
+  body: `<p>Paragraphs of HTML.</p>`,
+  gallery: [
+    'Images/My Project/photo-1.jpg',   // image paths render as photos
+    'Caption Only Tile',               // any other string renders as a labelled tile
+  ],
+}
+```
+
+`gallery` entries ending `.png/.jpg/.jpeg/.gif/.webp/.svg` render as `<img>`; anything else
+becomes a labelled placeholder tile. Same convention for `heroImage` — omit it and the hero
+shows the panel ground with the `num` watermark.
+
+**2.** Copy an existing `.proj-brick` inside the right `.projects-group` and point its
+`onclick` at the new index.
+
+**3.** Pick a size class — `tall` (3:4), `wide` (16:9), `sq` (1:1), `short` (4:3), `mini`
+(3:2) — and a colour class `ca`–`ch`. These are **flat panels, not gradients**: `cb/ce/ch`
+are ink, `cc/cf` are orange, the rest paper-shade. Each sets `--v-bg` and `--v-fg`, so the
+badge and corner marks adapt automatically.
+
+Masonry is CSS `columns: 3`, dropping to 2 at 1000px and 1 at 580px.
+
+To add a project to the **home gallery** instead, add it to `SHOWCASE_ROWS` — that list is
+separate on purpose.
+
 ---
 
 ## Gotchas
 
-- **Image paths are case-sensitive on the deploy target.** Windows and macOS don't care if
-  `Images/Main-Render.png` is referenced as `images/main-render.png`; GitHub Pages
-  (Linux-backed) does, and a mismatch 404s in production with no error locally. All current
-  references match on-disk casing exactly — keep it that way.
-- **Text fitting must wait for fonts.** `layoutCylinder()` measures rendered text width.
-  Measured against fallback metrics it oversizes every line by ~13%, so it re-runs on
-  `document.fonts.ready`. Any new measure-then-size code needs the same treatment.
-- **`overflow:hidden` breaks the pinned carousel.** It creates a scroll container and kills
-  `position:sticky`. `.terr` uses `overflow:clip`, which clips without that side effect.
-- **The gallery/project placeholders are not real work.** Several gallery entries are
-  labelled tiles awaiting actual photos and CFD/CAD screenshots.
-- **The contact form is decorative.** Wire it to Formspree / Web3Forms / a `mailto:`
-  fallback, or replace it with the footer email link.
-- **The home bio is `contenteditable`.** Visitors can type over it; edits save nowhere.
-  A leftover from the original template.
-- **Project cards are `<div onclick>`.** Not keyboard-reachable and not announced as
-  interactive by screen readers.
-- **No print stylesheet.** The CV page's "Download / Print CV" calls `window.print()` and
-  prints the screen styles as-is.
-- **Images are unoptimised.** `Main-Render.png` alone is ~595 KB; the `Images/` folder is
-  ~1.1 MB. Converting to WebP at sensible dimensions would cut that substantially.
+> [!CAUTION]
+> **Image paths are case-sensitive on the deploy target.** Windows and macOS don't care if
+> `Images/Main-Render.png` is referenced as `images/main-render.png`; GitHub Pages
+> (Linux-backed) does, and a mismatch 404s in production with no error locally. All current
+> references match on-disk casing exactly — keep it that way.
+
+| | |
+| --- | --- |
+| **Text fitting must wait for fonts** | `layoutCylinder()` measures rendered text width. Against fallback metrics it oversizes every line by ~13%, so it re-runs on `document.fonts.ready`. Any new measure-then-size code needs the same treatment. |
+| **`overflow:hidden` breaks pinning** | It creates a scroll container and kills `position:sticky`. `.terr` uses `overflow:clip`, which clips without that side effect — but note `clip` opens no block formatting context, so margins still collapse through it. |
+| **Placeholders are not real work** | Every home-gallery entry and several project galleries are labelled tiles awaiting photos and CFD/CAD screenshots. |
+| **The contact form is decorative** | Wire it to Formspree / Web3Forms / a `mailto:` fallback, or replace it with the footer email link. |
+| **The home bio is `contenteditable`** | Visitors can type over it; edits save nowhere. A leftover from the original template. |
+| **Project cards are `<div onclick>`** | Not keyboard-reachable, not announced as interactive. The home gallery's titles were made real `<button>`s for this reason; the project cards still need it. |
+| **No print stylesheet** | The CV's "Download / Print CV" calls `window.print()` and prints the screen styles as-is. |
+| **Images are unoptimised** | `Main-Render.png` alone is ~595 KB; `Images/` is ~1.1 MB. WebP at sensible dimensions would cut that substantially. |
+
+---
+
+<div align="center">
+
+**[DESIGN-SYSTEM.md](DESIGN-SYSTEM.md)** · Swiss / International Typographic Style · No build step
+
+</div>
