@@ -221,8 +221,25 @@ gallery](https://tympanus.net/codrops/2026/02/19/creating-a-smooth-horizontal-pa
   — the same convention the detail galleries use. Add a project, it appears here.
 - `.px-wrap`'s height is `100vh + track travel`, so the pin releases exactly as the last
   plate clears the right edge. `.px-sticky` uses `overflow:clip` for the usual reason.
-- Parallax is per plate: the image is `100% + 2 × PX_SHIFT` wide, inset by `PX_SHIFT`, and
-  translated by where its frame sits relative to the viewport centre, normalised to ±1.
+- **Parallax follows the source's model, not a fixed pixel offset.** Ported from the
+  demo's three named tunables:
+
+  | Constant | Here | Demo | Meaning |
+  | --- | --- | --- | --- |
+  | `PX_INTENSITY` | `0.75` | `0.4` | How hard the image drifts |
+  | `PX_SHADER_MULT` | `1.25` | `1.0` | Multiplies the above |
+  | `PX_UV_SCALE` | `0.72` | `0.85` | Zoom that buys the drift its headroom |
+
+  Per plate: `n = (plateCentre − vw/2) / vw`, so **n spans about ±0.5 — divided by the
+  full viewport, not half of it**. Drift is `n × intensity × multiplier`, expressed as a
+  **fraction of plate width**, so a wide plate travels proportionally further. The image
+  is scaled `1/PX_UV_SCALE` (1.39×), which is the DOM equivalent of the shader's
+  `uv -= .5; uv *= uUvScale; uv += .5` — that zoom is the buffer the drift moves through.
+  Lower `PX_UV_SCALE` to allow more travel at the cost of a tighter crop.
+- The one deliberate departure: drift is eased into the buffer with `tanh` rather than
+  allowed to run past it. The original lets UVs leave `[0,1]` at the screen edges; the
+  `tanh` limit means `|drift| ≤ (1 − uvScale) / (2 × uvScale)`, exactly the headroom the
+  zoom provides, so an image edge can never appear.
 - **Driven from `ssApply()`**, like the carousel. The `scroll` event alone is not enough.
 - Plate ratios cycle through `PX_RATIOS` (4:5, 16:10, 1:1) so the row has rhythm without
   the widths being arbitrary.

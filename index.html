@@ -403,10 +403,13 @@
     .px-plate.r-45{aspect-ratio:4/5;}
     .px-plate.r-11{aspect-ratio:1/1;}
     .px-plate.r-1610{aspect-ratio:16/10;}
+    /* The image covers the plate and is then scaled up by 1/uvScale. That
+       zoom is the buffer the horizontal drift travels through — the DOM
+       equivalent of the shader's `uv -= .5; uv *= uUvScale; uv += .5`. */
     .px-plate img{
-      position:absolute;top:0;left:calc(-1 * var(--px-shift));
-      width:calc(100% + var(--px-shift) * 2);height:100%;
-      object-fit:cover;display:block;
+      position:absolute;inset:0;width:100%;height:100%;
+      object-fit:cover;display:block;transform-origin:50% 50%;
+      backface-visibility:hidden;
     }
     /* Placeholder tile — same convention as the detail galleries */
     .px-plate.is-tile{
@@ -441,7 +444,7 @@
       -webkit-overflow-scrolling:touch;
     }
     .px-wrap.is-strip .px-group{scroll-snap-align:start;}
-    .px-wrap.is-strip .px-plate img{transform:none !important;left:0;width:100%;}
+    .px-wrap.is-strip .px-plate img{transform:none !important;}
     /* Keep the scroll affordance, but as a hairline rather than chrome */
     .px-wrap.is-strip .px-track{scrollbar-width:thin;scrollbar-color:var(--accent) transparent;}
     .px-wrap.is-strip .px-track::-webkit-scrollbar{height:2px;}
@@ -2110,7 +2113,16 @@ const pxHome  = document.getElementById('home');   // homeSection is declared la
 const pxWrap  = document.getElementById('px-wrap');
 const pxTrack = document.getElementById('px-track');
 const pxBar   = document.getElementById('px-progress-bar');
-const PX_SHIFT = 54;                     // px of drift available each way
+/* Ported from the Codrops gallery's three tunables, same names and meaning.
+   Intensity and the multiplier are both raised over the demo's 0.4 / 1.0;
+   uvScale is dropped from 0.85 to buy the extra travel somewhere to go. */
+const PX_INTENSITY    = 0.75;   // demo default 0.4
+const PX_SHADER_MULT  = 1.25;   // demo default 1.0
+const PX_UV_SCALE     = 0.72;   // demo default 0.85 — lower = more zoom, more buffer
+/* Headroom the zoom actually provides, as a fraction of plate width. Keeping
+   the drift inside this is what guarantees an image edge never shows. */
+const PX_MAX = (1 - PX_UV_SCALE) / (2 * PX_UV_SCALE);
+const PX_ZOOM = 1 / PX_UV_SCALE;
 const PX_RATIOS = ['r-45','r-1610','r-11','r-45','r-1610'];
 const IMG_RE = /\.(png|jpe?g|gif|webp|svg)$/i;
 
@@ -2146,12 +2158,6 @@ function buildParallax(){
   }).join('');
 
   pxPlates = [...pxTrack.querySelectorAll('.px-plate')];
-  pxTrack.querySelectorAll('.px-plate img').forEach(img => {
-    img.style.setProperty('--px-shift', PX_SHIFT + 'px');
-  });
-  pxTrack.querySelectorAll('.px-plate').forEach(pl => {
-    pl.style.setProperty('--px-shift', PX_SHIFT + 'px');
-  });
   // Whole group is clickable for convenience, but the title is the real
   // control so the showcase is reachable by keyboard.
   pxTrack.addEventListener('click', e => {
@@ -2191,15 +2197,24 @@ function updateParallax(){
   pxTrack.style.transform = 'translate3d(' + (-p * pxDistance) + 'px,0,0)';
   if (pxBar) pxBar.style.width = (p * 100) + '%';
 
-  // Each image drifts against its frame by where that frame sits on screen.
-  const mid = window.innerWidth / 2;
+  /* Per plate, exactly the demo's mapping: how far the frame's centre sits
+     from the viewport centre, as a fraction of the FULL viewport width — so
+     n spans about ±0.5, not ±1 — scaled by intensity and the multiplier.
+     tanh eases the result into the buffer instead of clipping at it, which
+     is the one place this departs from the original. */
+  const vw = window.innerWidth;
   for (const plate of pxPlates) {
     const img = plate.firstElementChild;
     if (!img || img.tagName !== 'IMG') continue;
     const r = plate.getBoundingClientRect();
-    if (r.right < -200 || r.left > window.innerWidth + 200) continue;   // offscreen
-    const n = Math.max(-1, Math.min(1, ((r.left + r.width / 2) - mid) / mid));
-    img.style.transform = 'translate3d(' + (-n * PX_SHIFT) + 'px,0,0)';
+    if (r.right < -240 || r.left > vw + 240) continue;                 // offscreen
+    const n = ((r.left + r.width / 2) - vw / 2) / vw;
+    const raw = n * PX_INTENSITY * PX_SHADER_MULT;
+    const drift = PX_MAX * Math.tanh(raw / PX_MAX);
+    // Drift is a fraction of plate width, so big plates move further — the
+    // fixed pixel offset this replaces read as almost nothing on wide ones.
+    img.style.transform =
+      'translate3d(' + (-drift * r.width).toFixed(2) + 'px,0,0) scale(' + PX_ZOOM.toFixed(4) + ')';
   }
 }
 
