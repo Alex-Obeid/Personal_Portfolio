@@ -272,7 +272,13 @@ A scroll-pinned 3D cylinder, built with CSS transforms and `position:sticky` —
 - `layoutCylinder()` sets **one uniform size for every skill**, scaled up until the
   longest line fills 92% of the stage. The longest string therefore caps the size for all
   of them.
-- `CYL_TIGHTNESS` (`1.45`) multiplies that size to get the radius — it controls overlap.
+- `CYL_TIGHTNESS` (`2.6`) multiplies that size to get the radius — it controls overlap.
+  **Radius is not independent of type size**, and the two pull against each other: a
+  bigger radius brings the front copy closer to the camera, so the fitting pass shrinks
+  the type to keep it inside the stage. At 1280px, raising it from 1.45 opened the copies
+  from 67px to 118px apart while costing only 3px of type. Push it much further and the
+  outer copies start reaching past the stage, which does not clip — `.cyl-viewport` has no
+  `overflow` — so they would spill over the label and the dots.
 
 The wrapper's height (`100vh + 6 × --cyl-step`) is the scroll distance the pinned stage
 consumes. Add or remove skills and that `6` should change to match `n − 1`.

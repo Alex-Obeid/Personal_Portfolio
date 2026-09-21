@@ -2307,7 +2307,10 @@ const CYL_N = SKILL_REEL.length;
 // the visible ±90°, which is what gives the stacked cascade its depth.
 const CYL_ANGLE = 32;
 // Radius as a multiple of the (uniform) line size — controls the overlap.
-const CYL_TIGHTNESS = 1.45;
+// Raised from 1.45 to open the cascade out: the copies sit roughly 70% further
+// apart. The layout pass shrinks the type a little to compensate, because a
+// bigger radius brings the front copy closer to the camera.
+const CYL_TIGHTNESS = 2.6;
 let cylItems = [], cylDots = [], cylTicking = false;
 
 function buildCylinder() {
