@@ -209,55 +209,54 @@ palette.
 
 ### Project showcase
 
-A scroll-pinned **horizontal parallax** gallery, sitting on an Ink panel between the hero
-and the skills carousel. Adapted from [Codrops' horizontal parallax
-gallery](https://tympanus.net/codrops/2026/02/19/creating-a-smooth-horizontal-parallax-gallery-from-dom-to-webgl/)
-— the same wrapper → clipped frame → oversized image idea, rebuilt with no dependencies
-(the original is Vite + TypeScript, with an optional Three.js version).
+A scroll-pinned **horizontal parallax** gallery on an Ink panel between the hero and the
+skills carousel. Adapted from [Codrops' horizontal parallax
+gallery](https://tympanus.net/codrops/2026/02/19/creating-a-smooth-horizontal-parallax-gallery-from-dom-to-webgl/),
+rebuilt with no dependencies (the original is Vite + TypeScript with a Three.js path).
 
-- **It is generated from `PROJECTS`.** There is no second image list to keep in sync. Each
-  entry becomes one `.px-group`: its own title block, then its own plates. `gallery`
-  entries ending in an image extension render as photos, anything else as a labelled tile
-  — the same convention the detail galleries use. Add a project, it appears here.
-- `.px-wrap`'s height is `100vh + track travel`, so the pin releases exactly as the last
-  plate clears the right edge. `.px-sticky` uses `overflow:clip` for the usual reason.
-- **Parallax follows the source's model, not a fixed pixel offset.** Ported from the
-  demo's three named tunables:
+**Two rows of two, travelling against each other.** Both rows are the same thing — a
+project title over its own plates — rendered by the same `pxGroup()`. They differ only in
+direction: row A translates `-p × travelA`, row B `-(1-p) × travelB`, so B starts fully
+left and unwinds to zero as A unwinds left. Each covers its own full distance over the
+same progress; the pin lasts as long as the longer one needs.
 
-  | Constant | Here | Demo | Meaning |
-  | --- | --- | --- | --- |
-  | `PX_INTENSITY` | `0.75` | `0.4` | How hard the image drifts |
-  | `PX_SHADER_MULT` | `1.25` | `1.0` | Multiplies the above |
-  | `PX_UV_SCALE` | `0.72` | `0.85` | Zoom that buys the drift its headroom |
+Membership lives in `SHOWCASE_ROWS`, **not** `PROJECTS` — the gallery is a curated subset
+and Planetary Gearbox is deliberately excluded. Galleries for projects that do exist in
+`PROJECTS` are referenced rather than copied, so image lists stay single-sourced:
 
-  Per plate: `n = (plateCentre − vw/2) / vw`, so **n spans about ±0.5 — divided by the
-  full viewport, not half of it**. Drift is `n × intensity × multiplier`, expressed as a
-  **fraction of plate width**, so a wide plate travels proportionally further. The image
-  is scaled `1/PX_UV_SCALE` (1.39×), which is the DOM equivalent of the shader's
-  `uv -= .5; uv *= uUvScale; uv += .5` — that zoom is the buffer the drift moves through.
-  Lower `PX_UV_SCALE` to allow more travel at the cost of a tighter crop.
-- The one deliberate departure: drift is eased into the buffer with `tanh` rather than
-  allowed to run past it. The original lets UVs leave `[0,1]` at the screen edges; the
-  `tanh` limit means `|drift| ≤ (1 − uvScale) / (2 × uvScale)`, exactly the headroom the
-  zoom provides, so an image edge can never appear.
+| Row | Projects |
+| --- | --- |
+| A (travels left) | Wheel Hub CNC Machining, Generic SUV CFD |
+| B (travels right) | Formula Student, Custom CNC Machine Design |
+
+- **Parallax.** Ported from the demo's three tunables, pushed well past its defaults
+  because here the whole row is sliding too, which the demo never has to fight:
+
+  | Constant | Here | Demo |
+  | --- | --- | --- |
+  | `PX_INTENSITY` | `1.15` | `0.4` |
+  | `PX_SHADER_MULT` | `1.75` | `1.0` |
+  | `PX_UV_SCALE` | `0.64` | `0.85` |
+
+  Per plate: `n = (plateCentre − vw/2) / vw`, so **n spans about ±0.5 — the full viewport,
+  not half**. Drift is `n × intensity × multiplier` as a **fraction of plate width**, so
+  wide plates travel further. The image is scaled `1/PX_UV_SCALE` (1.563×), the DOM
+  equivalent of the shader's `uv -= .5; uv *= uUvScale; uv += .5` — that zoom is the
+  buffer the drift moves through. Max drift is **28% of plate width**.
+  Raising intensity means lowering `PX_UV_SCALE` to match, at the cost of a tighter crop.
+- Drift is eased into the buffer with `tanh` rather than clipping at it, bounded at
+  `(1 − uvScale) / (2 × uvScale)` — exactly the headroom the zoom provides — so an image
+  edge can never appear.
 - **Driven from `ssApply()`**, like the carousel. The `scroll` event alone is not enough.
-- Plate ratios cycle through `PX_RATIOS` (4:5, 16:10, 1:1) so the row has rhythm without
-  the widths being arbitrary.
-- **Two rows, travelling opposite ways.** Row A is the titled index. Row B underneath is
-  a counter-band — every plate in reverse with the titles stripped, smaller, captionless
-  and `aria-hidden` since it repeats content already announced above. Row A translates
-  `-p × distance`; row B translates `-(1-p) × distanceB`, so it starts fully left and
-  unwinds to zero while A unwinds the other way. `PX_B_RATIO` (0.75) caps B's travel as a
-  fraction of A's, and the set repeats until it is wide enough to actually move — with one
-  project photographed there is not otherwise enough to travel.
-- `.px-sticky` carries top/bottom padding that reserves the absolutely-positioned head and
-  progress bands, so flex centring cannot push the rows underneath them on a short window.
-  A `max-height:680px` query tightens both and shrinks row B.
-- Below 900px, on touch, or under `prefers-reduced-motion`, `.is-strip` drops the pinning
-  entirely: the track becomes a native horizontally-scrolling strip with scroll-snap and
-  the parallax is switched off. No hijacked scroll on a phone.
-- The group title is a real `<button>`, so the showcase is keyboard-reachable — unlike the
-  `<div onclick>` project cards (see [Gotchas](#gotchas)).
+- **If it scrolls by hand instead of pinning**, the `.is-strip` fallback is active. Call
+  `pxWhy()` in the console — it prints which of the three triggers fired: window under
+  **760px**, `hover:none`, or `prefers-reduced-motion`. That last one is an OS setting and
+  is the easy one to miss.
+- `.px-sticky` carries padding reserving the absolute head and progress bands, so flex
+  centring cannot push the rows under them; a `max-height:680px` query tightens both.
+- Gallery entries ending in an image extension render as photos, anything else as a
+  labelled drawing-sheet tile. **Right now every entry is a tile** — the only photographed
+  project was the one removed. Drop files into `Images/<Project>/` and swap the strings.
 
 ### Skills carousel
 

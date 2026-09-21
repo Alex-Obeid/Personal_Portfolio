@@ -209,7 +209,7 @@
     /* The mark, not the wordmark. Rule 10 sanctions centring a single mark,
        so the stack is a fixed measure with the mark centred over it. */
     .startup-stack{display:inline-flex;flex-direction:column;align-items:stretch;
-      width:clamp(168px,22vw,236px);}
+      width:clamp(196px,25vw,280px);}
     .startup-logo-clip{
       overflow:hidden;
       display:flex;justify-content:center;
@@ -220,7 +220,7 @@
     .startup-intro{--mark-ground:var(--ink);--mark-letter:var(--paper);--mark-dot:var(--orange);}
     .startup-mark{
       display:block;
-      width:clamp(64px,9vw,94px);height:auto;
+      width:clamp(84px,12vw,124px);height:auto;
       user-select:none;pointer-events:none;
       transform:translateY(130%);   /* parked below the rule */
     }
@@ -354,51 +354,43 @@
       position:sticky;top:0;height:100vh;
       display:flex;flex-direction:column;justify-content:center;
       /* reserves the absolute head and progress bands */
-      padding:126px 0 72px;
+      padding:152px 0 76px;
       /* clip, not hidden: hidden would create a scroll container and kill the
          sticky positioning this depends on. */
       overflow:clip;
     }
     .px-head{
-      position:absolute;top:104px;left:48px;right:48px;z-index:2;
-      display:flex;justify-content:space-between;align-items:baseline;
+      position:absolute;top:96px;left:48px;right:48px;z-index:3;
+      display:flex;justify-content:space-between;align-items:center;
       color:var(--fg-2);pointer-events:none;
     }
-    .px-rows{display:flex;flex-direction:column;gap:clamp(16px,2.4vh,30px);}
+    .px-cta{pointer-events:auto;padding:12px 22px;font-size:.6rem;flex:none;}
+    .px-rows{display:flex;flex-direction:column;gap:clamp(14px,2vh,26px);}
     .px-track{display:flex;align-items:center;gap:0;will-change:transform;}
-    /* Counter-band: no titles, smaller plates, travels the other way. */
-    .px-track-b{align-items:flex-start;}
-    .px-track-b .px-plate{height:clamp(96px,17vh,188px);}
-    .px-track-b .px-cap{display:none;}
-    .px-track-b .px-plates{gap:clamp(10px,1.2vw,18px);}
+    /* Row B is structurally identical to row A — it just travels the other way. */
 
     /* One project */
     .px-group{
-      display:flex;flex-direction:column;gap:18px;flex:none;
-      padding:0 clamp(32px,4vw,64px);
+      display:flex;flex-direction:column;gap:13px;flex:none;
+      padding:0 clamp(44px,5vw,86px);
       border-left:1px solid var(--rule);
     }
     .px-group:first-child{border-left:0;}
-    .px-group-head{display:flex;flex-direction:column;gap:9px;max-width:60ch;}
+    .px-group-head{display:flex;flex-direction:column;gap:7px;max-width:60ch;}
     .px-group-meta{display:flex;align-items:center;gap:12px;color:var(--fg-2);}
     .px-group-meta .bar{width:26px;height:2px;background:var(--accent);flex:none;}
     .px-group-title{
       font-family:'Archivo Black',sans-serif;
-      font-size:clamp(1.6rem,3.2vw,3.1rem);line-height:.92;letter-spacing:-.03em;
-      text-transform:uppercase;color:var(--fg);white-space:nowrap;
-      background:transparent;border:0;padding:0;margin:0;text-align:left;
-      cursor:pointer;transition:color var(--snap);
+      font-size:clamp(1.25rem,2.3vw,2.1rem);line-height:.95;letter-spacing:-.03em;
+      text-transform:uppercase;color:var(--fg);white-space:nowrap;margin:0;
     }
-    .px-group:hover .px-group-title,
-    .px-group-title:focus-visible{color:var(--accent);outline:none;}
-    .px-group-title:focus-visible{text-decoration:underline;text-underline-offset:6px;}
     .px-group-rule{height:1px;background:var(--rule-strong);}
 
     /* The plates */
-    .px-plates{display:flex;gap:clamp(14px,1.6vw,26px);align-items:flex-end;}
+    .px-plates{display:flex;gap:clamp(18px,2.1vw,34px);align-items:flex-end;}
     .px-plate{
       position:relative;flex:none;overflow:clip;
-      height:clamp(150px,30vh,320px);
+      height:clamp(140px,24vh,256px);
       border:1px solid var(--rule-strong);background:var(--surface);
     }
     .px-plate.r-45{aspect-ratio:4/5;}
@@ -412,18 +404,23 @@
       object-fit:cover;display:block;transform-origin:50% 50%;
       backface-visibility:hidden;
     }
-    /* Placeholder tile — same convention as the detail galleries */
+    /* Placeholder tile — a drawing-sheet plate awaiting its photograph, not
+       an empty box. Big muted index, mono caption on the baseline. */
     .px-plate.is-tile{
-      display:flex;align-items:center;justify-content:center;text-align:center;padding:14px;
-      font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;
-      text-transform:uppercase;color:var(--fg-2);
+      display:flex;flex-direction:column;justify-content:space-between;
+      align-items:flex-start;padding:10px 12px;
+      background:var(--surface);
     }
-    .px-cap{
-      position:absolute;left:0;right:0;bottom:0;z-index:1;
-      display:flex;justify-content:space-between;gap:10px;
-      padding:7px 9px;background:rgba(10,10,10,.72);
+    .px-plate.is-tile::after{
+      content:'';position:absolute;inset:8px;border:1px dashed var(--rule);pointer-events:none;
+    }
+    .tile-n{
+      font-family:'Archivo Black',sans-serif;font-size:1.9rem;line-height:1;
+      letter-spacing:-.03em;color:var(--fg);opacity:.16;
+    }
+    .tile-l{
       font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.16em;
-      text-transform:uppercase;color:var(--paper);
+      text-transform:uppercase;color:var(--fg-2);max-width:100%;
     }
     .px-progress{
       position:absolute;left:48px;right:48px;bottom:56px;z-index:2;
@@ -433,10 +430,9 @@
 
     /* Short windows: pull the bands in and shrink the counter row */
     @media (max-height:680px){
-      .px-sticky{padding:100px 0 52px;}
+      .px-sticky{padding:118px 0 54px;}
       .px-head{top:80px;}
       .px-progress{bottom:36px;}
-      .px-track-b .px-plate{height:clamp(80px,13vh,140px);}
       .px-rows{gap:14px;}
     }
 
@@ -454,8 +450,7 @@
       -webkit-overflow-scrolling:touch;
     }
     .px-wrap.is-strip .px-group{scroll-snap-align:start;}
-    /* One scroller is enough on a phone; two stacked reads as a mistake. */
-    .px-wrap.is-strip .px-track-b{display:none;}
+
     .px-wrap.is-strip .px-plate img{transform:none !important;}
     /* Keep the scroll affordance, but as a hairline rather than chrome */
     .px-wrap.is-strip .px-track{scrollbar-width:thin;scrollbar-color:var(--accent) transparent;}
@@ -1020,7 +1015,9 @@
       <div class="px-sticky">
         <div class="px-head">
           <span class="t-label">Selected work</span>
-          <span class="spec-mark" style="position:static"><span class="sm-bars"><i></i><i></i><i></i></span>Index &middot; 02</span>
+          <button class="btn btn-primary px-cta" type="button" onclick="navigate('projects')">
+            View My Projects!
+          </button>
         </div>
         <div class="px-rows">
           <div class="px-track" id="px-track"></div>
@@ -2135,95 +2132,79 @@ const pxWrap  = document.getElementById('px-wrap');
 const pxTrack = document.getElementById('px-track');
 const pxTrackB = document.getElementById('px-track-b');
 const pxBar   = document.getElementById('px-progress-bar');
+
 /* Ported from the Codrops gallery's three tunables, same names and meaning.
-   Intensity and the multiplier are both raised over the demo's 0.4 / 1.0;
-   uvScale is dropped from 0.85 to buy the extra travel somewhere to go. */
-const PX_INTENSITY    = 0.75;   // demo default 0.4
-const PX_SHADER_MULT  = 1.25;   // demo default 1.0
-const PX_UV_SCALE     = 0.72;   // demo default 0.85 — lower = more zoom, more buffer
-/* Headroom the zoom actually provides, as a fraction of plate width. Keeping
-   the drift inside this is what guarantees an image edge never shows. */
+   Well above the demo's 0.4 / 1.0 / 0.85 — the drift has to read while the
+   whole row is also sliding, which the demo does not have to contend with. */
+const PX_INTENSITY    = 1.15;   // demo default 0.4
+const PX_SHADER_MULT  = 1.75;   // demo default 1.0
+const PX_UV_SCALE     = 0.64;   // demo default 0.85 — lower = more zoom, more buffer
+/* Headroom the zoom provides, as a fraction of plate width. Keeping the drift
+   inside this is what guarantees an image edge never shows. */
 const PX_MAX = (1 - PX_UV_SCALE) / (2 * PX_UV_SCALE);
 const PX_ZOOM = 1 / PX_UV_SCALE;
 const PX_RATIOS = ['r-45','r-1610','r-11','r-45','r-1610'];
 const IMG_RE = /\.(png|jpe?g|gif|webp|svg)$/i;
 
-let pxPlates = [], pxDistance = 0, pxDistanceB = 0, pxStrip = false;
-/* Row B travels this fraction of row A's distance, in the opposite
-   direction — enough contrast to read without looking frantic. */
-const PX_B_RATIO = 0.75;
+/* Two rows of two. Both rows are the same kind of thing — a project title
+   over its own plates — and differ only in which way they travel. Galleries
+   for projects that exist in PROJECTS are referenced, not copied, so the
+   image lists stay single-sourced. Planetary Gearbox is deliberately absent.
+   The two new entries have no PROJECTS record yet, so they carry labelled
+   tiles until their photos land. */
+const SHOWCASE_ROWS = [
+  [
+    { num:'01', badge:'Manufacturing \u00b7 CNC', title:'Wheel Hub CNC Machining',
+      gallery: (PROJECTS[1] && PROJECTS[1].gallery) || [] },
+    { num:'02', badge:'Aero \u00b7 CFD', title:'Generic SUV CFD',
+      gallery: (PROJECTS[2] && PROJECTS[2].gallery) || [] },
+  ],
+  [
+    { num:'04', badge:'Motorsport \u00b7 Vehicle Dynamics', title:'Formula Student',
+      gallery:['Chassis Concept','Suspension Rig','Aero Package','Track Testing'] },
+    { num:'05', badge:'Machine Design \u00b7 CNC', title:'Custom CNC Machine Design',
+      gallery:['Gantry Assembly','Spindle Mount','Drive Train','First Cut'] },
+  ],
+];
 
-function buildParallax(){
-  if (!pxTrack) return;
-  pxTrack.innerHTML = PROJECTS.map((proj, gi) => {
-    const plates = (proj.gallery || []).map((entry, i) => {
-      const ratio = PX_RATIOS[i % PX_RATIOS.length];
-      const idx = String(i + 1).padStart(2, '0');
-      if (IMG_RE.test(entry)) {
-        return '<figure class="px-plate ' + ratio + '">' +
-                 '<img src="' + entry + '" alt="' + proj.title + ' — figure ' + idx + '" loading="lazy" decoding="async">' +
-                 '<figcaption class="px-cap"><span>Fig. ' + idx + '</span><span>' + proj.num + '</span></figcaption>' +
-               '</figure>';
-      }
-      return '<figure class="px-plate is-tile ' + ratio + '">' + entry +
-               '<figcaption class="px-cap"><span>Fig. ' + idx + '</span><span>' + proj.num + '</span></figcaption>' +
-             '</figure>';
-    }).join('');
+let pxPlates = [], pxDistance = 0, pxDistanceB = 0, pxPin = 0, pxStrip = false;
 
-    return '<article class="px-group" data-idx="' + gi + '">' +
-             '<header class="px-group-head">' +
-               '<span class="px-group-meta"><span class="bar"></span>' +
-                 '<span class="t-label">' + proj.num + ' &middot; ' + (proj.badge || '') + '</span></span>' +
-               '<h3 style="margin:0"><button type="button" class="px-group-title" ' +
-                 'data-open="' + gi + '">' + proj.title + '</button></h3>' +
-             '</header>' +
-             '<div class="px-group-rule"></div>' +
-             '<div class="px-plates">' + plates + '</div>' +
-           '</article>';
-  }).join('');
-
-  buildCounterRow();
-  pxPlates = [...pxTrack.querySelectorAll('.px-plate'),
-              ...(pxTrackB ? pxTrackB.querySelectorAll('.px-plate') : [])];
-  // Whole group is clickable for convenience, but the title is the real
-  // control so the showcase is reachable by keyboard.
-  pxTrack.addEventListener('click', e => {
-    const b = e.target.closest('.px-group-title');
-    if (b) { openProject(parseInt(b.dataset.open, 10)); return; }
-    const g = e.target.closest('.px-group');
-    if (g) openProject(parseInt(g.dataset.idx, 10));
-  });
-}
-
-/* Row B is every plate in reverse with the titles stripped: a counter-flowing
-   band rather than a second copy of the index. With only one project
-   photographed the set is short, so it repeats until it is wide enough to
-   actually travel. */
-function buildCounterRow(){
-  if (!pxTrackB) return;
-  const all = [];
-  PROJECTS.forEach(proj => (proj.gallery || []).forEach(entry => all.push({ entry, proj })));
-  all.reverse();
-  if (!all.length) return;
-
-  const cell = ({ entry, proj }, i) => {
+function pxGroup(proj){
+  const plates = (proj.gallery || []).map((entry, i) => {
     const ratio = PX_RATIOS[i % PX_RATIOS.length];
     return IMG_RE.test(entry)
-      ? '<figure class="px-plate ' + ratio + '"><img src="' + entry + '" alt="" aria-hidden="true" loading="lazy" decoding="async"></figure>'
-      : '<figure class="px-plate is-tile ' + ratio + '">' + entry + '</figure>';
-  };
+      ? '<figure class="px-plate ' + ratio + '"><img src="' + entry + '" alt="' +
+          proj.title + '" loading="lazy" decoding="async"></figure>'
+      : '<figure class="px-plate is-tile ' + ratio + '">' +
+          '<span class="tile-n">' + String(i + 1).padStart(2, '0') + '</span>' +
+          '<span class="tile-l">' + entry + '</span></figure>';
+  }).join('');
 
-  let html = '', n = 0;
-  const target = Math.max(6, all.length * 2);
-  while (n < target) { html += cell(all[n % all.length], n); n++; }
-  pxTrackB.innerHTML = '<div class="px-plates">' + html + '</div>';
+  return '<article class="px-group">' +
+           '<header class="px-group-head">' +
+             '<span class="px-group-meta"><span class="bar"></span>' +
+               '<span class="t-label">' + proj.num + ' \u00b7 ' + proj.badge + '</span></span>' +
+             '<h3 class="px-group-title">' + proj.title + '</h3>' +
+           '</header>' +
+           '<div class="px-group-rule"></div>' +
+           '<div class="px-plates">' + plates + '</div>' +
+         '</article>';
 }
 
-/* The wrapper's height is 100vh plus however far the track has to travel, so
-   the pin releases exactly as the last plate clears the right edge. */
+function buildParallax(){
+  if (!pxTrack || !pxTrackB) return;
+  pxTrack.innerHTML  = SHOWCASE_ROWS[0].map(pxGroup).join('');
+  pxTrackB.innerHTML = SHOWCASE_ROWS[1].map(pxGroup).join('');
+  pxPlates = [...pxTrack.querySelectorAll('.px-plate'),
+              ...pxTrackB.querySelectorAll('.px-plate')];
+}
+
+/* Each row travels its own full distance over the same progress, so they
+   finish together regardless of which is wider. The pin lasts as long as the
+   longer of the two needs. */
 function layoutParallax(){
   if (!pxWrap || !pxTrack) return;
-  const strip = window.matchMedia('(max-width:900px)').matches ||
+  const strip = window.matchMedia('(max-width:760px)').matches ||
                 window.matchMedia('(hover:none)').matches ||
                 prefersReducedMotion;
   pxStrip = strip;
@@ -2232,16 +2213,16 @@ function layoutParallax(){
     pxWrap.style.height = '';
     pxTrack.style.transform = '';
     if (pxTrackB) pxTrackB.style.transform = '';
+    pxPlates.forEach(pl => { const i = pl.firstElementChild;
+      if (i && i.tagName === 'IMG') i.style.transform = ''; });
     return;
   }
 
-  const travel = Math.max(0, pxTrack.scrollWidth - window.innerWidth);
-  pxDistance = travel;
-  // Row B covers a set fraction of row A's distance over the same progress.
-  pxDistanceB = pxTrackB
-    ? Math.min(Math.max(0, pxTrackB.scrollWidth - window.innerWidth), travel * PX_B_RATIO)
-    : 0;
-  pxWrap.style.height = (window.innerHeight + travel) + 'px';
+  const vw = window.innerWidth;
+  pxDistance  = Math.max(0, pxTrack.scrollWidth - vw);
+  pxDistanceB = pxTrackB ? Math.max(0, pxTrackB.scrollWidth - vw) : 0;
+  pxPin = Math.max(pxDistance, pxDistanceB);
+  pxWrap.style.height = (window.innerHeight + pxPin) + 'px';
   updateParallax();
 }
 
@@ -2250,21 +2231,18 @@ function updateParallax(){
   if (!pxHome || !pxHome.classList.contains('active')) return;
 
   const rect = pxWrap.getBoundingClientRect();
-  const p = pxDistance > 0
-    ? Math.min(1, Math.max(0, -rect.top / pxDistance))
-    : 0;
+  const p = pxPin > 0 ? Math.min(1, Math.max(0, -rect.top / pxPin)) : 0;
 
+  // Row A unwinds leftward from 0; row B starts fully left and unwinds to 0,
+  // so the two travel against each other off one scroll.
   pxTrack.style.transform = 'translate3d(' + (-p * pxDistance) + 'px,0,0)';
-  // Starts fully left and unwinds to zero, so it slides right while row A
-  // slides left — opposite travel off the same scroll.
   if (pxTrackB) pxTrackB.style.transform = 'translate3d(' + (-(1 - p) * pxDistanceB) + 'px,0,0)';
   if (pxBar) pxBar.style.width = (p * 100) + '%';
 
-  /* Per plate, exactly the demo's mapping: how far the frame's centre sits
-     from the viewport centre, as a fraction of the FULL viewport width — so
-     n spans about ±0.5, not ±1 — scaled by intensity and the multiplier.
-     tanh eases the result into the buffer instead of clipping at it, which
-     is the one place this departs from the original. */
+  /* Per plate, the demo's mapping: how far the frame's centre sits from the
+     viewport centre as a fraction of the FULL viewport width — so n spans
+     about +/-0.5, not +/-1 — scaled by intensity and the multiplier. tanh
+     eases into the buffer instead of clipping at it. */
   const vw = window.innerWidth;
   for (const plate of pxPlates) {
     const img = plate.firstElementChild;
@@ -2274,12 +2252,25 @@ function updateParallax(){
     const n = ((r.left + r.width / 2) - vw / 2) / vw;
     const raw = n * PX_INTENSITY * PX_SHADER_MULT;
     const drift = PX_MAX * Math.tanh(raw / PX_MAX);
-    // Drift is a fraction of plate width, so big plates move further — the
-    // fixed pixel offset this replaces read as almost nothing on wide ones.
+    // Drift is a fraction of plate width, so wide plates travel further.
     img.style.transform =
       'translate3d(' + (-drift * r.width).toFixed(2) + 'px,0,0) scale(' + PX_ZOOM.toFixed(4) + ')';
   }
 }
+
+/* Why the gallery is scrolling by hand instead of pinning. Call in the
+   console: pxWhy() */
+window.pxWhy = function(){
+  const r = {
+    mode: pxStrip ? 'STRIP (manual scroll)' : 'PINNED (parallax)',
+    windowWidth: window.innerWidth,
+    tooNarrow: window.matchMedia('(max-width:760px)').matches,
+    noHover: window.matchMedia('(hover:none)').matches,
+    reducedMotion: prefersReducedMotion,
+  };
+  console.table(r);
+  return r;
+};
 
 if (pxWrap) {
   buildParallax();
