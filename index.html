@@ -210,21 +210,45 @@
     }
     .sw-runout{height:var(--sw-space);}
     .sw-list{list-style:none;margin:0;padding:0;}
+    /* Each logo is an alpha mask, and the same viewport-fixed gradient is
+       painted through it — mask-image is to an arbitrary shape what
+       background-clip:text was to the glyphs, so the mechanic is unchanged.
+       Only the alpha is used, so the brand colours never enter the palette. */
     .sw-list li{
-      white-space:nowrap;
-      color:transparent;
+      --logo-h:.86em;
+      width:calc(var(--ar) * var(--logo-h));
+      height:1.55em;                 /* one line: keeps the scroll timing exact */
+      text-indent:-200%;overflow:hidden;white-space:nowrap;
       background-image:linear-gradient(180deg,
-        var(--sw-dim) 0 calc(var(--sw-start) - .5lh),
-        var(--accent) calc(var(--sw-start) - .54lh) calc(var(--sw-start) + .54lh),
-        var(--sw-dim) calc(var(--sw-start) + .5lh));
+        var(--sw-dim) 0 calc(var(--sw-start) - 1.05lh),
+        var(--accent) calc(var(--sw-start) - .28lh) calc(var(--sw-start) + .28lh),
+        var(--sw-dim) calc(var(--sw-start) + 1.05lh));
       background-attachment:fixed;
-      -webkit-background-clip:text;
-              background-clip:text;
+      -webkit-mask-image:var(--logo);        mask-image:var(--logo);
+      -webkit-mask-size:auto var(--logo-h);  mask-size:auto var(--logo-h);
+      -webkit-mask-repeat:no-repeat;         mask-repeat:no-repeat;
+      -webkit-mask-position:left center;     mask-position:left center;
+    }
+    .lg-solidworks{--logo:url('Images/Company Logos/masks/solidworks.png');--ar:4.856;}
+    .lg-fusion360 {--logo:url('Images/Company Logos/masks/fusion360.png'); --ar:3.622;}
+    .lg-autocad   {--logo:url('Images/Company Logos/masks/autocad.png');   --ar:3.206;}
+    .lg-matlab    {--logo:url('Images/Company Logos/masks/matlab.png');    --ar:4.022;}
+    .lg-python    {--logo:url('Images/Company Logos/masks/python.png');    --ar:3.428;}
+
+    /* Without mask support the gradient would paint a bare rectangle, so fall
+       all the way back to the wordmarks this replaced. */
+    @supports not ((mask-image:url(#m)) or (-webkit-mask-image:url(#m))){
+      .sw-list li{
+        width:auto;height:auto;text-indent:0;color:transparent;
+        -webkit-background-clip:text;background-clip:text;
+      }
     }
     /* iOS Safari ignores background-attachment:fixed, and the effect is
        scroll-linked, so both touch and reduced-motion get it solid instead. */
     @media (hover:none), (prefers-reduced-motion:reduce){
-      .sw-list li{background-image:none;color:var(--fg);}
+      /* background-image:none would erase the logo, since the mask has
+         nothing left to reveal — paint it flat instead. */
+      .sw-list li{background-image:none;background-color:var(--fg);color:var(--fg);}
       .sw-list li + li{opacity:.55;}
     }
     @media(max-width:768px){
@@ -1186,11 +1210,11 @@
           <span class="sr-only">I work in SolidWorks, Fusion 360, AutoCAD, MATLAB and Python.</span>
         </h2>
         <ul class="sw-list" aria-hidden="true">
-          <li>SolidWorks</li>
-          <li>Fusion&nbsp;360</li>
-          <li>AutoCAD</li>
-          <li>MATLAB</li>
-          <li>Python</li>
+          <li class="lg-solidworks">SolidWorks</li>
+          <li class="lg-fusion360">Fusion&nbsp;360</li>
+          <li class="lg-autocad">AutoCAD</li>
+          <li class="lg-matlab">MATLAB</li>
+          <li class="lg-python">Python</li>
         </ul>
         <svg class="gfx-plate sw-plate" viewBox="0 0 200 320"
              preserveAspectRatio="xMidYMid slice" aria-hidden="true">

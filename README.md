@@ -15,7 +15,7 @@ at poster scale, flat colour blocking, hairline rules, and no depth effects anyw
 </tr>
 <tr>
 <td><b>Pages</b></td><td>6 sections, hash-routed, no router library</td>
-<td><b>Build</b></td><td>None. Three optional Python asset scripts.</td>
+<td><b>Build</b></td><td>None. Four optional Python asset scripts.</td>
 </tr>
 </table>
 
@@ -76,9 +76,9 @@ Apply with `data-territory="vermillion"` or `="ink"` on any element.
 | `Design system components/` | Delivered component library — 17 graphics + `GRAPHICS-SPEC.md` |
 | `favicon.svg` | AO monogram — A over O, vermillion dot in the counter |
 | `favicon.ico` · `apple-touch-icon.png` · `icon-512.png` · `favicon-{16,32,48}.png` | Raster icons, generated from the mark |
-| `Images/` | Headshot and Planetary Gearbox photography |
+| `Images/` | Headshot, Planetary Gearbox photography, and the company logos + generated `masks/` |
 | `docs/` | This README's banner and palette strip |
-| `tools/` | Three generators — see below |
+| `tools/` | Four generators — see below |
 | `.claude/launch.json` | Local dev-server config (git-ignored) |
 
 Everything except the fonts — icons, paper grain, loading animation, all artwork, the
@@ -92,6 +92,7 @@ Snake game — is inline SVG, CSS or vanilla JS.
 python tools/build-design-system.py   # → design-system/   (23 cards + stylesheets)
 python tools/build-icons.py           # → favicon PNGs, from the mark's geometry
 python tools/build-banner.py          # → docs/banner.png + palette.png
+python tools/build-logo-masks.py      # → Images/Company Logos/masks/
 ```
 
 ---
@@ -355,10 +356,30 @@ consumes. Add or remove skills and that `6` must change to match `n − 1`.
 <br>
 
 Adapted from jh3y's sticky scroll-highlight list: the lead phrase pins at a focal line
-while the list scrolls past it, and each item is painted with a **viewport-fixed gradient
-clipped to the glyphs**, so whichever line crosses the band lights up. No JS, and it stays
-in step with the momentum scroller for free — the band is fixed to the viewport rather
-than driven by a scroll handler.
+while the list scrolls past it, and a **viewport-fixed gradient** is painted through each
+item, so whichever one crosses the band lights up. No JS, and it stays in step with the
+momentum scroller for free — the band is fixed to the viewport rather than driven by a
+scroll handler.
+
+The items are **company logos, painted as alpha masks**. `mask-image` is to an arbitrary
+shape what `background-clip:text` was to the glyphs, so the mechanic is identical — only
+the stencil changed. Each `<li>` is sized `height:1.55em` (one line, so the scroll timing
+is untouched) by `calc(var(--ar) * var(--logo-h))`, with the aspect ratio baked per logo.
+
+`tools/build-logo-masks.py` trims each supplied logo to its ink, scales it to a common
+180px height and discards everything but the alpha channel. Two details worth knowing:
+
+- **Only the alpha is kept**, so the logos pick up the panel's own dim → accent ramp
+  instead of introducing six brand colours into a three-colour system.
+- **Fusion's and AutoCAD's icons are ~97% opaque tiles** with a white glyph sitting on
+  top, so their alpha alone silhouettes to a featureless slab. `knockout_light` removes
+  the near-white pixels and recovers the letterform. It is deliberately *not* set for
+  Python, where 41% of opaque pixels read as light — that is the yellow snake, and
+  knocking it out would delete half the mark.
+
+The band's ramp is soft (`±1.05lh` out to dim, `±0.28lh` of solid accent) rather than the
+hard edge the text version used. Across thin glyphs a hard edge read as a clean sweep;
+across a solid logo tile it split the shape into two flat tones.
 
 Four things that will break it if you edit them:
 
