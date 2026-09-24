@@ -863,7 +863,7 @@ page("components/gallery.html", "Components", "Gallery & captions",
        'governs heroImage — omit it and the hero shows the panel ground with the num watermark.</p>'
      + '</section>',
      "gallery: [\n"
-     "  'Images/Gearbox/<b>photo-1.jpg</b>',   // renders as an image\n"
+     "  'images/gearbox/<b>photo-1.jpg</b>',   // renders as an image\n"
      "  '<b>CFD Pressure Map</b>',             // renders as a labelled tile\n"
      "]",
      extra_css="""
@@ -1238,7 +1238,7 @@ page("graphics/photography.html", "Graphics", "Photography",
        '<b>Deploy note:</b> image paths are case-sensitive on Linux-backed hosts. A mismatch '
        '404s in production with no error locally.</p>'
      + '</section>',
-     '&lt;img class="<b>plate plate-mono</b>" src="Images/Headshot/a.jpg" alt=""&gt;\n'
+     '&lt;img class="<b>plate plate-mono</b>" src="images/headshot/a.jpg" alt=""&gt;\n'
      '.plate-mono{filter:<b>grayscale(1) contrast(1.06)</b>;}',
      extra_css="""
 .row{display:grid;grid-template-columns:repeat(3,minmax(0,220px));gap:26px;}
