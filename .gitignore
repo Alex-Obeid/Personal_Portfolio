@@ -5,3 +5,12 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Raw capture straight off the phone — ~620 MB of HEIC and MOV. No browser can
+# display either format, so nothing here is servable as-is; the tooling writes
+# images/**/web/ (JPEG + muted h264) and only that is committed. Keep the
+# originals backed up somewhere outside the repo — git will not hold them.
+*.heic
+*.HEIC
+*.mov
+*.MOV

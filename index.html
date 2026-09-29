@@ -507,7 +507,6 @@
     }
     .home-divider{width:48px;height:2px;background:var(--orange);margin-bottom:24px;}
     .home-bio{font-size:1rem;line-height:1.75;color:var(--light);margin-bottom:24px;}
-    .home-bio[contenteditable="true"]:focus{outline:none;border-left:2px solid var(--orange);padding-left:12px;}
     .edit-hint{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:1.5px;color:var(--muted);margin-bottom:32px;}
     .cta-row{display:flex;gap:16px;flex-wrap:wrap;}
     .btn{
@@ -724,6 +723,20 @@
     }
     @media(max-width:1000px){.masonry{columns:2;}}
     @media(max-width:580px){.masonry{columns:1;}}
+
+    /* Minor projects read as minor: one more column, so the bricks come out
+       a column-width narrower rather than being scaled down. The body scales
+       with them, or the type would sit at card size in a smaller box.
+       These follow the base rules in source order so they win at equal
+       specificity, including inside the media queries. */
+    .masonry-sm{columns:4;}
+    .masonry-sm .brick-body{padding:15px 16px 17px;}
+    .masonry-sm .brick-tag{font-size:.5rem;padding:2px 6px;}
+    .masonry-sm .brick-title{font-size:.9rem;}
+    .masonry-sm .brick-desc{font-size:.74rem;line-height:1.55;}
+    .masonry-sm .brick-wm{font-size:.56rem;padding:5px 7px;}
+    @media(max-width:1000px){.masonry-sm{columns:3;}}
+    @media(max-width:580px){.masonry-sm{columns:1;}}
     .projects-group{margin-bottom:42px;}
     .projects-group:last-child{margin-bottom:0;}
     /* Mono label in --fg-2, same face and colour it always had — just larger
@@ -908,13 +921,6 @@
       margin-bottom:48px;
       position:relative;overflow:hidden;
     }
-    .detail-hero-wm{
-      font-family:'Archivo Black',sans-serif;
-      font-size:clamp(6rem,18vw,16rem);
-      letter-spacing:-.05em;
-      color:rgba(10,10,10,.10);
-      user-select:none;line-height:1;text-transform:uppercase;
-    }
     .detail-hero-badge{
       position:absolute;top:20px;left:20px;
       font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
@@ -934,6 +940,13 @@
     @media(max-width:580px){.detail-gallery{grid-template-columns:1fr;}}
     .gal-cell{background:var(--paper-shade);border:1px solid var(--rule-strong);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.18em;color:var(--fg-2);text-transform:uppercase;overflow:hidden;transition:background var(--snap),color var(--snap),border-color var(--snap);}
     .gal-cell:hover{background:var(--accent);color:var(--on-accent);border-color:var(--accent);}
+    /* Cells carrying real media rather than a placeholder label. The clips are
+       muted autoplay loops: the same ten came to 128 MB as GIF against 6.5 MB
+       as h264, because flying chips and coolant defeat LZW. No controls, so
+       they read as moving stills. */
+    .gal-cell.is-media{padding:0;}
+    .gal-cell.is-media img,.gal-cell.is-media video{width:100%;height:100%;object-fit:cover;display:block;}
+    .gal-cell.is-media:hover{background:var(--paper-shade);border-color:var(--accent);}
 
     .sidebar-card{background:transparent;border:1px solid var(--rule-strong);padding:22px;margin-bottom:14px;}
     .sidebar-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-2);margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--rule);}
@@ -1159,6 +1172,7 @@
       .nav-logo,.nav-links li,.home-text .home-tag,.home-text .home-name,.home-text .home-divider,.home-text .home-bio,.home-text .edit-hint,.home-text .cta-row{animation:none !important;opacity:1 !important;transform:none !important;}
       .page-sweep{display:none;}
     }
+
   </style>
 </head>
 
@@ -1225,7 +1239,7 @@
         <figcaption class="fig-cap t-label"><span>Fig. 01</span><span>Portrait</span></figcaption>
       </figure>
 
-      <p class="hero-bio fade-in" style="animation-delay:.16s" contenteditable="true">Automotive and motorsports focused — Formula Student, vehicle dynamics, CNC machining and simulation-driven design.</p>
+      <p class="hero-bio fade-in" style="animation-delay:.16s">Automotive and motorsports focused — Formula Student, vehicle dynamics, CNC machining and simulation-driven design.</p>
       <div class="hero-meta t-label fade-in" style="animation-delay:.22s">
         <span>Est. 2006</span><span>Beirut, LB</span><span>Available 2026</span>
       </div>
@@ -1355,10 +1369,10 @@
     <!-- A real <button>, not the <div onclick> the masonry cards still use, so
          it is keyboard-reachable and announced as interactive. Children are
          <span>s because a <button> may only contain phrasing content. -->
-    <button class="proj-brick proj-banner cc" type="button" onclick="openProject(3)">
+    <button class="proj-brick proj-banner cc" type="button" data-proj="3" onclick="openProject(3)">
       <!-- add  style="background:url('images/formula-student/hero.jpg') center/cover no-repeat;"  once there is a photo -->
       <span class="brick-visual banner-visual">
-        <span class="brick-wm">04</span>
+        <span class="brick-wm">01</span>
         <span class="banner-kicker">Motorsport · Vehicle Dynamics</span>
         <span class="brick-corner"></span>
       </span>
@@ -1379,9 +1393,9 @@
   <div class="projects-group fade-in" style="animation-delay:.1s">
     <h3 class="projects-group-title"><span>Main Projects</span><span>02 Entries</span></h3>
     <div class="masonry">
-      <div class="proj-brick wide cb" onclick="openProject(1)">
+      <div class="proj-brick wide cb" data-proj="1" onclick="openProject(1)">
         <div class="brick-visual">
-          <span class="brick-wm">01</span>
+          <span class="brick-wm">02</span>
           <div class="brick-corner"></div>
         </div>
         <div class="brick-body">
@@ -1393,9 +1407,9 @@
         </div>
       </div>
 
-      <div class="proj-brick short cc" onclick="openProject(2)">
+      <div class="proj-brick short cc" data-proj="2" onclick="openProject(2)">
         <div class="brick-visual">
-          <span class="brick-wm">02</span>
+          <span class="brick-wm">03</span>
           <div class="brick-corner"></div>
         </div>
         <div class="brick-body">
@@ -1410,13 +1424,13 @@
   </div>
 
   <div class="projects-group fade-in" style="animation-delay:.16s">
-    <h3 class="projects-group-title"><span>Minor Projects</span><span>01 Entry</span></h3>
-    <div class="masonry">
+    <h3 class="projects-group-title"><span>Minor Projects</span><span>02 Entries</span></h3>
+    <div class="masonry masonry-sm">
       <!-- Card 1 — TALL -->
-      <div class="proj-brick tall ca" onclick="openProject(0)">
+      <div class="proj-brick tall ca" data-proj="0" onclick="openProject(0)">
         <div class="brick-visual" style="background:url('images/planetary-gearbox/main-render.png') center/cover no-repeat;">
           <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.5) 100%);"></div>
-          <span class="brick-wm">03</span>
+          <span class="brick-wm">04</span>
           <div class="brick-corner"></div>
         </div>
         <div class="brick-body">
@@ -1424,6 +1438,22 @@
           <div class="brick-title">Planetary Gearbox</div>
           <div class="brick-desc">A fully designed and 3D-printed planetary gearbox modelled in SolidWorks — sun gear, planet gears, ring gear, and carrier.</div>
           <div class="brick-state">Project State: Completed</div>
+          <div class="brick-cta">Open Project <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Card 2 — SHORT -->
+      <div class="proj-brick short ce" data-proj="4" onclick="openProject(4)">
+        <div class="brick-visual" style="background:url('images/general-cnc-operation/web/nylon-stepped-part.jpg') center/cover no-repeat;">
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.05) 0%,rgba(0,0,0,0.5) 100%);"></div>
+          <span class="brick-wm">05</span>
+          <div class="brick-corner"></div>
+        </div>
+        <div class="brick-body">
+          <div class="brick-tags"><span class="brick-tag">CNC Lathe</span><span class="brick-tag">3-Axis Mill</span><span class="brick-tag">Machining</span></div>
+          <div class="brick-title">General CNC Lathe &amp; 3-Axis Mill Operation</div>
+          <div class="brick-desc">Hands-on turning and milling — workholding, tool setting, offsets, and choosing speeds and feeds against the material actually on the machine.</div>
+          <div class="brick-state">Project State: Ongoing</div>
           <div class="brick-cta">Open Project <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
         </div>
       </div>
@@ -1439,7 +1469,6 @@
   </button>
 
   <div class="detail-hero" id="detail-hero">
-    <span class="detail-hero-wm" id="detail-hero-wm">01</span>
     <div class="detail-hero-badge" id="detail-hero-badge">Project</div>
   </div>
 
@@ -1614,7 +1643,7 @@
 ═══════════════════════════════════════ */
 const PROJECTS = [
   {
-    num: '03',
+    num: '04',
     badge: 'Mechanical · CAD',
     heroImage: 'images/planetary-gearbox/main-render.png',
     title: 'Planetary Gearbox',
@@ -1638,7 +1667,7 @@ const PROJECTS = [
     ],
   },
   {
-    num: '01',
+    num: '02',
     badge: 'Manufacturing · CNC',
     title: 'Wheel Hub CNC Maching',
     tags: ['CNC','CAM','CAD','GD&T','Manufacturing','Inspection'],
@@ -1656,7 +1685,7 @@ const PROJECTS = [
     gallery: ['Setup Sheet','Toolpath View','Machined Part','Inspection Check'],
   },
   {
-    num: '02',
+    num: '03',
     badge: 'Aero · CFD',
     title: 'Sketch, Model and CFD of a Generic SUV',
     tags: ['Sketch','CAD','Surface Modeling','CFD','Aerodynamics','Simulation'],
@@ -1676,7 +1705,7 @@ const PROJECTS = [
   // Appended, never inserted: the .proj-* handlers pass a raw array index, so
   // putting this anywhere but the end would repoint every existing card.
   {
-    num: '04',
+    num: '01',
     badge: 'Motorsport · Vehicle Dynamics',
     title: 'Formula Student',
     tags: ['Vehicle Dynamics','Chassis','Suspension','Aerodynamics','CAD','Testing'],
@@ -1692,6 +1721,30 @@ const PROJECTS = [
       <p>What the competition adds over a solo project is a loop that actually closes — a target set on paper, a part designed to hit it, and a measurement afterwards saying whether it did.</p>
     `,
     gallery: ['Chassis Concept','Suspension Rig','Aero Package','Track Testing'],
+  },
+  {
+    num: '05',
+    badge: 'Manufacturing · Machining',
+    title: 'General CNC Lathe & 3-Axis Mill Operation',
+    tags: ['CNC Lathe','3-Axis Mill','Turning','Milling','Workholding','Metrology'],
+    meta: [
+      { k:'Year', v:'2025' },
+      { k:'Role', v:'Machine Operation' },
+      { k:'Machines', v:'CNC Lathe, 3-Axis Mill' },
+      { k:'Project State', v:'Ongoing' },
+    ],
+    body: `
+      <p>Hands-on operation of a CNC lathe and a 3-axis mill, covering the part of manufacturing that does not appear in a CAD model: workholding, tool setting, work offsets, and reading a job back off the machine rather than off the screen.</p>
+      <p>Turning work covered facing, OD and ID operations, grooving and threading; milling covered facing, pocketing, drilling and contouring. Speeds and feeds were chosen against the material and tooling actually on hand rather than defaults, and adjusted once the first cut told the truth about rigidity and finish.</p>
+      <p>The value of it is calibration. Designing a part is a different exercise once you have had to hold it, reach it with a tool, and measure it afterwards — most of the machining-first decisions in the other projects here come from time spent at these two machines.</p>
+    `,
+    heroImage: 'images/general-cnc-operation/web/nylon-stepped-part.jpg',
+    gallery: [
+      'images/general-cnc-operation/web/nylon-stepped-part.jpg',
+      'images/general-cnc-operation/web/bandsaw-stock-cutoff.mp4',
+      'Mill Workholding',
+      'Inspection',
+    ],
   },
 ];
 
@@ -1872,7 +1925,6 @@ function openProject(idx) {
   hero.style.background = p.heroImage
     ? `url('${p.heroImage}') center/cover no-repeat`
     : '';
-  document.getElementById('detail-hero-wm').textContent = p.num;
   document.getElementById('detail-hero-badge').textContent = p.badge;
 
   // Title
@@ -1882,10 +1934,19 @@ function openProject(idx) {
   document.getElementById('detail-body').innerHTML = p.body;
 
   // Gallery
+  // Clips play on sight rather than on click, so the gallery reads as a
+  // sequence of moving stills. Under reduced motion they become ordinary
+  // players the visitor starts themselves.
+  const galVid = prefersReducedMotion
+    ? 'controls preload="metadata"'
+    : 'autoplay loop playsinline preload="metadata"';
   document.getElementById('detail-gallery').innerHTML =
-    p.gallery.map(g => g.match(/\.(png|jpe?g|gif|webp|svg)/i)
-      ? `<div class="gal-cell" style="padding:0;overflow:hidden;"><img src="${g}" style="width:100%;height:100%;object-fit:cover;display:block;" /></div>`
-      : `<div class="gal-cell">${g}</div>`
+    p.gallery.map(g =>
+      /\.mp4$/i.test(g)
+        ? `<div class="gal-cell is-media"><video src="${g}" ${galVid} muted></video></div>`
+      : /\.(png|jpe?g|gif|webp|svg)$/i.test(g)
+        ? `<div class="gal-cell is-media"><img src="${g}" alt="" loading="lazy" decoding="async"></div>`
+        : `<div class="gal-cell">${g}</div>`
     ).join('');
 
   // Meta
@@ -2467,6 +2528,21 @@ if (gfxScrollEls.length) {
    order, so inserting, removing or reordering a panel renumbers the rest
    with no hardcoded numbers to chase.
 ═══════════════════════════════════════ */
+/* Badges read down the page — top to bottom, left to right — not in array
+   order, so they are filled in from the DOM the way numberSections() does for
+   the slivers. Insert or reorder a card and the rest renumber themselves. The
+   values in the markup are the same numbers, kept only for JS-off. */
+const projNums = new Map();
+function numberProjects(){
+  [...document.querySelectorAll('#projects [data-proj]')].forEach((el, i) => {
+    const n = String(i + 1).padStart(2, '0');
+    projNums.set(+el.dataset.proj, n);
+    const wm = el.querySelector('.brick-wm');
+    if (wm) wm.textContent = n;
+  });
+}
+numberProjects();
+
 function numberSections(){
   const marks = [...document.querySelectorAll('#home [data-section]')];
   const bars = '<span class="sm-bars"><i></i><i></i><i></i></span>';
@@ -2877,6 +2953,7 @@ if (cylWrap) {
 resetDraw();
 routeFromHash();
 updateNavTerritory();
+
 </script>
 </body>
 </html>
